@@ -1,6 +1,16 @@
-# React + Redux (yuck) + TypeScript + Vite + OpenLayers + UFOs.
+# React + Redux Toolkit + TypeScript + Vite + OpenLayers + UFOs.
 
 WIP, just testing.
+
+Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux.
+
+A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`).
+
+As yet, no data.
+
+
+## Biolerplate Notices
+
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
