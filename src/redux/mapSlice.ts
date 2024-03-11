@@ -48,14 +48,16 @@ export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
     if (!zoom || !bounds) {
       return;
     }
-    console.log('mapSlice.fetchData for', zoom, bounds)
+    console.log(`mapSlice.fetchData bounds ${bounds} at zoom ${zoom}`);
     const response = await fetch(`?zoom=${zoom}&bounds=${bounds!.join(',')}`);
     const data = await response.json(); // Parse the JSON response
 
     // Dispatch action to update the fetched data in the state
     dispatch(setMapData(data));
-  } catch (error) {
-    // Handle errors
+  }
+  catch (error) {
+    // TODO Handle errors
+    console.error(error);
   }
 };
 
