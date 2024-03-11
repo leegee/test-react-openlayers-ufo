@@ -43,11 +43,12 @@ const mapSlice = createSlice({
 export const { setMapParams, setMapData } = mapSlice.actions;
 
 export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
+  const { zoom, bounds } = getState().map;
+  if (!zoom || !bounds) {
+    return;
+  }
+
   try {
-    const { zoom, bounds } = getState().map;
-    if (!zoom || !bounds) {
-      return;
-    }
     console.log(`mapSlice.fetchData bounds ${bounds} at zoom ${zoom}`);
     const response = await fetch(`?zoom=${zoom}&bounds=${bounds!.join(',')}`);
     const data = await response.json(); // Parse the JSON response
