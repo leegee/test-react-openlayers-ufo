@@ -9,7 +9,7 @@ import { fromLonLat, transformExtent } from 'ol/proj';
 import { RootState } from './redux/store';
 import { setMapParams, fetchData } from './redux/mapSlice';
 
-import 'ol/ol.css'; 
+import 'ol/ol.css';
 import './Map.css';
 
 const OpenLayersMap: React.FC = () => {
