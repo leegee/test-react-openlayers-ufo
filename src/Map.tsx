@@ -42,9 +42,10 @@ const OpenLayersMap: React.FC = () => {
         const zoom = map!.getView().getZoom() as number;
         const view = map!.getView();
         const size = map.getSize();
-        const bounds = view.calculateExtent(size);
-        const boundsLatLon = transformExtent(bounds, 'EPSG:3857', 'EPSG:4326');
-        dispatch(setMapParams({ center, zoom, bounds: boundsLatLon as [number, number, number, number] }));
+        const bounds = transformExtent(view.calculateExtent(size), 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
+        dispatch(
+          setMapParams({ center, zoom, bounds })
+        );
       });
     }
 
