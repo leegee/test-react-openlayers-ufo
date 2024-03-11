@@ -4,7 +4,7 @@ import { Map, View } from 'ol';
 
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import { fromLonLat } from 'ol/proj';
+import { fromLonLat, transformExtent } from 'ol/proj';
 
 import { RootState } from './redux/store';
 import { setMapParams, fetchData } from './redux/mapSlice';
@@ -43,7 +43,8 @@ const OpenLayersMap: React.FC = () => {
         const view = map!.getView();
         const size = map.getSize();
         const bounds = view.calculateExtent(size);
-        dispatch(setMapParams({ center, zoom, bounds: bounds as [number, number, number, number] }));
+        const boundsLatLon = transformExtent(bounds, 'EPSG:3857', 'EPSG:4326');
+        dispatch(setMapParams({ center, zoom, bounds: boundsLatLon as [number, number, number, number] }));
       });
     }
 
