@@ -4,7 +4,6 @@ import { Map, View } from 'ol';
 
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import { getSize } from 'ol/extent';
 import { fromLonLat } from 'ol/proj';
 
 import { RootState } from './redux/store';
@@ -36,12 +35,15 @@ const OpenLayersMap: React.FC = () => {
       });
 
       map.on('moveend', () => {
+        if (!map) {
+          return;
+        }
         const center = map!.getView().getCenter() as [number, number];
         const zoom = map!.getView().getZoom() as number;
         const view = map!.getView();
-        const size = getSize(map!.getSize()!);
-        const bounds = view.calculateExtent(size) as [number, number, number, number];
-        dispatch(setMapParams({ center, zoom, bounds }));
+        const size = map.getSize();
+        const bounds = view.calculateExtent(size);
+        dispatch(setMapParams({ center, zoom, bounds: bounds as [number, number, number, number] }));
       });
     }
 
