@@ -8,7 +8,7 @@ import { getSize } from 'ol/extent';
 import { fromLonLat } from 'ol/proj';
 
 import { RootState } from './redux/store';
-import { setCenterAndZoom, fetchData } from './redux/mapSlice';
+import { setMapParams, fetchData } from './redux/mapSlice';
 
 import 'ol/ol.css'; 
 import './Map.css';
@@ -41,7 +41,7 @@ const OpenLayersMap: React.FC = () => {
         const view = map!.getView();
         const size = getSize(map!.getSize()!);
         const bounds = view.calculateExtent(size) as [number, number, number, number];
-        dispatch(setCenterAndZoom({ center, zoom, bounds }));
+        dispatch(setMapParams({ center, zoom, bounds }));
       });
     }
 
@@ -53,7 +53,7 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchData() as any);
+    dispatch(fetchData() as any); // ikr
   }, [dispatch, bounds, zoom]);
 
   return <div ref={mapRef} className="map"></div>;
