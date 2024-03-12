@@ -1,3 +1,4 @@
+// redux/mapSlice
 /**
  * Stores various map parameters that the user can change
  * and/or that we wish to store and/or restore.
@@ -7,16 +8,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { type AppThunk } from './store';
-
-interface MapData {}
-
-interface MapState {
-  center: [number, number]; 
-  zoom: number;
-  bounds: [number, number, number, number] | null; 
-  data: MapData | null;
-}
+import type { AppThunk } from './store';
+import type { MapState, MapData } from './reducers';
 
 const initialState: MapState = {
   data: null,

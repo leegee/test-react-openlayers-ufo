@@ -1,4 +1,4 @@
-# React + Redux Toolkit + TypeScript + Vite + OpenLayers + UFOs.
+# npm Monorepo + React + Redux Toolkit + TypeScript + Vite + OpenLayers + UFOs.
 
 WIP, just testing.
 
@@ -8,9 +8,19 @@ A simple OpenLayers map to fetch and display data when the map is rendered, zoom
 
 As yet, no data.
 
+.
+
+.
+
+.
+
+.
+
+.
+
+.
 
 ## Biolerplate Notices
-
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

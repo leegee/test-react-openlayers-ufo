@@ -2,25 +2,15 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
-    "incremental": true,
+    "moduleResolution": "node",
     "declaration": true,
     "strict": true,
-    "moduleResolution": "node",
+    "incremental": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "./src",
-    "outDir": "./build"
-  },
-  "files": [
-    "./src/index.ts"
-  ],
-  "references": [
-    {
-      "path": "./packages/common-types"
-    },
-    {
-      "path": "./packages/client"
-    }
-  ]
+    "outDir": "./build",
+    "composite": true
+  }
 }
