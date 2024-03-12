@@ -6,7 +6,9 @@ Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly R
 
 A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`).
 
-As yet, no data.
+As yet, no data other than from MUFON.
+
+As yet, no data access layer.
 
 .
 
