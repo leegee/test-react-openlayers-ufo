@@ -6,18 +6,20 @@ ALTER TABLE sightings
   ADD COLUMN point_geom POINT;
 
 UPDATE sightings
-SET duration_seconds = CAST(REGEXP_REPLACE(duration_seconds, '[^0-9.]', '', 'g') AS NUMERIC(10, 2));
+  SET duration_seconds = CAST(REGEXP_REPLACE(duration_seconds, '[^0-9.]', '', 'g') AS NUMERIC(10, 2));
 
 UPDATE sightings
-SET latitude = CAST(REGEXP_REPLACE(latitude, '[^0-9\.\-]', '', 'g') AS NUMERIC(10, 6)),
-    longitude = CAST(REGEXP_REPLACE(longitude, '[^0-9\.\-]', '', 'g') AS NUMERIC(10, 6));
+  SET latitude = CAST(REGEXP_REPLACE(latitude, '[^0-9\.\-]', '', 'g') AS NUMERIC(10, 6)),
+      longitude = CAST(REGEXP_REPLACE(longitude, '[^0-9\.\-]', '', 'g') AS NUMERIC(10, 6));
 
 UPDATE sightings
-SET point_geom = ST_SetSRID(ST_MakePoint(longitude::numeric, latitude::numeric)::geometry, 4326)::point;
+  SET point_geom = ST_SetSRID(ST_MakePoint(longitude::numeric, latitude::numeric)::geometry, 4326)::point;
 
 ALTER TABLE sightings 
   DROP COLUMN longitude,
   DROP COLUMN latitude;
+
+UPDATE sightings SET source = 'mufon-kaggle';
 
 CREATE INDEX ON sightings (datetime);
 CREATE INDEX ON sightings (date_posted);
