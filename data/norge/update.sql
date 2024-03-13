@@ -70,8 +70,12 @@ SET location_text = REPLACE(location_text, '1640 Moss v/Spareland', '1640 Sparel
 WHERE location_text = '1640 Moss v/Spareland';
 
 UPDATE sightings
+SET location_text = REPLACE(location_text, 'Spareland vMoss', '1640 Spareland, Moss, Viken')
+WHERE location_text = 'Spareland vMoss';
+
+UPDATE sightings
 SET location_text = REPLACE(location_text, '2 km. nord for Bodø.', 'Bodø, Nordland')
-WHERE location_text = '2 km. nord for Bodø.';
+WHERE location_text LIKE '2 km. nord for Bod%';
 
 UPDATE sightings
 SET location_text = REPLACE(location_text, '6500 Kristaiansund N.', '6500 Kristaiansund N')
