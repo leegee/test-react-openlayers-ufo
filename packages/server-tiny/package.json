@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Tiny KOA API, nothing nice yet",
     "main": "./build/index.js",
-    "type": "commonjs",
+    "type": "module",
     "scripts": {
         "build": "tsc --build",
         "dev": "ts-node src/server.ts"
