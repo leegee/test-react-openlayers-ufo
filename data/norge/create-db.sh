@@ -15,4 +15,4 @@ export PGUSER=postgres
 
 psql -d norge < update.sql
 
-psql -d norge < geocode.sql
+
