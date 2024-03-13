@@ -1,20 +1,32 @@
+\set ON_ERROR_STOP on
+
 DROP TABLE IF EXISTS sightings;
-CREATE TABLE sightings (
-    datetime_original VARCHAR(20),  
-    datetime TIMESTAMP,
-    datetime_invalid BOOLEAN
-);
+
+CREATE TABLE sightings AS SELECT * FROM hovedtabell;
+
+ALTER TABLE sightings 
+    ADD COLUMN id SERIAL PRIMARY KEY,
+    ADD COLUMN data_report_number INTEGER,
+    ADD COLUMN datetime_original VARCHAR(20),  
+    ADD COLUMN datetime TIMESTAMP,
+    ADD COLUMN datetime_invalid BOOLEAN
+;
+
+ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
+
+
+-- Observation date:
 
 INSERT INTO sightings (datetime_original, datetime, datetime_invalid)
 SELECT 
-    CONCAT("obs Õr", '-', "Obs mÕned", '-', observasjonsdato) AS datetime_original,
+    CONCAT("obs år", '-', "Obs måned", '-', observasjonsdato) AS datetime_original,
     CASE 
-        WHEN "obs Õr" IS NOT NULL AND "Obs mÕned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
+        WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(
                 CONCAT(
-                    COALESCE("obs Õr", ''),
+                    COALESCE("obs år", ''),
                     '-',
-                    CASE WHEN "Obs mÕned"::integer > 12 THEN '01' ELSE COALESCE(NULLIF("Obs mÕned", '?'), '01') END,
+                    CASE WHEN "Obs måned"::integer > 12 THEN '01' ELSE COALESCE(NULLIF("Obs måned", '?'), '01') END,
                     '-',
                     COALESCE(NULLIF(observasjonsdato, '?'), '01')
                 ),
@@ -23,9 +35,30 @@ SELECT
         ELSE NULL
     END AS datetime,
     CASE 
-        WHEN "obs Õr" IS NOT NULL AND "Obs mÕned" IS NOT NULL AND observasjonsdato IS NOT NULL AND "Obs mÕned"::integer > 12 THEN
+        WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL AND "Obs måned"::integer > 12 THEN
             true
         ELSE
             false
     END AS datetime_invalid
-FROM hovedtabell;
+FROM sightings;
+
+ALTER TABLE sightings
+    DROP COLUMN observasjonsdato,
+    DROP COLUMN "Obs måned",
+    DROP COLUMN "obs år";
+
+-- County of sighting: Key (fylke)=(20) is not present in table "fylke". Vest-Agder, Troms, and others are absent.
+-- So, skip for now.
+-- ALTER TABLE fylke ADD CONSTRAINT pk_fylke PRIMARY KEY (id);
+-- ALTER TABLE sightings ADD CONSTRAINT fk_fylke FOREIGN KEY (Fylke) REFERENCES fylke(id);
+
+ALTER TABLE sightings DROP COLUMN "Annet (4,1)"; -- it is empty
+ALTER TABLE sightings RENAME COLUMN annet61 TO weather_other;
+
+ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
+
+
+
+
+
+

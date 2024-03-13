@@ -1,5 +1,6 @@
 ALTER TABLE sightings 
   DROP COLUMN duration_hours_min,
+  RENAME COLUMN comments TO report_text,
   ALTER COLUMN date_posted TYPE DATE USING TO_DATE(date_posted, 'MM/DD/YYYY'),
   ALTER COLUMN datetime TYPE DATE USING TO_DATE(datetime, 'MM/DD/YYYY'),
   ADD COLUMN source VARCHAR(25) CHECK (source IN ('mufon-kaggle')),
