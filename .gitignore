@@ -15,7 +15,7 @@
 *.suo
 *.sw?
 /.pnp
-*/build/
+packages/*/build/
 build/*
 /coverage
 /node_modules
