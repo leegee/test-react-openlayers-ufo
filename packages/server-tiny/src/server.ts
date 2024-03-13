@@ -31,7 +31,7 @@ app.use(async (ctx) => {
         results: [],
     };
 
-    const q: QueryParams = ctx.request.query;
+    const q: QueryParams = ctx.request.query as unknown as QueryParams;
 
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
