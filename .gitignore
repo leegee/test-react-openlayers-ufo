@@ -16,6 +16,7 @@
 *.sw?
 /.pnp
 */build/
+build/*
 /coverage
 /node_modules
 dist
