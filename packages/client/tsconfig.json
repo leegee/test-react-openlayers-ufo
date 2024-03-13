@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "outDir": "./build",
+    "baseUrl": "./src",
     "composite": true,
     "useDefineForClassFields": true,
     "lib": [
@@ -11,7 +13,16 @@
     "moduleResolution": "bundler",
     // "allowImportingTsExtensions": true,
     // "noEmit": true,
-    "jsx": "react-jsx"
+    // "jsx": "react-jsx",
+    "jsx": "react",
+    "paths": {
+      "@ufo-monorepo-test/config": [
+        "../config"
+      ],
+      "@ufo-monorepo-test/common-types": [
+        "../common-types"
+      ]
+    },
   },
   "include": [
     "src"

@@ -1,7 +1,7 @@
 import Koa from "koa";
 import pg from "pg";
 import cors from "@koa/cors";
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo-test/config/src';
 
 const pool = new pg.Pool({
     user: config.db.user,

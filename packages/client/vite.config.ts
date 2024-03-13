@@ -17,7 +17,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@swc/core': '@swc/core',
-      '@ufo-monorepo-test/config': path.resolve(__dirname, '../config/src/index.ts'),
+      '@ufo-monorepo-test/config/src': path.resolve(__dirname, '../config/src/index.ts'),
       '@ufo-monorepo-test/common-types': path.resolve(__dirname, '../common-types/src/index.ts'),
     },
   },

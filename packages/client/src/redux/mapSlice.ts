@@ -7,7 +7,7 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo-test/config/src';
 
 import type { AppThunk } from './store';
 import type { MapState, MapData } from './reducers';

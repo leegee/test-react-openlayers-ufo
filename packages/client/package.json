@@ -11,7 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ufo-monorepo-test/common-types": "*",
+    "@ufo-monorepo-test/config": "file:../config",
+    "@ufo-monorepo-test/common-types": "file:../common-types",
     "@reduxjs/toolkit": "^2.2.1",
     "@swc/cli": "^0.3.10",
     "@swc/core": "^1.4.6",

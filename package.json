@@ -1,8 +1,9 @@
 {
   "name": "ufo-monorepo-test",
   "version": "1.0.0",
-  "description": "A monorepo in TypeScript",
+  "description": "Testing UFO data",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/client",
     "packages/common-types",
