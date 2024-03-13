@@ -12,10 +12,10 @@ const pool = new pg.Pool({
 });
 
 interface QueryParams {
-    sw_lat?: string;
-    sw_lng?: string;
-    ne_lat?: string;
-    ne_lng?: string;
+    minlng: string;
+    minlat: string;
+    maxlng: string;
+    maxlat: string;
     to_date?: string;
     from_date?: string;
     show_undated?: boolean;
@@ -33,7 +33,7 @@ app.use(async (ctx) => {
 
     const q: QueryParams = ctx.request.query;
 
-    if (q !== null && q.sw_lat !== undefined && q.sw_lng !== undefined && q.ne_lat !== undefined && q.ne_lng !== undefined) {
+    if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
             let sql = "SELECT * FROM sightings WHERE ";
 
@@ -46,9 +46,9 @@ app.use(async (ctx) => {
             }
 
             sql += "ST_Intersects(sightings.point, ST_MakeEnvelope("
-                + q.sw_lng + ", " + q.sw_lat + ", "
-                + q.ne_lng + ", " + q.ne_lat + ", 4326))";
-
+                + q.minlng + ", " + q.minlat + ", "
+                + q.maxlng + ", " + q.maxlat + ", 4326))";
+            
             console.debug(sql);
 
             const { rows } = await pool.query(sql);
@@ -72,6 +72,6 @@ app.use(async (ctx) => {
     ctx.body = JSON.stringify(body);
 });
 
-console.debug("Listening on", config.http.port);
+console.debug("Listening on", config.api.port);
 
-app.listen(config.http.port);
+app.listen(config.api.port);

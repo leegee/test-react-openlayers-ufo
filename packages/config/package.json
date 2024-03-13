@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Configuration read from .env, with defaults for localhost",
     "main": "./build/index.js",
-    "type": "commonjs",
+    "type": "module",
     "scripts": {
         "build": "tsc --build"
     }

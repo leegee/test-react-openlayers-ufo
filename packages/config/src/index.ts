@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 const config = {
   db: {
     host: process.env.PGHOST || 'localhost',
@@ -10,8 +6,12 @@ const config = {
     password: process.env.PGPASSWORD || 'password',
     database: process.env.UFO_DATABASE || 'norge',
   },
-  http: {
+  api: {
     port: parseInt(process.env.HTTP_PORT || '8080'),
+    host: 'http://localhost',
+    endopoint: {
+      search : '/'
+    }
   },
 };
 

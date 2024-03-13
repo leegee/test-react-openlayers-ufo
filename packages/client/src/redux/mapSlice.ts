@@ -7,9 +7,13 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import config from '@ufo-monorepo-test/config';
 
 import type { AppThunk } from './store';
 import type { MapState, MapData } from './reducers';
+
+// const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
+console.info({config});
 
 const initialState: MapState = {
   data: null,
@@ -42,8 +46,18 @@ export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
   }
 
   try {
-    console.log(`mapSlice.fetchData bounds ${bounds} at zoom ${zoom}`);
-    const response = await fetch(`?zoom=${zoom}&bounds=${bounds!.join(',')}`);
+    const [minlng, minlat, maxlng, maxlat] = bounds;
+    const queryObject = {
+      zoom: zoom.toString(),
+      minlgn: String(minlng),
+      minlat: String(minlat),
+      maxlng: String(maxlng),
+      maxlat: String(maxlat),
+    };
+    console.log('mapSlice.fetchData', queryObject);
+    const queryString = new URLSearchParams(queryObject);
+    const response = await fetch(`?${queryString}`);
+
     const data = await response.json(); // Parse the JSON response
 
     // Dispatch action to update the fetched data in the state
