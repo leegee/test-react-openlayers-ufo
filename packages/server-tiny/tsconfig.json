@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "composite": true,
         "target": "es2022",
         "module": "commonjs",
         "moduleResolution": "node",
@@ -9,8 +10,22 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "rootDir": "./src",
         "outDir": "./build",
-        "composite": true
-    }
+        "paths": {
+            "@ufo-monorepo-test/config": [
+                "../config/src"
+            ],
+            "@ufo-monorepo-test/common-types": [
+                "../common-types/src"
+            ]
+        }
+    },
+    "references": [
+        {
+            "path": "../config"
+        },
+        {
+            "path": "../common-types"
+        }
+    ]
 }

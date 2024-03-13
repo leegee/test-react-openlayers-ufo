@@ -1,0 +1,10 @@
+{
+    "name": "@ufo-monorepo-test/server-tiny",
+    "version": "1.0.0",
+    "description": "Tiny KOA API, nothing nice yet",
+    "main": "./build/index.js",
+    "type": "commonjs",
+    "scripts": {
+        "build": "tsc --build"
+    }
+}

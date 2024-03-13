@@ -1,0 +1,10 @@
+{
+    "name": "@ufo-monorepo-test/config",
+    "version": "1.0.0",
+    "description": "Configuration read from .env, with defaults for localhost",
+    "main": "./build/index.js",
+    "type": "commonjs",
+    "scripts": {
+        "build": "tsc --build"
+    }
+}
