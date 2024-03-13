@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": true,
+        "strict": true,
+        "incremental": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./build",
+        "baseUrl": "./src",
+        "paths": {
+            "@ufo-monorepo-test/config": [
+                "packages/config/src"
+            ],
+            "@ufo-monorepo-test/common-types": [
+                "packages/common-types/src"
+            ]
+        },
+    },
+    "references": [
+        {
+            "path": "./packages/common-types"
+        },
+        {
+            "path": "./packages/config"
+        },
+        {
+            "path": "./packages/server-tiny"
+        },
+        {
+            "path": "./packages/client"
+        }
+    ]
+}

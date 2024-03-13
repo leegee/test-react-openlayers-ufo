@@ -1,32 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "es2022",
-    "module": "commonjs",
-    "incremental": true,
-    "declaration": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "rootDir": "./src",
-    "outDir": "./build"
-  },
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {},
   "files": [
     "./src/index.ts"
-  ],
-  "references": [
-    {
-      "path": "./packages/common-types"
-    },
-    {
-      "path": "./packages/config"
-    },
-    {
-      "path": "./packages/server-tiny"
-    },
-    {
-      "path": "./packages/client"
-    }
   ]
 }

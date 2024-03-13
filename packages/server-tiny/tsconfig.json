@@ -1,31 +1,6 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "composite": true,
-        "target": "es2022",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "declaration": true,
-        "strict": true,
-        "incremental": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "outDir": "./build",
-        "paths": {
-            "@ufo-monorepo-test/config": [
-                "../config/src"
-            ],
-            "@ufo-monorepo-test/common-types": [
-                "../common-types/src"
-            ]
-        }
-    },
-    "references": [
-        {
-            "path": "../config"
-        },
-        {
-            "path": "../common-types"
-        }
-    ]
+        "composite": true
+    }
 }
