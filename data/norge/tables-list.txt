@@ -1,0 +1,367 @@
+https://www.vlsoftware.net/download.html
+
+lee@STUDIO-REBUILT:/mnt/s/src/ufo-monorepo/data/norge$ mdb-tables -1 Ufo_Norge_Hoveddatabase.mdb
+
+104
+112
+127
+132
+93
+96
+98
+Fylke
+Hovedtabell
+Switchboard Items
+UKEDAG
+Postnumre
+Avdelinger
+Rapportstatus
+Postnumre_ANSI
+121
+97
+
+
+
+
+-- ----------------------------------------------------------
+-- MDB Tools - A library for reading MS Access database files
+-- Copyright (C) 2000-2011 Brian Bruns and others.
+-- Files in libmdb are licensed under LGPL and the utilities under
+-- the GPL, see COPYING.LIB and COPYING files respectively.
+-- Check out http://mdbtools.sourceforge.net
+-- ----------------------------------------------------------
+
+-- That file uses encoding UTF-8
+
+CREATE TABLE [104]
+ (
+        [ID]                    Long Integer,
+        [Observert med/gjennom(104)]                    Text (50)
+);
+
+CREATE TABLE [112]
+ (
+        [ID]                    Long Integer,
+        [Avgjørelse]                    Text (20)
+);
+
+CREATE TABLE [127]
+ (
+        [Solen befant seg(127)]                 Text (30)
+);
+
+CREATE TABLE [132]
+ (
+        [ID]                    Long Integer,
+        [Avgjørelse]                    Text (20)
+);
+
+CREATE TABLE [93]
+ (
+        [Fenomenet beveget seg(93)]                     Text (50)
+);
+
+CREATE TABLE [96]
+ (
+        [ID]                    Long Integer,
+        [Avgjørelse]                    Text (20)
+);
+
+CREATE TABLE [98]
+ (
+        [ID]                    Long Integer,
+        [Avgjørelse]                    Text (20)
+);
+
+CREATE TABLE [Fylke]
+ (
+        [Fylke]                 Text (510),
+        [id]                    Long Integer,
+        [Avd]                   Long Integer
+);
+
+CREATE TABLE [Hovedtabell]
+ (
+        [Datarapp nr]                   Long Integer,
+        [Observasjonsdato]                      Text (4),
+        [Obs måned]                     Text (4),
+        [obs år]                        Text (8),
+        [Papirrapportnr]                        Text (510),
+        [Observasjonssted]                      Text (100),
+        [Fylke]                 Byte,
+        [Saksbehandler]                 Text (100),
+        [Beskrivelse(21)]                       Memo/Hyperlink (255),
+        [Hvor lenge iakttok(3,5,1)]                     Byte,
+        [Hvor lenge iakttok(3,5,2)]                     Byte,
+        [Hvor lenge iakttok(3,5,3)]                     Byte,
+        [Hvor befant de dem(4,1,1)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,2)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,3)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,4)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,5)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,6)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,7)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,8)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,9)]                     Boolean NOT NULL,
+        [Hvor befant de dem(4,1,10)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,11)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,12)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,13)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,14)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,15)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,16)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,17)]                    Boolean NOT NULL,
+        [Hvor befant de dem(4,1,18)]                    Boolean NOT NULL,
+        [Annet (4,1)]                   Text (100),
+        [Var fenomenet(6,1,1)]                  Boolean NOT NULL,
+        [Var fenomenet(6,1,2)]                  Boolean NOT NULL,
+        [Var fenomenet(6,1,3)]                  Boolean NOT NULL,
+        [Var fenomenet(6,1,4)]                  Boolean NOT NULL,
+        [Annet61]                       Text (100),
+        [Farge på fenomenet(6,2,1)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,2)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,3)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,4)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,5)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,6)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,7)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,8)]                     Boolean NOT NULL,
+        [Farge på fenomenet(6,2,9)]                     Boolean NOT NULL,
+        [Annet62]                       Text (100),
+        [Hadde fenomenet(6,3,1,1)]                      Boolean NOT NULL,
+        [Hadde fenomenet(6,3,1,2)]                      Boolean NOT NULL,
+        [Hadde fenomenet(6,3,1,3)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,1)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,2)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,3)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,4)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,5)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,6)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,7)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(6,3,2,8)]                      Boolean NOT NULL,
+        [I så fall hvilken farge(63)]                   Text (510),
+        [Fargeforandringer(6,4,1)]                      Boolean NOT NULL,
+        [Fargeforandringer(6,4,2)]                      Boolean NOT NULL,
+        [Fargeforandringer(6,4,3)]                      Boolean NOT NULL,
+        [Hvis ja, hvilke fargeforandringer(64)]                 Text (100),
+        [Hvor kraftig(6,5,1)]                   Boolean NOT NULL,
+        [Hvor kraftig(6,5,2)]                   Boolean NOT NULL,
+        [Hvor kraftig(6,5,3)]                   Boolean NOT NULL,
+        [Hvor kraftig(6,5,4)]                   Boolean NOT NULL,
+        [Hvor kraftig(6,5,5)]                   Boolean NOT NULL,
+        [Hvor kraftig(6,5,6)]                   Boolean NOT NULL,
+        [Annet(65)]                     Text (100),
+        [Lysstrålingen var(6,6,1)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,2)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,3)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,4)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,5)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,6)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,7)]                      Boolean NOT NULL,
+        [Lysstrålingen var(6,6,8)]                      Boolean NOT NULL,
+        [Annet(66)]                     Text (100),
+        [Fenomenets lyd(7,1,1)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,2)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,3)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,4)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,5)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,6)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,7)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,8)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,9)]                 Boolean NOT NULL,
+        [Fenomenets lyd(7,1,10)]                        Boolean NOT NULL,
+        [Fenomenets lyd(7,1,11)]                        Boolean NOT NULL,
+        [Fenomenets lyd(7,1,12)]                        Boolean NOT NULL,
+        [Fenomenets lyd(7,1,13)]                        Boolean NOT NULL,
+        [Fenomenets lyd(7,1,14)]                        Boolean NOT NULL,
+        [Annet(71)]                     Text (100),
+        [Forandringer i lyden(7,2,1)]                   Boolean NOT NULL,
+        [Forandringer i lyden(7,2,2)]                   Boolean NOT NULL,
+        [Forandringer i lyden(7,2,3)]                   Boolean NOT NULL,
+        [Hvis ja, hvilke lydforandringer(72)]                   Text (100),
+        [Hvor stort var fenomenet(8,1,1)]                       Boolean NOT NULL,
+        [Hvor stort var fenomenet(8,1,2)]                       Boolean NOT NULL,
+        [Hvor stort var fenomenet(8,1,3)]                       Boolean NOT NULL,
+        [Hvor stort var fenomenet(8,1,4)]                       Boolean NOT NULL,
+        [Hvor stort var fenomenet(8,1,5)]                       Boolean NOT NULL,
+        [Hvor stort var fenomenet(8,1,6)]                       Boolean NOT NULL,
+        [Annet(81)]                     Text (100),
+        [Antall cm på linjalen(82)]                     Text (100),
+        [Avgrenset form(8,3)]                   Byte,
+        [Fenomenets størrelse i meter(84)]                      Text (510),
+        [Nedsatt syn(8,5)]                      Byte,
+        [Fargeblind(8,6)]                       Byte,
+        [Himmelretning ved oppdagelse(9,1,1)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,2)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,3)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,4)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,5)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,6)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,7)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,8)]                   Boolean NOT NULL,
+        [Himmelretning ved oppdagelse(9,1,9)]                   Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,1)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,2)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,3)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,4)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,5)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,6)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,7)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,8)]                 Boolean NOT NULL,
+        [Himmelretning ved slutt på observasjon(9,2,9)]                 Boolean NOT NULL,
+        [Fenomenet beveget seg(93)]                     Text (510),
+        [Fenomenet beveget seg(9,3,1)]                  Boolean NOT NULL,
+        [Fenomenet beveget seg(9,3,2)]                  Boolean NOT NULL,
+        [Fenomenet beveget seg(9,3,3)]                  Boolean NOT NULL,
+        [Fenomenet beveget seg(9,3,4)]                  Boolean NOT NULL,
+        [Annet(93)]                     Text (510),
+        [Høyde på himmelen ved oppdagelsen(9,4,1)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,2)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,3)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,4)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,5)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,6)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved oppdagelsen(9,4,7)]                      Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,1)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,2)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,3)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,4)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,5)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,6)]                     Boolean NOT NULL,
+        [Høyde på himmelen ved slutt på observasjon(9,5,7)]                     Boolean NOT NULL,
+        [Kursendring(96)]                       Double,
+        [Høydeendring(97)]                      Double,
+        [Hastighetsendring(98)]                 Double,
+        [Anslått hastighet(98)]                 Text (510),
+        [Avstand til fenomen i meter(99)]                       Text (510),
+        [Hvordan forsvant fenomenet(10,2,1)]                    Boolean NOT NULL,
+        [Hvordan forsvant fenomenet(10,2,2)]                    Boolean NOT NULL,
+        [Hvordan forsvant fenomenet(102)]                       Text (510),
+        [Passerte fenomenet foran/bak noe(103)]                 Text (510),
+        [Passerte fenomenet foran/bak noe(10,3)]                        Byte,
+        [Fenomenet ble observert med/gjennom(104)]                      Double,
+        [Fenomenet ble observert med/gjennom(10,4,1)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,2)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,3)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,4)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,5)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,6)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,7)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,8)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,9)]                   Boolean NOT NULL,
+        [Fenomenet ble observert med/gjennom(10,4,10)]                  Boolean NOT NULL,
+        [Kikkert_X_(10,4,8)]                    Integer,
+        [Teleskop_X_(10,4,9)]                   Integer,
+        [Ble fenomenet fotografert(111)]                        Boolean NOT NULL,
+        [Hvis ja, av hvem(111)]                 Text (510),
+        [Fysiske påvirkninger(112)]                     Double,
+        [Hvis ja, hvilke(112)]                  Text (510),
+        [Merket de psykiske påvirkninger under observasjonen(113)]                      Boolean NOT NULL,
+        [Merket de psykiske påvirkninger etter observasjonen(113)]                      Boolean NOT NULL,
+        [Hvis ja, beskriv dem(113)]                     Text (510),
+        [Himmelen var ved observasjonen(121)]                   Double,
+        [Annet(121)]                    Text (510),
+        [Været(12,2,1)]                 Boolean NOT NULL,
+        [Været(12,2,2)]                 Boolean NOT NULL,
+        [Været(12,2,3)]                 Boolean NOT NULL,
+        [Været(12,2,4)]                 Boolean NOT NULL,
+        [Været(12,2,5)]                 Boolean NOT NULL,
+        [Været(12,2,6)]                 Boolean NOT NULL,
+        [Været(12,2,7)]                 Boolean NOT NULL,
+        [Været(12,2,8)]                 Boolean NOT NULL,
+        [Været(12,2,9)]                 Boolean NOT NULL,
+        [Annet(122)]                    Text (510),
+        [Vindstyrken(12,3,1)]                   Boolean NOT NULL,
+        [Vindstyrken(12,3,2)]                   Boolean NOT NULL,
+        [Vindstyrken(12,3,3)]                   Boolean NOT NULL,
+        [Vindstyrken(12,3,4)]                   Boolean NOT NULL,
+        [Vindstyrken(12,3,5)]                   Boolean NOT NULL,
+        [Vindstyrken(12,3,6)]                   Boolean NOT NULL,
+        [Annet(123)]                    Text (510),
+        [Vindretning(12,4,1)]                   Boolean NOT NULL,
+        [Vindretning(12,4,2)]                   Boolean NOT NULL,
+        [Vindretning(12,4,3)]                   Boolean NOT NULL,
+        [Vindretning(12,4,4)]                   Boolean NOT NULL,
+        [Vindretning(12,4,5)]                   Boolean NOT NULL,
+        [Vindretning(12,4,6)]                   Boolean NOT NULL,
+        [Vindretning(12,4,7)]                   Boolean NOT NULL,
+        [Vindretning(12,4,8)]                   Boolean NOT NULL,
+        [Temperatur ca i gr C(125)]                     Text (510),
+        [Det var(12,6)]                 Byte,
+        [Annet(12,6)]                   Text (510),
+        [Solen befant seg(127)]                 Text (510),
+        [Solen befant seg(12,7)]                        Byte,
+        [Annet(12,7)]                   Text (100),
+        [Månen befant seg(12,8)]                        Byte,
+        [Annet(12,8)]                   Text (100),
+        [Månefasen(12,8B)]                      Byte,
+        [Hva tror de selv at de så(131)]                        Text (510),
+        [Har de tidligere observert/rapportert UFO(132)]                        Double,
+        [Hvis ja, når(132)]                     Text (510),
+        [Hvis ja, hvem rapporterte de til(132)]                 Text (510),
+        [Har de tidligere vært utsatt for fenomener(133)]                       Boolean NOT NULL,
+        [Ukedag(31)]                    Text (510),
+        [Konfidensielt(143)]                    Boolean NOT NULL,
+        [Hvor mange fenomener(51)]                      Double,
+        [Obs  startet kl (32)]                  Text (510),
+        [Hvor lenge iakttok?(35)]                       Text (510),
+        [Hovedobservatørens alder]                      Double,
+        [Antall observatører]                   Double,
+        [Avdelingskode]                 Long Integer,
+        [Rapportstatus]                 Long Integer
+);
+
+CREATE TABLE [Switchboard Items]
+ (
+        [SwitchboardID]                 Long Integer,
+        [ItemNumber]                    Integer,
+        [ItemText]                      Text (510),
+        [Command]                       Integer,
+        [Argument]                      Text (510)
+);
+
+CREATE TABLE [UKEDAG]
+ (
+        [UKEDAG]                        Text (30)
+);
+
+CREATE TABLE [Postnumre]
+ (
+        [Poststed]                      Text (510),
+        [Fylke]                 Integer,
+        [Postnummer]                    Integer
+);
+
+CREATE TABLE [Avdelinger]
+ (
+        [Avdnr]                 Long Integer,
+        [Avdeling]                      Text (100),
+        [email]                 Text (80)
+);
+
+CREATE TABLE [Rapportstatus]
+ (
+        [Rapstatnr]                     Long Integer,
+        [Rapportstatus]                 Text (100)
+);
+
+CREATE TABLE [Postnumre_ANSI]
+ (
+        [Postnummer]                    Text (510),
+        [Poststed]                      Text (510),
+        [Fylkesid]                      Integer
+);
+
+CREATE TABLE [121]
+ (
+        [ID]                    Long Integer,
+        [Himmelen var ved observasjonen(121)]                   Text (50)
+);
+
+CREATE TABLE [97]
+ (
+        [ID]                    Long Integer,
+        [Avgjørelse]                    Text (20)
+);
+
+
