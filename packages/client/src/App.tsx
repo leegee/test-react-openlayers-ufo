@@ -1,9 +1,9 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react'; 
 
 import './App.css';
 import OpenLayersMap from './Map';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div>
       <h1>Map</h1>

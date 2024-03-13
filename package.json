@@ -5,15 +5,17 @@
   "private": true,
   "workspaces": [
     "packages/client",
-    "packages/common-types"
+    "packages/common-types",
+    "packages/server-tiny"
   ],
   "scripts": {
     "build": "tsc --build --verbose"
   },
   "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/koa-cors": "^0.0.6",
     "@types/node": "^18.11.9",
-    "prettier": "^2.8.0",
-    "ts-node": "^10.9.1",
+    "@types/pg": "^8.11.2",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
@@ -22,16 +24,21 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "prettier": "^2.8.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "vite": "^5.1.4"
   },
   "dependencies": {
-    "@ufo-monorepo-test/client": "^0.0.0",
-    "@ufo-monorepo-test/common-types": "^0.0.0",
+    "@koa/cors": "^5.0.0",
     "@reduxjs/toolkit": "^2.2.1",
     "@swc/cli": "^0.3.10",
     "@swc/core": "^1.4.6",
+    "@ufo-monorepo-test/client": "^0.0.0",
+    "@ufo-monorepo-test/common-types": "^0.0.0",
+    "koa": "^2.15.0",
     "ol": "^9.0.0",
+    "pg": "^8.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",

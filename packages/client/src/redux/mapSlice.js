@@ -1,0 +1,47 @@
+// redux/mapSlice
+/**
+ * Stores various map parameters that the user can change
+ * and/or that we wish to store and/or restore.
+ *
+ * Center could be inferred from bounds, but for now is set.
+ */
+import { createSlice } from '@reduxjs/toolkit';
+const initialState = {
+    data: null,
+    zoom: 5,
+    center: [12, 59],
+    bounds: null,
+};
+const mapSlice = createSlice({
+    name: 'map',
+    initialState,
+    reducers: {
+        setMapParams(state, action) {
+            state.center = action.payload.center;
+            state.zoom = action.payload.zoom;
+            state.bounds = action.payload.bounds;
+        },
+        setMapData(state, action) {
+            state.data = action.payload;
+        },
+    },
+});
+export const { setMapParams, setMapData } = mapSlice.actions;
+export const fetchData = () => async (dispatch, getState) => {
+    const { zoom, bounds } = getState().map;
+    if (!zoom || !bounds) {
+        return;
+    }
+    try {
+        console.log(`mapSlice.fetchData bounds ${bounds} at zoom ${zoom}`);
+        const response = await fetch(`?zoom=${zoom}&bounds=${bounds.join(',')}`);
+        const data = await response.json(); // Parse the JSON response
+        // Dispatch action to update the fetched data in the state
+        dispatch(setMapData(data));
+    }
+    catch (error) {
+        // TODO Handle errors
+        console.error(error);
+    }
+};
+export default mapSlice.reducer;

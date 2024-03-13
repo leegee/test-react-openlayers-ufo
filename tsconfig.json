@@ -20,6 +20,9 @@
       "path": "./packages/common-types"
     },
     {
+      "path": "./packages/server-tiny"
+    },
+    {
       "path": "./packages/client"
     }
   ]
