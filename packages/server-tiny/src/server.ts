@@ -4,11 +4,11 @@ import cors from "@koa/cors";
 import config from '@ufo-monorepo-test/config';
 
 const pool = new pg.Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: 'norge',
-    password: process.env.PGPASSWORD,
-    port: Number(process.env.PGPORT) || 5432,
+    user: config.db.user,
+    password: config.db.password,
+    host: config.db.host,
+    port: Number(config.db.port) || 5432,
+    database: config.db.database,
 });
 
 interface QueryParams {
@@ -59,12 +59,15 @@ app.use(async (ctx) => {
                 return row;
             }) ;
             console.debug('Rows matched:', rows.length);
-        } catch (e) {
+        }
+        catch (e) {
             console.debug(e);
             body.status = 500;
             body.msg = new String(e);
         }
-    } else {
+    }
+    
+    else {
         body.status = 400;
         body.msg = 'Missing request parameters';
     }
