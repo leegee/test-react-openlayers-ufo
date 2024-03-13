@@ -1,7 +1,6 @@
 import Koa from "koa";
 import pg from "pg";
-// import cors from "@koa/cors";
-import cors from "koa-cors";
+import cors from "@koa/cors";
 import config from '@ufo-monorepo-test/config';
 
 const pool = new pg.Pool({

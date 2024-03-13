@@ -10,11 +10,13 @@
     "packages/server-tiny"
   ],
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build --verbose",
+    "dev:client": "npm run dev -w packages/client",
+    "dev:api": "npm run dev -w packages/server-tiny"
   },
   "devDependencies": {
     "@types/koa": "^2.15.0",
-    "@types/koa-cors": "^0.0.6",
+    "@types/koa__cors": "^5.0.0",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.11.2",
     "@types/react": "^18.2.56",
