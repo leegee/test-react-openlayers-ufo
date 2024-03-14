@@ -99,7 +99,8 @@ function where(q: QueryParams) {
     if (!q.show_invalid_dates) {
         clauses.push("datetime_invalid IS NOT true");
     }
-    // clauses.push(`point && ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 )`);
+
+    clauses.push(`point && ST_Transform( ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 ), 3857)`);
 
     return clauses.length ? 'WHERE ' + clauses.join(' AND ') : '';
 }

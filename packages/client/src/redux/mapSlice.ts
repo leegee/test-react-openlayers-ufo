@@ -34,7 +34,7 @@ const mapSlice = createSlice({
     setMapParams(state, action: PayloadAction<{ center: [number, number]; zoom: number; bounds: [number, number, number, number] }>) {
       state.center = action.payload.center;
       state.zoom = action.payload.zoom;
-      state.bounds = action.payload.bounds;
+      state.bounds = action.payload.bounds; // minx, miny, maxx, maxy
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
       state.featureCollection = action.payload.results as FeatureCollection;
@@ -49,13 +49,12 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
   if (!zoom || !bounds) return;
 
   try {
-    const [minlng, minlat, maxlng, maxlat] = bounds;
     const queryObject = {
-      zoom: zoom.toString(),
-      minlng: String(minlng),
-      minlat: String(minlat),
-      maxlng: String(maxlng),
-      maxlat: String(maxlat),
+      zoom: String(zoom),
+      minlng: String(bounds[0]),
+      minlat: String(bounds[1]),
+      maxlng: String(bounds[2]),
+      maxlat: String(bounds[3]),
       show_undated: String(true),
       show_invalid_dates: String(true),
     };

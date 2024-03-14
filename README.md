@@ -1,16 +1,19 @@
-# npm Monorepo + React + Redux Toolkit + TypeScript + Vite + OpenLayers + UFOs.
+# npm Monorepo + React + Redux Toolkit + TypeScript + Vite + OpenLayers + PostGIS + UFOs.
 
 WIP, just testing.
 
 Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux.
 
-A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`).
+A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`), with a tiny Koa data access layer.
 
-As yet, no data access layer.
-
-See the `README`s in the sub-directories of `data/`.
+See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
 ![Screenshot](./docs/images/Screenshot%202024-03-14%20120826.png)
+
+Todo:
+
+* Expose more data: shape, colour, direction, etc
+* Filter on all columns
 
 .
 
