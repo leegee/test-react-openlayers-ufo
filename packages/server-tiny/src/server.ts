@@ -33,32 +33,43 @@ app.use(async (ctx) => {
 
     const q: QueryParams = ctx.request.query as unknown as QueryParams;
 
+    q.show_undated = true;
+
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
-            let sql = "SELECT * FROM sightings WHERE ";
-
-            if (q.from_date !== undefined && q.to_date !== undefined) {
-                sql += "(date_time BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59') AND ";
-            }
-
-            if (!q.show_undated) {
-                sql += " date_time IS NOT NULL AND ";
-            }
-
-            sql += "ST_Intersects(sightings.point, ST_MakeEnvelope("
-                + q.minlng + ", " + q.minlat + ", "
-                + q.maxlng + ", " + q.maxlat + ", 4326))";
+            let sql = `SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features', jsonb_agg(feature)
+            ) 
+            FROM (
+                SELECT jsonb_build_object(
+                    'type', 'Feature',
+                    'geometry', ST_AsGeoJSON(s.point)::jsonb,
+                    'properties', to_jsonb(s) - 'point'
+                ) AS feature
+                FROM (
+                    SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original,
+                    point
+                    FROM sightings
+                    WHERE 
+                    ${q.from_date !== undefined && q.to_date !== undefined ? "(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59') AND " : ""}
+                    ${!q.show_undated ? "datetime IS NOT NULL AND " : ""}
+                    ST_Intersects(point, ST_MakeEnvelope(
+                        ${q.minlng}, ${q.minlat}, 
+                        ${q.maxlng}, ${q.maxlat}, 4326
+                    ))
+                ) AS s
+            ) AS fc`;
 
             console.debug(sql);
 
             const { rows } = await pool.query(sql);
-            (body.results as unknown) = rows.map((row) => {
-                if (!row.shape) {
-                    row.shape = 'unspecified';
-                }
-                return row;
-            });
-            console.debug('Rows matched:', rows.length);
+
+            if (rows[0].jsonb_build_object.features === null) {
+                console.warn({ action: 'getSubFeatures', msg: 'features===null', sql });
+            }
+
+            (body.results as unknown) = rows[0].jsonb_build_object;
         }
         catch (e) {
             console.debug(e);
