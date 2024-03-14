@@ -15,6 +15,11 @@ Todo:
 * Expose more data: shape, colour, direction, etc
 * Filter on all columns
 
+
+## DB
+
+Using PostGIS, storing data in EPSG:3857 for speed, with the API accepting EPSG:4326/WGS84 for legibility.
+
 .
 
 .
