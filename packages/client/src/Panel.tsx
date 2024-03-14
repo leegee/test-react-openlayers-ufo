@@ -1,14 +1,26 @@
-import React from 'react';
-import './Panel.css';
+import React, { useState } from 'react';
+import './Panel.css'; // Import your component's CSS file for styling
 
-class Panel extends React.Component {
-    render() {
-        return (
-            <div className="panel">
-                STUFF!
-            </div>
-        );
-    }
+interface PanelProps {
+    // Define your props interface here
 }
+
+const Panel: React.FC<PanelProps> = () => {
+    const [collapsed, setCollapsed] = useState<boolean>(false);
+
+    const toggleCollapse = () => {
+        setCollapsed(prevCollapsed => !prevCollapsed);
+    };
+
+    return (
+        <div className={`panel ${collapsed ? 'collapsed' : ''}`}>
+            <header>
+                <span>Title</span>
+                <button className="collapse-btn" onClick={toggleCollapse}>X</button>
+            </header>
+            <p>Content here</p>
+        </div>
+    );
+};
 
 export default Panel;
