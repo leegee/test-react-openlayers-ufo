@@ -3,6 +3,8 @@ import pg from "pg";
 import cors from "@koa/cors";
 import config from '@ufo-monorepo-test/config/src';
 
+import { QueryParams } from '@ufo-monorepo-test/common-types/src';
+
 const pool = new pg.Pool({
     user: config.db.user,
     password: config.db.password,
@@ -10,17 +12,6 @@ const pool = new pg.Pool({
     port: Number(config.db.port) || 5432,
     database: config.db.database,
 });
-
-interface QueryParams {
-    minlng: number;
-    minlat: number;
-    maxlng: number;
-    maxlat: number;
-    to_date?: string;
-    from_date?: string;
-    show_undated?: boolean;
-    show_invalid_dates?: boolean;
-}
 
 const app = new Koa();
 app.use(cors({ origin: "*" }));
@@ -37,8 +28,8 @@ app.use(async (ctx) => {
         minlat: parseInt(ctx.request.query.minlat as string, 10),
         maxlng: parseInt(ctx.request.query.maxlng as string, 10),
         maxlat: parseInt(ctx.request.query.maxlat as string, 10),
-        to_date: ctx.request.query.to_date ? (Array.isArray(ctx.request.query.to_date) ? ctx.request.query.to_date[0] : ctx.request.query.to_date) : '',
-        from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : '',
+        to_date: ctx.request.query.to_date ? (Array.isArray(ctx.request.query.to_date) ? ctx.request.query.to_date[0] : ctx.request.query.to_date) : undefined,
+        from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : undefined,
         show_undated: ctx.request.query.show_undated === 'true',
         show_invalid_dates: ctx.request.query.show_invalid_dates === 'true',
     };
@@ -98,6 +89,7 @@ function where(q: QueryParams) {
     const values = [];
 
     if (q.from_date !== undefined && q.to_date !== undefined) {
+        console.log(q);
         clauses.push("(datetime BETWEEN $1 AND $2)");
         values.push(q.from_date + "-01-01 00:00:00", q.to_date + "-12-31 23:59:59");
     }
