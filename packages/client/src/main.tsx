@@ -8,7 +8,7 @@ import { store } from './redux/store';
 
 const locales: Record<string, any> = {
   'en': import('./locales/en.json'),
-  'no': import('./locales/no.json'), // Changed reference to Norwegian translations
+  'no': import('./locales/no.json'),
 };
 
 const locale = 'en';

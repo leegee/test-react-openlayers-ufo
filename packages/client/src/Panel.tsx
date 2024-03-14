@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { get } from 'react-intl-universal';
 
-import './Panel.css'; // Import your component's CSS file for styling
+import './Panel.css';
 
-interface PanelProps {
-    // Define your props interface here
-}
-
-const Panel: React.FC<PanelProps> = () => {
+const Panel: React.FC = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
 
     const toggleCollapse = () => {
