@@ -7,15 +7,21 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { FeatureCollection } from './reducers';
+
 import config from '@ufo-monorepo-test/config/src';
 
 import type { AppThunk } from './store';
-import type { MapState, MapData } from './reducers';
+import type { MapState } from './reducers';
+
+export interface FeatureCollectionResponse {
+  results: FeatureCollection;
+}
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
 
 const initialState: MapState = {
-  data: null,
+  featureCollection: null,
   zoom: 5,
   center: [12, 59],
   bounds: null,
@@ -30,19 +36,17 @@ const mapSlice = createSlice({
       state.zoom = action.payload.zoom;
       state.bounds = action.payload.bounds;
     },
-    setMapData(state, action: PayloadAction<MapData>) {
-      state.data = action.payload;
+    setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
+      state.featureCollection = action.payload.results as FeatureCollection;
     },
   },
 });
 
-export const { setMapParams, setMapData } = mapSlice.actions;
+export const { setMapParams, setMapDataFromResponse } = mapSlice.actions;
 
-export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
+export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
   const { zoom, bounds } = getState().map;
-  if (!zoom || !bounds) {
-    return;
-  }
+  if (!zoom || !bounds) return;
 
   try {
     const [minlng, minlat, maxlng, maxlat] = bounds;
@@ -61,7 +65,7 @@ export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
     console.log('mapSlice.fetchData', queryObject, data);
 
     // Dispatch action to update the fetched data in the state
-    dispatch(setMapData(data));
+    dispatch(setMapDataFromResponse(data));
   }
   catch (error) {
     // TODO Handle errors
