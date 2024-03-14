@@ -61,8 +61,6 @@ app.use(async (ctx) => {
                 ) AS s
             ) AS fc`;
 
-            console.debug(sql);
-
             const { rows } = await pool.query(sql);
 
             if (rows[0].jsonb_build_object.features === null) {
