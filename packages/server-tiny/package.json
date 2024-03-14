@@ -6,11 +6,10 @@
     "type": "module",
     "scripts": {
         "build": "tsc --build",
-        "dev": "ts-node src/server.ts"
+        "dev": "npx tsx src/server.ts"
     },
     "dependencies": {
         "@ufo-monorepo-test/common-types": "file:../common-types",
-        "@ufo-monorepo-test/config": "file:../config",
-        "ts-node": "^10.9.2"
+        "@ufo-monorepo-test/config": "file:../config"
     }
 }

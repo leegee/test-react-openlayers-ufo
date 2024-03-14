@@ -48,7 +48,7 @@ app.use(async (ctx) => {
             sql += "ST_Intersects(sightings.point, ST_MakeEnvelope("
                 + q.minlng + ", " + q.minlat + ", "
                 + q.maxlng + ", " + q.maxlat + ", 4326))";
-            
+
             console.debug(sql);
 
             const { rows } = await pool.query(sql);
@@ -57,7 +57,7 @@ app.use(async (ctx) => {
                     row.shape = 'unspecified';
                 }
                 return row;
-            }) ;
+            });
             console.debug('Rows matched:', rows.length);
         }
         catch (e) {
@@ -66,10 +66,10 @@ app.use(async (ctx) => {
             body.msg = new String(e);
         }
     }
-    
+
     else {
         body.status = 400;
-        body.msg = 'Missing request parameters';
+        body.msg = 'Missing request parameters in ' + JSON.stringify(q);
     }
 
     ctx.body = JSON.stringify(body);
