@@ -1,8 +1,8 @@
-import Koa from "koa";
 import pg from "pg";
+import Koa from "koa";
 import cors from "@koa/cors";
-import config from '@ufo-monorepo-test/config/src';
 
+import config from '@ufo-monorepo-test/config/src';
 import { QueryParams } from '@ufo-monorepo-test/common-types/src';
 
 const pool = new pg.Pool({
