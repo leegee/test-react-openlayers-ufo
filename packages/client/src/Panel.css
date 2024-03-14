@@ -73,5 +73,9 @@ header {
 
 main {
     flex: 1;
+    overflow-y: hidden;
+}
+
+main:hover {
     overflow-y: auto;
 }
