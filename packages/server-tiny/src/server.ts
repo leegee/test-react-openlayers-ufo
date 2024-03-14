@@ -12,14 +12,14 @@ const pool = new pg.Pool({
 });
 
 interface QueryParams {
-    minlng: string; // int
-    minlat: string; // int
-    maxlng: string; // int
-    maxlat: string; // int
-    to_date?: string; // Date
-    from_date?: string; // Date
-    show_undated?: string; // Boolean
-    show_invalid_dates?: string;  // Boolean;
+    minlng: number;
+    minlat: number;
+    maxlng: number;
+    maxlat: number;
+    to_date?: string;
+    from_date?: string;
+    show_undated?: boolean;
+    show_invalid_dates?: boolean;
 }
 
 const app = new Koa();
@@ -32,7 +32,16 @@ app.use(async (ctx) => {
         results: [],
     };
 
-    const q: QueryParams = ctx.request.query as unknown as QueryParams;
+    const q: QueryParams = {
+        minlng: parseInt(ctx.request.query.minlng as string, 10),
+        minlat: parseInt(ctx.request.query.minlat as string, 10),
+        maxlng: parseInt(ctx.request.query.maxlng as string, 10),
+        maxlat: parseInt(ctx.request.query.maxlat as string, 10),
+        to_date: ctx.request.query.to_date ? (Array.isArray(ctx.request.query.to_date) ? ctx.request.query.to_date[0] : ctx.request.query.to_date) : '',
+        from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : '',
+        show_undated: ctx.request.query.show_undated === 'true',
+        show_invalid_dates: ctx.request.query.show_invalid_dates === 'true',
+    };
 
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
