@@ -36,6 +36,16 @@ app.use(async (ctx) => {
     q.show_undated = true;
 
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
+        let where = 'WHERE ';
+        if (q.from_date !== undefined && q.to_date !== undefined) {
+            where += "(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59') AND ";
+        }
+        if (q.show_undated) {
+            where += "datetime IS NOT NULL AND ";
+        }
+        where += `point && ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 )`;
+        where = ''; // for now
+
         try {
             let sql = `SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -44,22 +54,21 @@ app.use(async (ctx) => {
             FROM (
                 SELECT jsonb_build_object(
                     'type', 'Feature',
-                    'geometry', ST_AsGeoJSON(s.point)::jsonb,
+                    'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
                     'properties', to_jsonb(s) - 'point'
                 ) AS feature
                 FROM (
                     SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original,
                     point
                     FROM sightings
-                    WHERE 
-                    ${q.from_date !== undefined && q.to_date !== undefined ? "(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59') AND " : ""}
-                    ${!q.show_undated ? "datetime IS NOT NULL AND " : ""}
-                    ST_Intersects(point, ST_MakeEnvelope(
-                        ${q.minlng}, ${q.minlat}, 
-                        ${q.maxlng}, ${q.maxlat}, 4326
-                    ))
+                    ${where}
                 ) AS s
             ) AS fc`;
+
+            // ST_MakeEnvelope(xmin, ymin, xmax, ymax)
+            // SELECT point, latitude, longitude FROM sightings
+            // WHERE point && ST_MakeEnvelope(-1, 51, 24, 67, 4326);
+
 
             const { rows } = await pool.query(sql);
 

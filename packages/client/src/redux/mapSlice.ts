@@ -23,7 +23,7 @@ const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endo
 const initialState: MapState = {
   featureCollection: null,
   zoom: 5,
-  center: [12, 59],
+  center: [19, 63.5],
   bounds: null,
 };
 
