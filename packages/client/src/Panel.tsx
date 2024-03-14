@@ -3,7 +3,11 @@ import { get } from 'react-intl-universal';
 
 import './Panel.css';
 
-const Panel: React.FC = () => {
+interface PanelProps {
+    children: React.ReactNode;
+}
+
+const Panel: React.FC<PanelProps> = ({ children }) => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
 
     const toggleCollapse = () => {
@@ -18,7 +22,9 @@ const Panel: React.FC = () => {
                 </span>
                 <button className="collapse-btn" onClick={toggleCollapse} />
             </header>
-            <p>{get('panel.contentholder')}</p>
+            <main>
+                {children}
+            </main>
         </div>
     );
 };
