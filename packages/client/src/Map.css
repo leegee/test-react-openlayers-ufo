@@ -19,8 +19,8 @@
 }
 
 .ol-zoom {
-    top: unset;
+    bottom: unset;
     left: unset;
     right: 1rem;
-    bottom: 1rem;
+    top: 1rem;
 }
