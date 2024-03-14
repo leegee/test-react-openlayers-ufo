@@ -36,6 +36,8 @@ app.use(async (ctx) => {
 
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
+            const { whereClause, values } = where(q);
+
             let sql = `SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features', jsonb_agg(feature)
@@ -50,22 +52,17 @@ app.use(async (ctx) => {
                     SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original,
                     point
                     FROM sightings
-                    ${where(q)}
+                    ${whereClause ? whereClause : ''}
                 ) AS s
             ) AS fc`;
 
-            // ST_MakeEnvelope(xmin, ymin, xmax, ymax)
-            // SELECT point, latitude, longitude FROM sightings
-            // WHERE point && ST_MakeEnvelope(-1, 51, 24, 67, 4326);
-
-
-            const { rows } = await pool.query(sql);
+            const { rows } = await pool.query(sql, values ? values : undefined);
 
             if (rows[0].jsonb_build_object.features === null) {
                 console.warn({ action: 'getSubFeatures', msg: 'features===null', sql });
             }
 
-            (body.results as unknown) = rows[0].jsonb_build_object;
+            body.results = rows[0].jsonb_build_object;
         }
         catch (e) {
             console.debug(e);
@@ -89,9 +86,11 @@ app.listen(config.api.port);
 
 function where(q: QueryParams) {
     const clauses = [];
+    const values = [];
 
     if (q.from_date !== undefined && q.to_date !== undefined) {
-        clauses.push("(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59')");
+        clauses.push("(datetime BETWEEN $1 AND $2)");
+        values.push(q.from_date + "-01-01 00:00:00", q.to_date + "-12-31 23:59:59");
     }
     if (!q.show_undated) {
         clauses.push("datetime IS NOT NULL");
@@ -100,7 +99,13 @@ function where(q: QueryParams) {
         clauses.push("datetime_invalid IS NOT true");
     }
 
-    clauses.push(`point && ST_Transform( ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 ), 3857)`);
+    clauses.push(`point && ST_Transform(ST_MakeEnvelope($${values.length + 1}, $${values.length + 2}, $${values.length + 3}, $${values.length + 4}, 4326), 3857)`);
+    values.push(q.minlng, q.minlat, q.maxlng, q.maxlat);
 
-    return clauses.length ? 'WHERE ' + clauses.join(' AND ') : '';
+    return clauses.length ? {
+        whereClause: 'WHERE ' + clauses.join(' AND '),
+        values: values
+    } : {
+        whereClause: null, values: null
+    };
 }
