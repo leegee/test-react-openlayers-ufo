@@ -59,7 +59,7 @@ app.use(async (ctx) => {
             const { rows } = await pool.query(sql, values ? values : undefined);
 
             if (rows[0].jsonb_build_object.features === null) {
-                console.warn({ action: 'getSubFeatures', msg: 'features===null', sql });
+                console.warn({ msg: 'features===null', sql, values });
             }
 
             body.results = rows[0].jsonb_build_object;
