@@ -8,3 +8,12 @@ export interface QueryParams {
   show_undated?: boolean;
   show_invalid_dates?: boolean;
 }
+
+export interface DateTimeMinMax {
+  min: string | undefined;
+  max: string | undefined;
+}
+
+export interface MapDictionary {
+  datetime: DateTimeMinMax | undefined;
+}

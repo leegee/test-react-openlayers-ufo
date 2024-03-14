@@ -1,9 +1,10 @@
 import pg from "pg";
 import Koa from "koa";
 import cors from "@koa/cors";
+import type { FeatureCollection } from 'geojson';
 
 import config from '@ufo-monorepo-test/config/src';
-import { QueryParams } from '@ufo-monorepo-test/common-types/src';
+import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
 
 const pool = new pg.Pool({
     user: config.db.user,
@@ -20,7 +21,8 @@ app.use(async (ctx) => {
     const body = {
         msg: new String(),
         status: 200,
-        results: [],
+        dictionary: {},
+        results: undefined as FeatureCollection | undefined,
     };
 
     const q: QueryParams = {
@@ -51,7 +53,7 @@ app.use(async (ctx) => {
                 FROM (
                     SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
                     FROM sightings
-                    ${whereClause ? whereClause : ''}
+                    ${whereClause}
                 ) AS s
             ) AS fc`;
 
@@ -61,7 +63,8 @@ app.use(async (ctx) => {
                 console.warn({ msg: 'features===null', sql, values });
             }
 
-            body.results = rows[0].jsonb_build_object;
+            body.results = rows[0].jsonb_build_object as FeatureCollection;
+            body.dictionary = await getDictionary(body.results);
         }
         catch (e) {
             console.debug(e);
@@ -103,9 +106,39 @@ function where(q: QueryParams) {
     values.push(q.minlng, q.minlat, q.maxlng, q.maxlat);
 
     return clauses.length ? {
-        whereClause: 'WHERE ' + clauses.join(' AND '),
+        whereClause: ' WHERE ' + clauses.join(' AND '),
         values: values
     } : {
-        whereClause: null, values: null
+        whereClause: '',
+        values: undefined
     };
+}
+
+async function getDictionary(featureCollection: FeatureCollection | undefined) {
+    const dictionary: MapDictionary = {
+        datetime: {
+            min: '0001-01-01 00:00:00',
+            max: '0001-01-01 00:00:00',
+        },
+    };
+
+    if (!featureCollection || !featureCollection.features) {
+        console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
+        return dictionary;
+    }
+
+    for (const feature of featureCollection.features) {
+        const datetime: string | undefined = feature.properties?.datetime;
+
+        if (datetime) {
+            if (dictionary.datetime!.min === undefined || datetime < dictionary.datetime!.min) {
+                dictionary.datetime!.min = datetime;
+            }
+            if (dictionary.datetime!.max === undefined || datetime > dictionary.datetime!.max) {
+                dictionary.datetime!.max = datetime;
+            }
+        }
+    }
+
+    return dictionary;
 }

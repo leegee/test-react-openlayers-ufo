@@ -16,6 +16,7 @@
     "dev:api": "npm run dev -w packages/server-tiny"
   },
   "devDependencies": {
+    "@types/geojson": "^7946.0.14",
     "@types/koa": "^2.15.0",
     "@types/koa__cors": "^5.0.0",
     "@types/node": "^18.11.9",
