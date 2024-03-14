@@ -47,10 +47,9 @@ const OpenLayersMap: React.FC = () => {
     return () => map?.dispose();
   }, [dispatch]);
 
-  useEffect(
-    () => dispatch(fetchFeatures() as any),
-    [dispatch, bounds, zoom]
-  );
+  useEffect(() => {
+    dispatch(fetchFeatures() as any);
+  }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
     if (!mapRef.current || !featureCollection || featureCollection.features === null) return;
