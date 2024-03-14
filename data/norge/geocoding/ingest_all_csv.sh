@@ -5,15 +5,19 @@
 
 
 # Gets a windows path for kaggle_scrubbed - replace this if you can.
-PWD=$(pwd)
-DRIVE_LC=$(echo "$PWD" | cut -c 2)
-DRIVE_UC=$(echo "$PWD" | cut -c 2 | tr '[:lower:]' '[:upper:]')
-PWD_WIN=$(echo "$PWD" | sed "s|^/$DRIVE_LC/|$DRIVE_UC:\\\\|")
-PWD_WIN=$(echo "$PWD_WIN" | tr '/' '\\')
-INPUT_CSV="$PWD_WIN\\all-fewer-cols.csv"
+CWD=$(dirname "$(readlink -f "$0")")
+DRIVE_LC=$(echo "$CWD" | cut -c 2)
+DRIVE_UC=$(echo "$CWD" | cut -c 2 | tr '[:lower:]' '[:upper:]')
+CWD_WIN=$(echo "$CWD" | sed "s|^/$DRIVE_LC/|$DRIVE_UC:\\\\|")
+CWD_WIN=$(echo "$CWD_WIN" | tr '/' '\\')
+INPUT_CSV="$CWD_WIN\\all-fewer-cols.csv"
 
 echo $INPUT_CSV
 
+if [ ! -f "$INPUT_CSV" ]; then
+    echo "Error: File '$INPUT_CSV' not found."
+    exit 1
+fi
 
 CREATE_TEMP_TABLE_SQL=$(cat <<-SQL
     CREATE TABLE temporary_table (
@@ -31,7 +35,13 @@ psql -d norge -c "${CREATE_TEMP_TABLE_SQL}"
 
 psql -d norge -c "COPY temporary_table FROM '${INPUT_CSV}' WITH (FORMAT CSV, HEADER, ENCODING 'UTF-8');"
 
-# Update latitude, longitude, and address in sightings table
+psql -d norge -c "
+    ALTER TABLE sightings
+        ADD COLUMN latitude DOUBLE PRECISION,
+        ADD COLUMN longitude DOUBLE PRECISION,
+        ADD COLUMN point GEOMETRY(POINT, 3857),
+        ADD COLUMN address VARCHAR(255);";
+
 psql -d norge -c "UPDATE sightings AS s
                 SET latitude = c.lat,
                     longitude = c.lon,
