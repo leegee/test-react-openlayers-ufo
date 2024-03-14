@@ -10,14 +10,17 @@ See the `README`s in the sub-directories of `data/` for details of the MUFON and
 
 ![Screenshot](./docs/images/Screenshot%202024-03-14%20155152.png)
 
-Todo:
+## Todo:
 
-* On-screen info about points
+Currently we send everything in the bounding box and cluster on the client.
+
+Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
+
+* On-screen info about points as tooltip
 * Expose more data: shape, colour, direction, etc
-* Filter on all columns
+* Filter on all columns, firstly date
 * Store bounds and filter settings in the URI
 * Share common-type of request/response
-* Table report
 * Extract more config options
 
 ## DB
