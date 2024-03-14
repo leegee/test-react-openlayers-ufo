@@ -8,6 +8,8 @@ import Cluster from 'ol/source/Cluster';
 import type { FeatureCollection } from '../redux/reducers';
 import { FeatureLike } from "ol/Feature";
 
+const CLUSTER_DISTANCE = 40;
+
 const vectorSource = new VectorSource({
     strategy: bbox,
     format: new GeoJSON(),
@@ -42,7 +44,7 @@ const sightingStyleFunction = (feature: FeatureLike, _resolution: number): Style
 };
 
 const clusterSource = new Cluster({
-    distance: 40, // Adjust this value as needed to control clustering distance
+    distance: CLUSTER_DISTANCE,
     source: vectorSource
 });
 
