@@ -4,4 +4,12 @@ table {
     padding: 0;
     margin: 0;
     font-size: 90%;
+    background-color: var(--ufo-primary-bg);
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--ufo-primary-bg);
+    z-index: 1;
 }
