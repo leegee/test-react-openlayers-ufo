@@ -1,6 +1,10 @@
 {
     "panel": {
-        "headerTitle": "Title",
-        "contentholder": "Content here"
+        "headerTitle": "Title"
+    },
+    "report": {
+        "date": "Date",
+        "location": "Location",
+        "report": "Report"
     }
 }

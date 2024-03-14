@@ -1,6 +1,10 @@
 {
     "panel": {
-        "headerTitle": "Tittel",
-        "contentholder": "Innhold her"
+        "headerTitle": "Tittel"
+    },
+    "report": {
+        "date": "Dato",
+        "location": "Sted",
+        "report": "Rapport"
     }
 }
