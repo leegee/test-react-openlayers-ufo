@@ -8,7 +8,7 @@ A simple OpenLayers map to fetch and display data when the map is rendered, zoom
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
-![Screenshot](./docs/images/Screenshot%202024-03-14%20120826.png)
+![Screenshot](./docs/images/Screenshot%202024-03-14 155152.png)
 
 Todo:
 
