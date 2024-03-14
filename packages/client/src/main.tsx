@@ -14,7 +14,7 @@ const locales: Record<string, any> = {
   'no': import('./locales/no.json'),
 };
 
-const locale = 'en';
+const locale = 'no';
 
 Promise.all([locales[locale]])
   .then(([translations]) => {

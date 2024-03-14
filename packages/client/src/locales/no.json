@@ -1,3 +1,6 @@
 {
-    "headerTitle": "Tittel"
+    "panel": {
+        "headerTitle": "Tittel",
+        "contentholder": "Innhold her"
+    }
 }

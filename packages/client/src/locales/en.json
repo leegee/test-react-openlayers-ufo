@@ -1,3 +1,6 @@
 {
-    "headerTitle": "Title"
+    "panel": {
+        "headerTitle": "Title",
+        "contentholder": "Content here"
+    }
 }

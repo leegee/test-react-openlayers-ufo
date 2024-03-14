@@ -14,11 +14,11 @@ const Panel: React.FC = () => {
         <div className={`panel ${collapsed ? 'collapsed' : ''}`}>
             <header>
                 <span>
-                    {get('headerTitle')}
+                    {get('panel.headerTitle')}
                 </span>
                 <button className="collapse-btn" onClick={toggleCollapse} />
             </header>
-            <p>Content here</p>
+            <p>{get('panel.contentholder')}</p>
         </div>
     );
 };
