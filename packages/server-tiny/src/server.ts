@@ -75,6 +75,6 @@ app.use(async (ctx) => {
     ctx.body = JSON.stringify(body);
 });
 
-console.debug("Listening on", config.api.port);
+console.debug("Listening on", config.api.port, "\n", JSON.stringify(config, null, 4));
 
 app.listen(config.api.port);
