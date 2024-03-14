@@ -81,24 +81,8 @@ const OpenLayersMap: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current || !featureCollection || featureCollection.features === null) return;
     vectorSource.clear();
-
     vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
-    console.log("Number of features added:", vectorSource.getFeatures().length, vectorSource.getFeatures());
-
-    const osloOLFeature = new GeoJSON().readFeature({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: fromLonLat([10, 59])
-        // coordinates: [3376031.429992337, 11271655.748910023]
-      },
-      properties: { name: 'Oslo', description: 'Capital of Norway' }
-    });
-    vectorSource.addFeature(osloOLFeature);
-
-    console.log("Number of features added:", vectorSource.getFeatures().length, vectorSource.getFeatures());
-    // vectorLayer.changed();
-
+    console.log("Number of features added:", vectorSource.getFeatures().length);
   }, [vectorSource, featureCollection]);
 
   return <div ref={mapRef} className="map"></div>;
