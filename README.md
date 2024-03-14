@@ -10,6 +10,8 @@ As yet, no data access layer.
 
 See the `README`s in the sub-directories of `data/`.
 
+![Screenshot](./docs/images/Screenshot%202024-03-14%20120826.png)
+
 .
 
 .
