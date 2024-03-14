@@ -16,10 +16,10 @@ ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
 
 -- Observation date:
 
-INSERT INTO sightings (datetime_original, datetime, datetime_invalid)
-SELECT 
-    CONCAT("obs år", '-', "Obs måned", '-', observasjonsdato) AS datetime_original,
-    CASE 
+UPDATE sightings
+SET
+    datetime_original = CONCAT("obs år", '-', "Obs måned", '-', observasjonsdato),
+    datetime = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(
                 CONCAT(
@@ -32,14 +32,14 @@ SELECT
                 'YYYY-MM-DD'
             )
         ELSE NULL
-    END AS datetime,
-    CASE 
+    END,
+    datetime_invalid = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL AND "Obs måned"::integer > 12 THEN
             true
         ELSE
             false
-    END AS datetime_invalid
-FROM sightings;
+    END;
+
 
 ALTER TABLE sightings
     DROP COLUMN observasjonsdato,
