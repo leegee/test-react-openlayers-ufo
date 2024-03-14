@@ -14,7 +14,7 @@ Todo:
 
 * Expose more data: shape, colour, direction, etc
 * Filter on all columns
-
+* Store bounds and filter settings in the URI
 
 ## DB
 
