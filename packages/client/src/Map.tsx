@@ -8,7 +8,8 @@ import OSM from 'ol/source/OSM';
 
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
-import { updateVectorLayer, vectorLayer, vectorSource } from './lib/VectorLayer';
+import { updateVectorLayer, vectorLayer } from './lib/VectorLayer';
+import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -34,6 +35,8 @@ const OpenLayersMap: React.FC = () => {
         ],
       });
 
+      setupFeatureHighlighting(map);
+
       map.on('moveend', () => {
         if (!map) return;
         const center = map!.getView().getCenter() as [number, number];
@@ -54,9 +57,10 @@ const OpenLayersMap: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current || !featureCollection || featureCollection.features === null) return;
     updateVectorLayer(featureCollection);
-  }, [vectorSource, featureCollection]);
+  }, [featureCollection]);
 
   return <div ref={mapRef} className="map"></div>;
 };
 
 export default OpenLayersMap;
+

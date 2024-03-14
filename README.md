@@ -12,9 +12,11 @@ See the `README`s in the sub-directories of `data/` for details of the MUFON and
 
 Todo:
 
+* On-screen info about points
 * Expose more data: shape, colour, direction, etc
 * Filter on all columns
 * Store bounds and filter settings in the URI
+* Table report
 
 ## DB
 
