@@ -1,6 +1,7 @@
 // vite.config.ts
 import path from 'path';
 import { defineConfig } from 'vite';
+import macros from 'unplugin-parcel-macros';
 import { transform } from '@swc/core';
 
 export default defineConfig({
@@ -22,6 +23,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    macros.vite(),
     {
       name: 'swc',
       enforce: 'pre',

@@ -32,6 +32,7 @@
     "prettier": "^2.8.0",
     "react-intl-universal": "^2.11.1",
     "typescript": "^5.2.2",
+    "unplugin-parcel-macros": "^0.0.3",
     "vite": "^5.1.4"
   },
   "dependencies": {
