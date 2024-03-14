@@ -12,8 +12,7 @@ import config from '@ufo-monorepo-test/config/src';
 import type { AppThunk } from './store';
 import type { MapState, MapData } from './reducers';
 
-// const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
-console.info({config});
+const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
 
 const initialState: MapState = {
   data: null,
@@ -49,16 +48,17 @@ export const fetchData = (): AppThunk<void> => async (dispatch, getState) => {
     const [minlng, minlat, maxlng, maxlat] = bounds;
     const queryObject = {
       zoom: zoom.toString(),
-      minlgn: String(minlng),
+      minlng: String(minlng),
       minlat: String(minlat),
       maxlng: String(maxlng),
       maxlat: String(maxlat),
     };
-    console.log('mapSlice.fetchData', queryObject);
     const queryString = new URLSearchParams(queryObject);
-    const response = await fetch(`?${queryString}`);
+    const response = await fetch(`${searchEndpoint}?${queryString}`);
 
     const data = await response.json(); // Parse the JSON response
+
+    console.log('mapSlice.fetchData', queryObject, data);
 
     // Dispatch action to update the fetched data in the state
     dispatch(setMapData(data));
