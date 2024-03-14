@@ -50,9 +50,7 @@ const OpenLayersMap: React.FC = () => {
     }
 
     return () => {
-      if (map) {
-        map.dispose();
-      }
+      map?.dispose();
     };
   }, [dispatch]);
 
