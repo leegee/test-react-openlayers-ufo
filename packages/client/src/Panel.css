@@ -8,6 +8,8 @@
     right: unset;
     width: 30vw;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 0 0.5rem;
     background-color: var(--ufo-primary-bg);
     color: var(--ufo-primary-fg);
@@ -68,4 +70,9 @@ header {
 
 .panel.collapsed .collapse-btn::after {
     content: '▼';
+}
+
+main {
+    flex: 1;
+    overflow-y: auto;
 }
