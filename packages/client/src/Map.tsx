@@ -9,15 +9,14 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
-import Feature, { FeatureLike } from 'ol/Feature';
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { FeatureLike } from 'ol/Feature';
+import { Circle, Fill, Style } from "ol/style";
 
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
 
 import 'ol/ol.css';
 import './Map.css';
-import { Point } from 'ol/geom';
 
 const sightingStyleFunction = (feature: FeatureLike) => {
   const properties = feature.getProperties();

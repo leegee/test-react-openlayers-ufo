@@ -56,6 +56,8 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       minlat: String(minlat),
       maxlng: String(maxlng),
       maxlat: String(maxlat),
+      show_undated: String(true),
+      show_invalid_dates: String(true),
     };
     const queryString = new URLSearchParams(queryObject);
     const response = await fetch(`${searchEndpoint}?${queryString}`);

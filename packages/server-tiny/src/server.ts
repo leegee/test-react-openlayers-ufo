@@ -12,13 +12,14 @@ const pool = new pg.Pool({
 });
 
 interface QueryParams {
-    minlng: string;
-    minlat: string;
-    maxlng: string;
-    maxlat: string;
-    to_date?: string;
-    from_date?: string;
-    show_undated?: boolean;
+    minlng: string; // int
+    minlat: string; // int
+    maxlng: string; // int
+    maxlat: string; // int
+    to_date?: string; // Date
+    from_date?: string; // Date
+    show_undated?: string; // Boolean
+    show_invalid_dates?: string;  // Boolean;
 }
 
 const app = new Koa();
@@ -33,19 +34,7 @@ app.use(async (ctx) => {
 
     const q: QueryParams = ctx.request.query as unknown as QueryParams;
 
-    q.show_undated = true;
-
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
-        let where = 'WHERE ';
-        if (q.from_date !== undefined && q.to_date !== undefined) {
-            where += "(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59') AND ";
-        }
-        if (q.show_undated) {
-            where += "datetime IS NOT NULL AND ";
-        }
-        where += `point && ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 )`;
-        where = ''; // for now
-
         try {
             let sql = `SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -61,7 +50,7 @@ app.use(async (ctx) => {
                     SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original,
                     point
                     FROM sightings
-                    ${where}
+                    ${where(q)}
                 ) AS s
             ) AS fc`;
 
@@ -96,3 +85,21 @@ app.use(async (ctx) => {
 console.debug("Listening on", config.api.port, "\n", JSON.stringify(config, null, 4));
 
 app.listen(config.api.port);
+
+
+function where(q: QueryParams) {
+    const clauses = [];
+
+    if (q.from_date !== undefined && q.to_date !== undefined) {
+        clauses.push("(datetime BETWEEN '" + q.from_date + "-01-01 00:00:00' AND '" + q.to_date + "-12-31 23:59:59')");
+    }
+    if (!q.show_undated) {
+        clauses.push("datetime IS NOT NULL");
+    }
+    if (!q.show_invalid_dates) {
+        clauses.push("datetime_invalid IS NOT true");
+    }
+    // clauses.push(`point && ST_MakeEnvelope( ${q.minlng}, ${q.minlat}, ${q.maxlng}, ${q.maxlat}, 4326 )`);
+
+    return clauses.length ? 'WHERE ' + clauses.join(' AND ') : '';
+}
