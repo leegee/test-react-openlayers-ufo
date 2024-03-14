@@ -1,16 +1,27 @@
 :root {
+  --primary-fg: rgba(255, 255, 255, 0.85);
+  --primary-bg: #242424;
+  --primary-border-clr: rgba(255, 255, 255, 0.25);
+  --ctrl-fg: rgba(255, 255, 255, 0.65);
+  --ctrl-bg: #333;
+  --primary-border-clr: rgba(255, 255, 255, 0.25);
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: var(--primary-bg);
+  color: var(--primary-fg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  border-radius: 6pt !important;
 }
 
 a {
@@ -38,8 +49,8 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  border-radius: 8pt;
+  border: 1pt solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -47,15 +58,15 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-
-button:hover {
-  border-color: #646cff;
+  outline: none;
 }
 
 button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button:focus-visible,
+button:hover {
+  opacity: 1;
+  outline: none;
 }
+
 
 /* @media (prefers-color-scheme: light) { */

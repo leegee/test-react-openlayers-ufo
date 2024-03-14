@@ -16,7 +16,7 @@ const Panel: React.FC = () => {
                 <span>
                     {get('headerTitle')}
                 </span>
-                <button className="collapse-btn" onClick={toggleCollapse}>X</button>
+                <button className="collapse-btn" onClick={toggleCollapse} />
             </header>
             <p>Content here</p>
         </div>
