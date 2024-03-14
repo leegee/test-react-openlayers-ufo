@@ -28,11 +28,13 @@
         right: 0;
         left: 0;
         bottom: 0;
-        width: 100%;
+        width: auto;
         height: 30vh;
         padding: 0 0.75rem;
         border-right: unset;
         border-top: 1pt solid var(--ufo-primary-border-clr);
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
     }
 
     .panel.collapsed {
@@ -40,7 +42,7 @@
     }
 
     .collapse-btn {
-        margin-right: 1rem;
+        margin-right: 0.25rem;
     }
 }
 
