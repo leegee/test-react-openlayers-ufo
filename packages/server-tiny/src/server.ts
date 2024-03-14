@@ -49,8 +49,7 @@ app.use(async (ctx) => {
                     'properties', to_jsonb(s) - 'point'
                 ) AS feature
                 FROM (
-                    SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original,
-                    point
+                    SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
                     FROM sightings
                     ${whereClause ? whereClause : ''}
                 ) AS s
