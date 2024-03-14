@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { get } from 'react-intl-universal';
+
 import './Panel.css'; // Import your component's CSS file for styling
 
 interface PanelProps {
@@ -15,7 +17,9 @@ const Panel: React.FC<PanelProps> = () => {
     return (
         <div className={`panel ${collapsed ? 'collapsed' : ''}`}>
             <header>
-                <span>Title</span>
+                <span>
+                    {get('headerTitle')}
+                </span>
                 <button className="collapse-btn" onClick={toggleCollapse}>X</button>
             </header>
             <p>Content here</p>

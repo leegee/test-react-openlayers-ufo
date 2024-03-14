@@ -1,23 +1,30 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { init } from 'react-intl-universal';
+
 import App from './App';
 import { store } from './redux/store';
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(
-  <Provider store={store}> <App /> </Provider>
-);
+const locales: Record<string, any> = {
+  'en': import('./locales/en.json'),
+  'no': import('./locales/no.json'), // Changed reference to Norwegian translations
+};
 
-// import React from 'react';
-// import { createRoot } from 'react-dom/client';
-// import { Provider } from 'react-redux';
-// import App from './App';
-// import { store } from './redux/store';
+const locale = 'en';
 
-// const container = document.getElementById('root');
-// const root = createRoot(container!);
-// root.render(
-//   <Provider store={store}> <App /> </Provider>
-// );
+Promise.all([locales[locale]])
+  .then(([translations]) => {
+    init({
+      currentLocale: locale,
+      locales: { [locale]: translations.default },
+    });
+
+    const container = document.getElementById('root');
+    const root = createRoot(container!);
+    root.render(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
+  });
