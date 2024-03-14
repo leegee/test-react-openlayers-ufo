@@ -59,7 +59,7 @@ ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 ALTER TABLE sightings
     ADD COLUMN latitude DOUBLE PRECISION,
     ADD COLUMN longitude DOUBLE PRECISION,
-    ADD COLUMN point GEOGRAPHY(POINT, 4326);
+    ADD COLUMN point GEOMETRY(POINT, 4326);
 
 ALTER TABLE sightings
     ADD COLUMN address VARCHAR(255);
