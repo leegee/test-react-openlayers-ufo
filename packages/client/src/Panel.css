@@ -1,0 +1,28 @@
+/* Panel.css */
+
+.panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: unset;
+    right: unset;
+    width: 30vw;
+    height: 100%;
+    background-color: black;
+    padding: 1rem;
+    border-right: 1pt solid grey;
+}
+
+@media (max-width: 768px) {
+    .panel {
+        top: unset;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 30vh;
+        padding: 1rem;
+        border-right: unset;
+        border-top: 1pt solid grey;
+    }
+}
