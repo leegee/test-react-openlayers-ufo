@@ -9,9 +9,9 @@
     width: 30vw;
     height: 100%;
     padding: 0 0.5rem;
-    background-color: var(--primary-bg);
-    color: var(--primary-fg);
-    border-right: 1pt solid var(--primary-border-clr);
+    background-color: var(--ufo-primary-bg);
+    color: var(--ufo-primary-fg);
+    border-right: 1pt solid var(--ufo-primary-border-clr);
     transition: height 0.3s ease;
 }
 
@@ -30,7 +30,7 @@
         height: 30vh;
         padding: 0 0.5rem;
         border-right: unset;
-        border-top: 1pt solid var(--primary-border-clr);
+        border-top: 1pt solid var(--ufo-primary-border-clr);
     }
 
     .collapse-btn {

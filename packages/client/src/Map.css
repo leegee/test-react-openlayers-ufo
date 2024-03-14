@@ -17,3 +17,10 @@
     margin: 0;
     padding: 0;
 }
+
+.ol-zoom {
+    top: unset;
+    left: unset;
+    right: 1rem;
+    bottom: 1rem;
+}

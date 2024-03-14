@@ -1,27 +1,26 @@
 :root {
-  --primary-fg: rgba(255, 255, 255, 0.85);
-  --primary-bg: #242424;
-  --primary-border-clr: rgba(255, 255, 255, 0.25);
-  --ctrl-fg: rgba(255, 255, 255, 0.65);
-  --ctrl-bg: #333;
-  --primary-border-clr: rgba(255, 255, 255, 0.25);
+  --ufo-primary-fg: rgba(255, 255, 255, 0.85);
+  --ufo-primary-bg: #242424;
+  --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+  --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
+  --ufo-ctrl-bg: #333;
+  --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+
+  --ol-background-color: var(--ufo-ctrl-bg);
+  --ol-subtle-foreground-color: var(--ufo-ctrl-fg);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  background-color: var(--primary-bg);
-  color: var(--primary-fg);
+  background-color: var(--ufo-primary-bg);
+  color: var(--ufo-primary-fg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  border-radius: 6pt !important;
 }
 
 a {
