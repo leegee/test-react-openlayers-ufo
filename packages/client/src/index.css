@@ -6,6 +6,8 @@
   --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
   --ufo-ctrl-bg: #333;
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+  --ufo-div-padding: 0.75rem;
+  --ufo-toolbar-height: 3rem;
 
   --ol-background-color: var(--ufo-ctrl-bg);
   --ol-subtle-foreground-color: var(--ufo-ctrl-fg);
@@ -22,6 +24,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
 }
 
 a {
