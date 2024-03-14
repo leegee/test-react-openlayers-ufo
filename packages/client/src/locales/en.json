@@ -5,6 +5,7 @@
     "report": {
         "date": "Date",
         "location": "Location",
-        "report": "Report"
+        "report": "Report",
+        "no_data": "No data for the visible area"
     }
 }

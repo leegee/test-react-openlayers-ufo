@@ -1,5 +1,6 @@
 // FeatureTable.tsx
 import React, { useEffect, useState } from 'react';
+import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
 import './FeatureTable.css';
@@ -14,13 +15,17 @@ const FeatureTable: React.FC = () => {
         }
     }, [featureCollection]);
 
+    if (!features || !features.length) {
+        return (<p>{get('report.no_data')}</p>);
+    }
+
     return (
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Location</th>
-                    <th>Report</th>
+                    <th>{get('report.date')}</th>
+                    <th>{get('report.location')}</th>
+                    <th>{get('report.report')}</th>
                 </tr>
             </thead>
             <tbody>

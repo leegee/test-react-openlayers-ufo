@@ -5,6 +5,7 @@
     "report": {
         "date": "Dato",
         "location": "Sted",
-        "report": "Rapport"
+        "report": "Rapport",
+        "no_data": "Ingen data for det synlige området"
     }
 }
