@@ -24,10 +24,10 @@ app.use(async (ctx) => {
     };
 
     const q: QueryParams = {
-        minlng: parseInt(ctx.request.query.minlng as string, 10),
-        minlat: parseInt(ctx.request.query.minlat as string, 10),
-        maxlng: parseInt(ctx.request.query.maxlng as string, 10),
-        maxlat: parseInt(ctx.request.query.maxlat as string, 10),
+        minlng: parseFloat(ctx.request.query.minlng as string),
+        minlat: parseFloat(ctx.request.query.minlat as string),
+        maxlng: parseFloat(ctx.request.query.maxlng as string),
+        maxlat: parseFloat(ctx.request.query.maxlat as string),
         to_date: ctx.request.query.to_date ? (Array.isArray(ctx.request.query.to_date) ? ctx.request.query.to_date[0] : ctx.request.query.to_date) : undefined,
         from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : undefined,
         show_undated: ctx.request.query.show_undated === 'true',
