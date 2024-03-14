@@ -11,6 +11,15 @@ table {
 thead {
     position: sticky;
     top: 0;
-    background-color: var(--ufo-primary-bg);
+    background-color: var(--ufo-primary-bg-odd);
     z-index: 1;
+}
+
+thead th {
+    border-bottom: 1pt solid var(--ufo-primary-border-clr);
+    padding-bottom: 0.5rem;
+}
+
+tr:nth-child(even) {
+    background-color: var(--ufo-primary-bg-odd);
 }

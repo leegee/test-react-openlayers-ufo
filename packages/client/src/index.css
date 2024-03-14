@@ -1,7 +1,8 @@
 :root {
   --ufo-primary-fg: rgba(255, 255, 255, 0.85);
   --ufo-primary-bg: #242424;
-  --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+  --ufo-primary-bg-odd: #282828;
+  --ufo-primary-border-clr: rgba(255, 255, 255, 0.15);
   --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
   --ufo-ctrl-bg: #333;
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
