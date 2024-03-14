@@ -2,6 +2,14 @@
 
 WIP, just testing.
 
+## Synopsis
+
+  npm i
+  npm run dev:api &
+  npm run dev:client
+
+## Description
+
 Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux.
 
 A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`), with a tiny Koa data access layer.
