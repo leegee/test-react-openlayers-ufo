@@ -15,11 +15,25 @@
     color: var(--ufo-primary-fg);
     border-right: 1pt solid var(--ufo-primary-border-clr);
     transition: height 0.3s ease;
+    transition: width 0.1s;
+    transition: margin 0.1s;
 }
 
 .panel.collapsed {
-    height: 4rem;
-    overflow: hidden;
+    transition: margin 0.1s;
+    margin-top: var(--ufo-div-padding);
+    margin-left: var(--ufo-div-padding);
+    height: 3rem;
+    overflow: hidden !important;
+}
+
+.panel.collapsed main {
+    display: none;
+}
+
+.panel.full-width {
+    width: 100vw;
+    transition: width 0.1s;
 }
 
 @media (max-width: 768px) {
@@ -61,7 +75,8 @@ header {
     }
 }
 
-.collapse-btn {
+.collapse-btn,
+.full-width-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -87,6 +102,15 @@ header {
         content: '▲';
     }
 }
+
+.panel .full-width-btn::after {
+    content: '▶';
+}
+
+.panel.full-width .full-width-btn::after {
+    content: '◀';
+}
+
 
 main {
     flex: 1;

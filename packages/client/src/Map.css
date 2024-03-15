@@ -21,6 +21,6 @@
 .ol-zoom {
     bottom: unset;
     left: unset;
-    right: 1rem;
-    top: 1rem;
+    right: var(--ufo-div-padding);
+    top: var(--ufo-div-padding);
 }

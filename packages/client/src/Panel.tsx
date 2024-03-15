@@ -9,18 +9,30 @@ interface PanelProps {
 
 const Panel: React.FC<PanelProps> = ({ children }) => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
+    const [fullWidth, setFullWidth] = useState<boolean>(false);
 
     const toggleCollapse = () => {
-        setCollapsed(prevCollapsed => !prevCollapsed);
+        setCollapsed(prev => !prev);
+        if (!collapsed) {
+            setFullWidth(false);
+        }
+    };
+
+    const toggleFullWidth = () => {
+        setFullWidth(prev => !prev);
+        if (!fullWidth) {
+            setCollapsed(false);
+        }
     };
 
     return (
-        <div className={`panel ${collapsed ? 'collapsed' : ''}`}>
+        <div className={`panel ${collapsed ? 'collapsed' : ''} ${fullWidth ? 'full-width' : ''}`}>
             <header>
+                <button className="collapse-btn" onClick={toggleCollapse} />
                 <span>
                     {get('panel.headerTitle')}
                 </span>
-                <button className="collapse-btn" onClick={toggleCollapse} />
+                <button className="full-width-btn" onClick={toggleFullWidth} />
             </header>
             <main>
                 {children}
