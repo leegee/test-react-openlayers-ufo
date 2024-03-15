@@ -7,5 +7,11 @@
         "location": "Location",
         "report": "Report",
         "no_data": "No data for the visible area"
+    },
+    "date_range": {
+        "error": {
+            "min_range": "Minimum year must be less than or equal to maximum year",
+            "max_range": "Maximum year must be greater than or equal to minimum year"
+        }
     }
 }

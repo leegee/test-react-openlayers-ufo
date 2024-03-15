@@ -7,5 +7,11 @@
         "location": "Sted",
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området"
+    },
+    "date_range": {
+        "error": {
+            "min_range": "Minimum år må være mindre enn eller lik maksimum år",
+            "max_range": "Maksimum år må være større enn eller lik minimum år"
+        }
     }
 }
