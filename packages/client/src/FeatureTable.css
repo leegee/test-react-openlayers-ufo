@@ -6,6 +6,7 @@ table {
     font-size: 90%;
     background-color: var(--ufo-primary-bg);
     width: auto;
+    padding: 0 var(--ufo-div-padding);
 }
 
 thead {
@@ -22,4 +23,8 @@ thead th {
 
 tr:nth-child(even) {
     background-color: var(--ufo-primary-bg-odd);
+}
+
+td {
+    vertical-align: top;
 }
