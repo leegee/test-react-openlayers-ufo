@@ -2,7 +2,7 @@ import React from 'react';
 
 import FeatureTable from './FeaturesTable';
 import Map from './Map';
-import Panel from './Panel';
+import Panel from './ResultsPanel';
 import Toolbar from './Toolbar';
 
 import './App.css';

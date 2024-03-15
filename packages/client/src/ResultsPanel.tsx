@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RootState } from './redux/types';
 import { get } from 'react-intl-universal';
 
-import './Panel.css';
+import './ResultsPanel.css';
 
 interface PanelProps {
     children: React.ReactNode;
