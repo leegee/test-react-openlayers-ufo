@@ -5,15 +5,13 @@
     align-items: center;
     justify-content: flex-start;
     width: 12em;
+    background-color: var(--ufo-ctrl-bg);
 }
 
 .search-text {
     input {
         flex-grow: 1;
         width: 100%;
-        font-family: 'Courier New', Courier, monospace;
-        text-align: left;
-        outline: none;
     }
 
     .search-icon {

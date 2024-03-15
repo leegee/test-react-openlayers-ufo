@@ -77,10 +77,11 @@ button:hover {
 
 input {
   border: 0;
-  border-bottom: 1pt dotted var(--ufo-primary-border-clr);
-  border-radius: 4pt;
+  border-bottom: 0.5pt dotted var(--ufo-primary-border-clr);
+  border-radius: 0;
   caret-shape: bar;
   caret-color: #FF3;
+  background-color: var(--ufo-ctrl-bg);
 }
 
 input:focus,
