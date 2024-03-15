@@ -9,6 +9,9 @@
         "no_data": "Ingen data for det synlige området"
     },
     "date_range": {
+        "title": "Datoperiode",
+        "min": "Minimum",
+        "max": "Maksimum",
         "error": {
             "min_range": "Minimum år må være mindre enn eller lik maksimum år",
             "max_range": "Maksimum år må være større enn eller lik minimum år"

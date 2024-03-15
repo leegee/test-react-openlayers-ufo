@@ -56,8 +56,9 @@ const DateRange: React.FC = () => {
 
     return (
         <aside className='date-range'>
-            <span className='grey calendar'>📅</span>
+            <span className='grey calendar' title={get('date_range.title')}>📅</span>
             <input
+                title={get('date_range.min')}
                 type='text'
                 id='minYear'
                 name='minYear'
@@ -66,6 +67,7 @@ const DateRange: React.FC = () => {
             />
             -
             <input
+                title={get('date_range.max')}
                 type='text'
                 id='maxYear'
                 name='maxYear'
