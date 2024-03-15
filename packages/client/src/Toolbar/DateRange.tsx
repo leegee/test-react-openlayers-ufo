@@ -1,14 +1,44 @@
-// Toolbar.tsx
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import Slider from 'rc-slider';
 
+import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
+import { RootState } from '../redux/types';
+
+import 'rc-slider/assets/index.css';
 import './DateRange.css';
 
 const DateRange: React.FC = () => {
-    return (<aside className='date-range'>
-        <label title='Date'>
-            <input type="range" id="dateRange" name="dateRange" min="1900-01-01" max="2022-12-31" value="2022-06-01" />
-        </label>
-    </aside>)
+    const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
+
+    const minValue = dictionary?.datetime?.min || 1;
+    const maxValue = dictionary?.datetime?.max || new Date().getFullYear();
+
+    const [minValueSelected, setMinValueSelected] = useState(minValue);
+    const [maxValueSelected, setMaxValueSelected] = useState(maxValue);
+
+    const handleSliderChange = (values: number | number[]) => {
+        if (values instanceof Array) {
+            setMinValueSelected(values[0]);
+            setMaxValueSelected(values[1]);
+        }
+    };
+
+    return (
+        <aside className='date-range'>
+            <label title='Dates'>
+                {minValueSelected}
+                <Slider
+                    range={true}
+                    min={minValue}
+                    max={maxValue}
+                    value={[minValueSelected, maxValueSelected]}
+                    onChange={handleSliderChange}
+                />
+                {maxValueSelected}
+            </label>
+        </aside>
+    );
 }
 
 export default DateRange;

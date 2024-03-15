@@ -10,12 +10,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { FeatureCollection } from './reducers';
 
 import config from '@ufo-monorepo-test/config/src';
+import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
 
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
 
 export interface FeatureCollectionResponse {
   results: FeatureCollection;
+  dictionary: MapDictionary | undefined;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
@@ -25,6 +27,7 @@ const initialState: MapState = {
   zoom: 5,
   center: [19, 63.5],
   bounds: null,
+  dictionary: undefined,
 };
 
 const mapSlice = createSlice({
@@ -38,6 +41,7 @@ const mapSlice = createSlice({
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
       state.featureCollection = action.payload.results as FeatureCollection;
+      state.dictionary = action.payload.dictionary as MapDictionary;
     },
   },
 });

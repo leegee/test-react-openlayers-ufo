@@ -117,10 +117,13 @@ function where(q: QueryParams) {
 async function getDictionary(featureCollection: FeatureCollection | undefined) {
     const dictionary: MapDictionary = {
         datetime: {
-            min: '0001-01-01 00:00:00',
-            max: '0001-01-01 00:00:00',
+            min: 1,
+            max: 1,
         },
     };
+
+    let min = '1';
+    let max = '1';
 
     if (!featureCollection || !featureCollection.features) {
         console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
@@ -131,14 +134,19 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
         const datetime: string | undefined = feature.properties?.datetime;
 
         if (datetime) {
-            if (dictionary.datetime!.min === undefined || datetime < dictionary.datetime!.min) {
-                dictionary.datetime!.min = datetime;
+            if (min === undefined || datetime < min) {
+                min = datetime;
             }
-            if (dictionary.datetime!.max === undefined || datetime > dictionary.datetime!.max) {
-                dictionary.datetime!.max = datetime;
+            if (max === undefined || datetime > max) {
+                max = datetime;
             }
         }
     }
+
+    dictionary.datetime = {
+        min: new Date(min).getFullYear(),
+        max: new Date(max).getFullYear() + 1,
+    };
 
     return dictionary;
 }
