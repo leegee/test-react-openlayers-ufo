@@ -1,6 +1,7 @@
 {
     "panel": {
-        "headerTitle": "Tittel"
+        "headerTitle": "Tittel",
+        "results_count": "resultater"
     },
     "report": {
         "date": "Dato",

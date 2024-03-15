@@ -30,6 +30,7 @@ const initialState: MapState = {
   dictionary: undefined,
   from_date: undefined,
   to_date: undefined,
+  resultsCount: undefined,
 };
 
 const mapSlice = createSlice({
@@ -42,6 +43,7 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
+      state.resultsCount = action.payload.results.features.length;
       state.featureCollection = action.payload.results as FeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { type RootState } from './redux/types';
 import { get } from 'react-intl-universal';
 
 import './Panel.css';
@@ -10,6 +12,7 @@ interface PanelProps {
 const Panel: React.FC<PanelProps> = ({ children }) => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [fullWidth, setFullWidth] = useState<boolean>(false);
+    const resultsCount = useSelector((state: RootState) => state.map.resultsCount);
 
     const toggleCollapse = () => {
         setCollapsed(prev => !prev);
@@ -30,7 +33,7 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
             <header>
                 <button className="collapse-btn" onClick={toggleCollapse} />
                 <span>
-                    {get('panel.headerTitle')}
+                    {resultsCount ? resultsCount + ' ' + get('panel.results_count') : get('panel.headerTitle')}
                 </span>
                 <button className="full-width-btn" onClick={toggleFullWidth} />
             </header>

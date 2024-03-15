@@ -1,5 +1,6 @@
 {
     "panel": {
+        "results_count": "results",
         "headerTitle": "Title"
     },
     "report": {

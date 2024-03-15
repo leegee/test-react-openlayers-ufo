@@ -24,6 +24,7 @@ export interface MapState {
   zoom: number;
   bounds: [number, number, number, number] | null;
   featureCollection: FeatureCollection | null;
+  resultsCount: number | undefined;
   dictionary: MapDictionary | undefined;
   from_date?: number;
   to_date?: number;
