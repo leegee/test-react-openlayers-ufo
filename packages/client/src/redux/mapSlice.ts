@@ -50,14 +50,14 @@ const mapSlice = createSlice({
       state.featureCollection = action.payload.results as FeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
-    setFromDate(state, action: PayloadAction<number>) {
+    setFromDate(state, action: PayloadAction<number | undefined>) {
       state.from_date = action.payload;
     },
-    setToDate(state, action: PayloadAction<number>) {
+    setToDate(state, action: PayloadAction<number | undefined>) {
       state.to_date = action.payload;
     },
-    setQ(state, action: PayloadAction<string>) {
-      state.q = action.payload.trim();
+    setQ(state, action: PayloadAction<string | undefined>) {
+      state.q = action.payload ? action.payload.trim() : '';
     },
   },
 });

@@ -37,15 +37,16 @@ app.use(async (ctx) => {
         q: ctx.request.query.q ? String(ctx.request.query.q).trim() : undefined,
     };
 
-    if (userArgs.from_date && Number(userArgs.from_date) < 1000) {
-        userArgs.from_date = formatDateString(userArgs.from_date);
+    if (userArgs.from_date && Number(userArgs.from_date) === 1) {
+        delete userArgs.from_date;
     }
-
-    if (userArgs.to_date && Number(userArgs.to_date) < 1000) {
-        userArgs.to_date = formatDateString(userArgs.to_date);
+    if (userArgs.to_date && Number(userArgs.to_date) === 1) {
+        delete userArgs.to_date;
     }
 
     if (userArgs !== null && userArgs.minlat !== undefined && userArgs.minlng !== undefined && userArgs.maxlat !== undefined && userArgs.maxlng !== undefined) {
+        let forErrorReporting = {};
+
         try {
             const { whereClause, whereValues, selectClause } = where(userArgs);
             const sql = geoJsonFor(
@@ -56,7 +57,12 @@ app.use(async (ctx) => {
                 whereClause
             );
 
-            console.debug('BEFORE', { q: userArgs, sql, whereValues });
+            const formattedQuery = sql.replace(/\$(\d+)/g, (_, index) => {
+                const param = whereValues ? whereValues[index - 1] : undefined;
+                return typeof param === 'string' ? `'${param}'` : param;
+            });
+
+            forErrorReporting = { sql, selectClause, whereClause, whereValues, formattedQuery };
 
             const { rows } = await pool.query(sql, whereValues ? whereValues : undefined);
 
@@ -68,7 +74,7 @@ app.use(async (ctx) => {
             body.dictionary = await getDictionary(body.results);
         }
         catch (e) {
-            console.debug('ERROR', e);
+            console.error(e, forErrorReporting);
             body.status = 500;
             body.msg = new String(e);
         }
@@ -109,52 +115,57 @@ function where(userArgs: QueryParams) {
     const whereClauses: String[] = [];
     const selectClauses: String[] = [];
     const whereValues = [];
+    const orderBy = [];
 
-    // if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
-    //     console.log(userArgs);
-    //     whereClauses.push(`(datetime BETWEEN $${whereValues.length + 1} AND $${whereValues.length + 2})`);
-    //     whereValues.push(userArgs.from_date + "-01-01 00:00:00", userArgs.to_date + "-12-31 23:59:59");
-    // }
+    if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
+        whereClauses.push(
+            `(datetime BETWEEN $${whereValues.length + 1} AND $${whereValues.length + 2})`,
+            userArgs.from_date + " 01-01 00:00:00",
+            userArgs.to_date + " 12-31 23:59:59"
+        );
+    }
+    else if (userArgs.from_date !== undefined) {
+        whereClauses.push(`(datetime >= ${whereValues.length + 1})`);
+        whereValues.push(userArgs.from_date + " 01-01 00:00:00");
+    }
+    else if (userArgs.to_date !== undefined) {
+        whereClauses.push(`(datetime <= $${whereValues.length + 1})`);
+        whereValues.push(userArgs.to_date + " 12-31 23:59:59");
+    }
+    else if (!userArgs.show_undated) {
+        whereClauses.push("(datetime IS NOT NULL)");
+    }
 
-    // if (!userArgs.show_undated) {
-    //     whereClauses.push("datetime IS NOT NULL");
-    // }
     // if (!userArgs.show_invalid_dates) {
     //     whereClauses.push("datetime_invalid IS NOT true");
     // }
 
-    if (userArgs.q !== undefined) {
-        whereClauses.push(`
-            (to_tsvector('norwegian', report_text) @@ to_tsquery('norwegian', $${whereValues.length + 1})
-            OR to_tsvector('english', report_text) @@ to_tsquery('english', $${whereValues.length + 1})
-            ) OR location_text ILIKE $${whereValues.length + 2}
-        `);
-        whereValues.push(userArgs.q);
-        whereValues.push('%' + userArgs.q + '%');
-        selectClauses.push(`
-            CASE
-                WHEN to_tsvector('norwegian', report_text) @@ to_tsquery('norwegian', $1) THEN 1
-                WHEN to_tsvector('english', report_text) @@ to_tsquery('english', $1) THEN 1
-                ELSE 0
-            END AS report_match,
-            CASE
-                WHEN location_text ILIKE $2 THEN 1
-                ELSE 0
-            END AS location_match
-        `);
+    if (userArgs.q !== undefined && userArgs.q !== '') {
+        whereClauses.push(`(
+            location_text ILIKE $${whereValues.length + 1}
+         OR report_text ILIKE $${whereValues.length + 1}
+        )`);
+        selectClauses.push(
+            `similarity(location_text, $${whereValues.length + 1}) AS location_text_score`,
+            `similarity(report_text, $${whereValues.length + 1}) AS report_text_score`
+        );
+        whereValues.push(userArgs.q + '%');
+        orderBy.push('location_text_score DESC, report_text_score DESC');
     }
 
-    whereClauses.push(`point && ST_Transform(ST_MakeEnvelope($${whereValues.length + 1}, $${whereValues.length + 2}, $${whereValues.length + 3}, $${whereValues.length + 4}, 4326), 3857)`);
+    whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereValues.length + 1}, $${whereValues.length + 2}, $${whereValues.length + 3}, $${whereValues.length + 4}, 4326), 3857))`);
     whereValues.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
 
     const rv: {
         whereClause: string,
         selectClause: string,
-        whereValues: undefined | any[]
+        orderBy: string,
+        whereValues: any[] | undefined,
     } = {
         whereClause: '',
         whereValues: undefined,
         selectClause: '',
+        orderBy: '',
     };
 
     if (whereClauses.length) {
@@ -166,19 +177,23 @@ function where(userArgs: QueryParams) {
         rv.selectClause = ', ' + selectClauses.join(', ');
     }
 
+    if (orderBy.length) {
+        rv.orderBy = ' ORDER BY ' + orderBy.join(',');
+    }
+
     return rv;
 }
 
 async function getDictionary(featureCollection: FeatureCollection | undefined) {
     const dictionary: MapDictionary = {
         datetime: {
-            min: 1,
-            max: 1,
+            min: undefined,
+            max: undefined,
         },
     };
 
-    let min = '1';
-    let max = '1';
+    let min = undefined;
+    let max = undefined;
 
     if (!featureCollection || !featureCollection.features) {
         console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
@@ -199,15 +214,10 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     }
 
     dictionary.datetime = {
-        min: min === '1' ? 0 : new Date(min).getFullYear(),
-        max: new Date(max).getFullYear() + 1,
+        min: typeof min !== 'undefined' && min !== '0001-01-01T00:00:00' ? new Date(min).getFullYear() : undefined,
+        max: typeof max !== 'undefined' && max !== '0001-01-01T00:00:00' ? new Date(max).getFullYear() : undefined,
     };
-
-    console.debug(dictionary);
 
     return dictionary;
 }
 
-function formatDateString(dateString: string) {
-    return String(dateString).padStart(4, '0');
-}

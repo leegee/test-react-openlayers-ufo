@@ -13,14 +13,14 @@ ALTER TABLE sightings
 ;
 
 ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
+ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 
-CREATE INDEX full_text_index_report_text
-    ON sightings
-    USING GIN (to_tsvector('english', report_text));
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_ops);
+CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);
 
-CREATE INDEX full_text_index_report_text_norwegian
-    ON sightings
-    USING GIN (to_tsvector('norwegian', report_text));
+-- CREATE INDEX full_text_index_report_text ON sightings USING GIN (to_tsvector('english', report_text));
+-- CREATE INDEX full_text_index_report_text_norwegian ON sightings USING GIN (to_tsvector('norwegian', report_text));
 
 -- Observation date:
 
@@ -61,6 +61,4 @@ ALTER TABLE sightings
 
 ALTER TABLE sightings DROP COLUMN "Annet (4,1)"; -- it is empty
 ALTER TABLE sightings RENAME COLUMN annet61 TO weather_other;
-
-ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 
