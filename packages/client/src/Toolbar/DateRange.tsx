@@ -15,11 +15,12 @@ function setError(msg: string) {
     console.warn(msg); // TODO
 }
 
+let initialised = false;
+
 const DateRange: React.FC = () => {
     const dispatch = useDispatch();
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
     const { from_date, to_date } = useSelector((state: RootState) => state.map); // Access date range from Redux state
-    let initialised = false;
 
     useEffect(() => {
         if (!initialised && dictionary && dictionary.datetime && dictionary.datetime.min && dictionary.datetime.max) {
