@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { get } from 'react-intl-universal';
+import debounce from 'debounce';
 
 import { fetchFeatures, setQ } from '../redux/mapSlice';
 import { RootState } from '../redux/types';
 
 import './SearchText.css';
-import { get } from 'react-intl-universal';
+
+const DEBOUNCE_INPUT_MS = 500;
 
 const SearchText: React.FC = () => {
     const dispatch = useDispatch();
     const { q } = useSelector((state: RootState) => state.map);
+    const [localQ, setLocalQ] = useState<string>(q!);
+
+    const debouncedDispatch = debounce((value: string) => {
+        dispatch(setQ(value));
+        dispatch(fetchFeatures() as any);
+    }, DEBOUNCE_INPUT_MS);
 
     const handleQChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        dispatch(setQ(value));
-        dispatch(fetchFeatures() as any)
+        setLocalQ(value);
+        debouncedDispatch(value);
     };
 
     return (
@@ -24,7 +33,7 @@ const SearchText: React.FC = () => {
                 type='search'
                 id='q'
                 name='q'
-                value={q}
+                value={localQ}
                 onChange={handleQChange}
             />
             <span className='grey search-icon' />
