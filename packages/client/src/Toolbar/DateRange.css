@@ -2,4 +2,19 @@
 
 aside.date-range {
     width: 30vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+span.date {
+    width: 4rem;
+}
+
+span.from {
+    text-align: right;
+}
+
+.rc-slider {
+    margin: 0 1rem;
 }

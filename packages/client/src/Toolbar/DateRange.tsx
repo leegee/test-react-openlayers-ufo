@@ -26,17 +26,15 @@ const DateRange: React.FC = () => {
 
     return (
         <aside className='date-range'>
-            <label title='Dates'>
-                {minValueSelected}
-                <Slider
-                    range={true}
-                    min={minValue}
-                    max={maxValue}
-                    value={[minValueSelected, maxValueSelected]}
-                    onChange={handleSliderChange}
-                />
-                {maxValueSelected}
-            </label>
+            <span className='date from'>{minValueSelected}</span>
+            <Slider
+                range={true}
+                min={minValue}
+                max={maxValue}
+                value={[minValueSelected, maxValueSelected]}
+                onChange={handleSliderChange}
+            />
+            <span className='date to'>{maxValueSelected}</span>
         </aside>
     );
 }
