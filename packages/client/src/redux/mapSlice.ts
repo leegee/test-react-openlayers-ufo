@@ -31,7 +31,7 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   resultsCount: undefined,
-  q: undefined
+  q: ''
 };
 
 const mapSlice = createSlice({
@@ -55,7 +55,7 @@ const mapSlice = createSlice({
       state.to_date = action.payload;
     },
     setQ(state, action: PayloadAction<string>) {
-      state.q = action.payload;
+      state.q = action.payload.trim();
     },
   },
 });
@@ -65,7 +65,7 @@ const { setMapDataFromResponse } = mapSlice.actions;
 export const { setMapParams, setFromDate, setToDate, setQ } = mapSlice.actions;
 
 export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
-  const { zoom, bounds, from_date, to_date } = getState().map;
+  const { zoom, bounds, from_date, to_date, q } = getState().map;
 
   if (!zoom || !bounds) return;
 
@@ -80,11 +80,12 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       show_invalid_dates: String(true),
       ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
       ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+      ...(q !== '' ? { q: q } : {}),
     };
 
     const queryString = new URLSearchParams(queryObject);
     const response = await fetch(`${searchEndpoint}?${queryString}`);
-    const data = await response.json(); // Parse the JSON response
+    const data = await response.json();
 
     console.log('mapSlice.fetchData', queryObject, data);
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'debounce';
 
@@ -30,7 +30,10 @@ const DateRange: React.FC = () => {
         }
     }, [dispatch, dictionary]);
 
-    const debouncedFetchFeatures = debounce(() => dispatch(fetchFeatures() as any), DEBOUNCE_FETCH_MS);
+    const debouncedFetchFeatures = useCallback(
+        debounce(() => dispatch(fetchFeatures() as any), DEBOUNCE_FETCH_MS),
+        [dispatch]
+    );
 
     useEffect(() => {
         debouncedFetchFeatures();
