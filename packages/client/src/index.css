@@ -87,4 +87,10 @@ input[type=password] {
   filter: grayscale(100%);
 }
 
+.component {
+  border: 1pt solid var(--ufo-primary-border-clr);
+  border-radius: 4pt;
+  padding: 0 var(--ufo-div-padding);
+}
+
 /* @media (prefers-color-scheme: light) { */

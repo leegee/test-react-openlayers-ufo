@@ -55,8 +55,8 @@ const DateRange: React.FC = () => {
     };
 
     return (
-        <aside className='date-range'>
-            <span className='grey calendar' title={get('date_range.title')}>📅</span>
+        <aside className='date-range component'>
+            <span className='grey calendar' title={get('date_range.title')} />
             <input
                 title={get('date_range.min')}
                 type='text'
