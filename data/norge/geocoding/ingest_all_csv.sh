@@ -51,5 +51,3 @@ psql -d norge -c "UPDATE sightings AS s
 
 psql -d norge -c "DROP TABLE temporary_table;";
 
-psql -d norge -c "UPDATE sightings SET point = ST_Transform(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), 3857)"
-

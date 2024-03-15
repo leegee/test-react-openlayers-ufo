@@ -116,6 +116,10 @@ function where(q: QueryParams) {
         clauses.push("datetime_invalid IS NOT true");
     }
 
+    if (q.q) {
+        // clauses.push("report_text ");
+    }
+
     clauses.push(`point && ST_Transform(ST_MakeEnvelope($${values.length + 1}, $${values.length + 2}, $${values.length + 3}, $${values.length + 4}, 4326), 3857)`);
     values.push(q.minlng, q.minlat, q.maxlng, q.maxlat);
 
