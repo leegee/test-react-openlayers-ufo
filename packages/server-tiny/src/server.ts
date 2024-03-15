@@ -36,26 +36,21 @@ app.use(async (ctx) => {
         show_invalid_dates: ctx.request.query.show_invalid_dates === 'true',
     };
 
+    if (q.from_date && Number(q.from_date) < 1000) {
+        q.from_date = formatDateString(q.from_date);
+    }
+
+    if (q.to_date && Number(q.to_date) < 1000) {
+        q.to_date = formatDateString(q.to_date);
+    }
+
     if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
         try {
             const { whereClause, values } = where(q);
-
-            let sql = `SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features', jsonb_agg(feature)
-            ) 
-            FROM (
-                SELECT jsonb_build_object(
-                    'type', 'Feature',
-                    'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
-                    'properties', to_jsonb(s) - 'point'
-                ) AS feature
-                FROM (
-                    SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
-                    FROM sightings
-                    ${whereClause}
-                ) AS s
-            ) AS fc`;
+            const sql = geoJsonFor(
+                'SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original, point FROM sightings',
+                whereClause
+            );
 
             const { rows } = await pool.query(sql, values ? values : undefined);
 
@@ -85,6 +80,25 @@ console.debug("Listening on", config.api.port, "\n", JSON.stringify(config, null
 
 app.listen(config.api.port);
 
+
+function geoJsonFor(selectClause: string, whereClause: string) {
+    return `SELECT jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(feature)
+    ) 
+    FROM (
+        SELECT jsonb_build_object(
+            'type', 'Feature',
+            'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
+            'properties', to_jsonb(s) - 'point'
+        ) AS feature
+        FROM (
+            ${selectClause}
+            ${whereClause}
+        ) AS s
+    ) AS fc`;
+
+}
 
 function where(q: QueryParams) {
     const clauses = [];
@@ -144,11 +158,15 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     }
 
     dictionary.datetime = {
-        min: new Date(min).getFullYear(),
+        min: min === '1' ? 0 : new Date(min).getFullYear(),
         max: new Date(max).getFullYear() + 1,
     };
 
     console.debug(dictionary);
 
     return dictionary;
+}
+
+function formatDateString(dateString: string) {
+    return String(dateString).padStart(4, '0');
 }
