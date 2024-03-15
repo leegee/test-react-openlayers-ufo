@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import debounce from 'debounce';
 
 import { fetchFeatures, setQ } from '../redux/mapSlice';
 import { RootState } from '../redux/types';
@@ -8,24 +7,15 @@ import { RootState } from '../redux/types';
 import './SearchText.css';
 import { get } from 'react-intl-universal';
 
-const DEBOUNCE_FETCH_MS = 900;
-
 const SearchText: React.FC = () => {
     const dispatch = useDispatch();
     const { q } = useSelector((state: RootState) => state.map);
-
-    const debouncedFetchFeatures = useCallback(
-        debounce(() => dispatch(fetchFeatures() as any), DEBOUNCE_FETCH_MS),
-        [dispatch]
-    );
 
     const handleQChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         if (value !== undefined && value !== '') {
             dispatch(setQ(value));
-            debouncedFetchFeatures();
-        } else {
-            console.warn('no q');
+            dispatch(fetchFeatures() as any)
         }
     };
 

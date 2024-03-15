@@ -1,6 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import debounce from 'debounce';
 
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import { fetchFeatures, setFromDate, setToDate } from '../redux/mapSlice';
@@ -8,8 +7,6 @@ import { RootState } from '../redux/types';
 
 import './DateRange.css';
 import { get } from 'react-intl-universal';
-
-const DEBOUNCE_FETCH_MS = 900;
 
 function setError(msg: string) {
     console.warn(msg); // TODO
@@ -30,13 +27,8 @@ const DateRange: React.FC = () => {
         }
     }, [dispatch, dictionary]);
 
-    const debouncedFetchFeatures = useCallback(
-        debounce(() => dispatch(fetchFeatures() as any), DEBOUNCE_FETCH_MS),
-        [dispatch]
-    );
-
     useEffect(() => {
-        debouncedFetchFeatures();
+        dispatch(fetchFeatures() as any)
     }, [dispatch, from_date, to_date]);
 
     const handleMinYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
