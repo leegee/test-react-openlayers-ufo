@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Slider from 'rc-slider';
 
@@ -11,11 +11,15 @@ import './DateRange.css';
 const DateRange: React.FC = () => {
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
 
-    const minValue = dictionary?.datetime?.min || 1;
-    const maxValue = dictionary?.datetime?.max || new Date().getFullYear();
+    const [minValueSelected, setMinValueSelected] = useState<number>(1);
+    const [maxValueSelected, setMaxValueSelected] = useState<number>(2);
 
-    const [minValueSelected, setMinValueSelected] = useState(minValue);
-    const [maxValueSelected, setMaxValueSelected] = useState(maxValue);
+    useEffect(() => {
+        if (dictionary && dictionary.datetime) {
+            setMinValueSelected(dictionary.datetime.min || 1);
+            setMaxValueSelected(dictionary.datetime.max || 2);
+        }
+    }, [dictionary]);
 
     const handleSliderChange = (values: number | number[]) => {
         if (values instanceof Array) {
@@ -29,8 +33,8 @@ const DateRange: React.FC = () => {
             <span className='date from'>{minValueSelected}</span>
             <Slider
                 range={true}
-                min={minValue}
-                max={maxValue}
+                min={minValueSelected}
+                max={maxValueSelected}
                 value={[minValueSelected, maxValueSelected]}
                 onChange={handleSliderChange}
             />

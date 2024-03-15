@@ -10,7 +10,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { FeatureCollection } from './reducers';
 
 import config from '@ufo-monorepo-test/config/src';
-import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
+import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
