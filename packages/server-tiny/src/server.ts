@@ -148,5 +148,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
         max: new Date(max).getFullYear() + 1,
     };
 
+    console.debug(dictionary);
+
     return dictionary;
 }
