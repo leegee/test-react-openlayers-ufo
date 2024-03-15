@@ -16,7 +16,7 @@ const FeatureTable: React.FC = () => {
     }, [featureCollection]);
 
     if (!features || !features.length) {
-        return (<p>{get('report.no_data')}</p>);
+        return (<p className='no_data'>{get('report.no_data')}</p>);
     }
 
     return (

@@ -34,3 +34,8 @@ tr th:last-child,
 tr td:last-child {
     padding-right: var(--ufo-div-padding);
 }
+
+.no_data {
+    padding: 1em;
+    text-align: center;
+}
