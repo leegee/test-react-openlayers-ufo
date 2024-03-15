@@ -37,7 +37,7 @@ const mapSlice = createSlice({
     setMapParams(state, action: PayloadAction<{ center: [number, number]; zoom: number; bounds: [number, number, number, number] }>) {
       state.center = action.payload.center;
       state.zoom = action.payload.zoom;
-      state.bounds = action.payload.bounds; // minx, miny, maxx, maxy
+      state.bounds = action.payload.bounds;
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
       state.featureCollection = action.payload.results as FeatureCollection;
