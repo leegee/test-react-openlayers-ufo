@@ -22,6 +22,8 @@ export interface FeatureCollectionResponse {
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
 
+let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
 const initialState: MapState = {
   featureCollection: null,
   zoom: 5,
@@ -84,12 +86,23 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
     };
 
     const queryString = new URLSearchParams(queryObject);
-    const response = await fetch(`${searchEndpoint}?${queryString}`);
-    const data = await response.json();
 
-    console.log('mapSlice.fetchData', queryObject, data);
+    const debounceTimeout = 500; // Adjust as needed
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
 
-    dispatch(setMapDataFromResponse(data));
+    timeoutId = setTimeout(async () => {
+      try {
+        const response = await fetch(`${searchEndpoint}?${queryString}`);
+        const data = await response.json();
+        console.log('mapSlice.fetchData', queryObject, data);
+        dispatch(setMapDataFromResponse(data));
+      } catch (error) {
+        // Handle errors
+        console.error(error);
+      }
+    }, debounceTimeout);
   }
   catch (error) {
     // TODO Handle errors
