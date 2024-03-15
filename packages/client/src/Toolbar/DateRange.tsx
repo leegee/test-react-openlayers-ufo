@@ -16,7 +16,7 @@ const DateRange: React.FC = () => {
 
     useEffect(() => {
         if (dictionary && dictionary.datetime) {
-            setMinValueSelected(dictionary.datetime.min || 1);
+            setMinValueSelected(dictionary.datetime.min || 0);
             setMaxValueSelected(dictionary.datetime.max || 2);
         }
     }, [dictionary]);
@@ -30,7 +30,7 @@ const DateRange: React.FC = () => {
 
     return (
         <aside className='date-range'>
-            <span className='date from'>{minValueSelected}</span>
+            <span className='date from'>{minValueSelected === 1 ? 'N/A' : minValueSelected}</span>
             <Slider
                 range={true}
                 min={minValueSelected}

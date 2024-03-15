@@ -24,6 +24,8 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
+* Report width
+* Slider handles
 * On-screen info about points as tooltip
 * Expose more data: shape, colour, direction, etc
 * Filter on all columns, firstly date

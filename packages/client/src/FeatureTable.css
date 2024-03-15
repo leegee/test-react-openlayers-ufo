@@ -1,12 +1,12 @@
 /* FeatureTable.css */
 
-table {
-    padding: 0;
+table.report {
+    position: relative;
+    display: table;
     margin: 0;
-    font-size: 90%;
     background-color: var(--ufo-primary-bg);
-    width: auto;
     padding: 0 var(--ufo-div-padding);
+    width: calc(100% - var(--ufo-div-padding));
 }
 
 thead {
@@ -19,6 +19,7 @@ thead {
 thead th {
     border-bottom: 1pt solid var(--ufo-primary-border-clr);
     padding-bottom: 0.5rem;
+    text-align: left;
 }
 
 tr:nth-child(even) {
@@ -27,4 +28,9 @@ tr:nth-child(even) {
 
 td {
     vertical-align: top;
+}
+
+tr th:last-child,
+tr td:last-child {
+    padding-right: var(--ufo-div-padding);
 }

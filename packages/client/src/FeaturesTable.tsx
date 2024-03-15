@@ -20,7 +20,7 @@ const FeatureTable: React.FC = () => {
     }
 
     return (
-        <table>
+        <table className='report'>
             <thead>
                 <tr>
                     <th>{get('report.date')}</th>
