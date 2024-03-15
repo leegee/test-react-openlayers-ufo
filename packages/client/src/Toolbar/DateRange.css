@@ -1,20 +1,19 @@
 /* DateRange.css */
 
-aside.date-range {
-    width: 30vw;
+.date-range {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
-span.date {
-    width: 4rem;
+input[type=number] {
+    width: 4em;
+    text-align: center !important;
+    font-family: 'Courier New', Courier, monospace;
 }
 
-span.from {
-    text-align: right;
-}
-
-.rc-slider {
-    margin: 0 1rem;
+.calendar {
+    display: inline-block;
+    padding-right: 0.5em;
+    padding-bottom: 0.25em;
 }

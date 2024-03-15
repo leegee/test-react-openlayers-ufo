@@ -75,5 +75,16 @@ button:hover {
   outline: none;
 }
 
+input[type=text],
+input[type=number],
+input[type=email],
+input[type=password] {
+  border: 0;
+  border-bottom: 1pt dotted var(--ufo-primary-border-clr);
+}
+
+.grey {
+  filter: grayscale(100%);
+}
 
 /* @media (prefers-color-scheme: light) { */
