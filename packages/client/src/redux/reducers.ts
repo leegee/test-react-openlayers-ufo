@@ -28,6 +28,7 @@ export interface MapState {
   dictionary: MapDictionary | undefined;
   from_date?: number;
   to_date?: number;
+  q?: string | undefined;
 }
 
 const rootReducer = combineReducers({

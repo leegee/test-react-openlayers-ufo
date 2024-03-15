@@ -90,7 +90,7 @@ input[type=password] {
 .component {
   border: 1pt solid var(--ufo-primary-border-clr);
   border-radius: 4pt;
-  padding: 0 var(--ufo-div-padding);
+  padding: 0 3pt;
 }
 
 /* @media (prefers-color-scheme: light) { */

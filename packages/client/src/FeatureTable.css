@@ -1,6 +1,6 @@
 /* FeatureTable.css */
 
-table.report {
+table.feature-table {
     position: relative;
     display: table;
     margin: 0;
@@ -9,33 +9,35 @@ table.report {
     width: calc(100% - var(--ufo-div-padding));
 }
 
-thead {
-    position: sticky;
-    top: 0;
-    background-color: var(--ufo-primary-bg-odd);
-    z-index: 1;
-}
+table.feature-table {
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: var(--ufo-primary-bg-odd);
+        z-index: 1;
+    }
 
-thead th {
-    border-bottom: 1pt solid var(--ufo-primary-border-clr);
-    padding-bottom: 0.5rem;
-    text-align: left;
-}
+    thead th {
+        border-bottom: 1pt solid var(--ufo-primary-border-clr);
+        padding-bottom: 0.5rem;
+        text-align: left;
+    }
 
-tr:nth-child(even) {
-    background-color: var(--ufo-primary-bg-odd);
-}
+    tr:nth-child(even) {
+        background-color: var(--ufo-primary-bg-odd);
+    }
 
-td {
-    vertical-align: top;
-}
+    td {
+        vertical-align: top;
+    }
 
-tr th:last-child,
-tr td:last-child {
-    padding-right: var(--ufo-div-padding);
-}
+    tr th:last-child,
+    tr td:last-child {
+        padding-right: var(--ufo-div-padding);
+    }
 
-.no_data {
-    padding: 1em;
-    text-align: center;
+    .no_data {
+        padding: 1em;
+        text-align: center;
+    }
 }

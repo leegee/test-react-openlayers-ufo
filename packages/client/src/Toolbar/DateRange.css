@@ -1,4 +1,4 @@
-/* DateRange.css */
+/* DateRange.module.css */
 
 .date-range {
     display: flex;
@@ -6,17 +6,19 @@
     justify-content: flex-start;
 }
 
-input {
-    width: 4em;
-    text-align: center !important;
-    font-family: 'Courier New', Courier, monospace;
-}
+.date-range {
+    input {
+        width: 4em;
+        text-align: center;
+        font-family: 'Courier New', Courier, monospace;
+    }
 
-.calendar-icon {
-    display: inline-block;
-    padding-right: 0.5em;
-}
+    .calendar-icon {
+        display: inline-block;
+        padding-right: 0.5em;
+    }
 
-.calendar-icon::after {
-    content: '📅';
+    .calendar-icon::after {
+        content: '📅';
+    }
 }

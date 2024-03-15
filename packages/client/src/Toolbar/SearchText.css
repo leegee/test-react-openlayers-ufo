@@ -1,0 +1,27 @@
+/* DateRange.module.css */
+
+.search-text {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 12em;
+}
+
+.search-text {
+    input {
+        flex-grow: 1;
+        width: 100%;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: left;
+    }
+
+    .search-icon {
+        display: inline-block;
+        padding-left: 0.25em;
+        rotate: 90deg;
+    }
+
+    .search-icon::after {
+        content: '🔍';
+    }
+}

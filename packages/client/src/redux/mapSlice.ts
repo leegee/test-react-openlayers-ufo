@@ -31,6 +31,7 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   resultsCount: undefined,
+  q: undefined
 };
 
 const mapSlice = createSlice({
@@ -53,12 +54,15 @@ const mapSlice = createSlice({
     setToDate(state, action: PayloadAction<number>) {
       state.to_date = action.payload;
     },
+    setQ(state, action: PayloadAction<string>) {
+      state.q = action.payload;
+    },
   },
 });
 
 const { setMapDataFromResponse } = mapSlice.actions;
 
-export const { setMapParams, setFromDate, setToDate } = mapSlice.actions;
+export const { setMapParams, setFromDate, setToDate, setQ } = mapSlice.actions;
 
 export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
   const { zoom, bounds, from_date, to_date } = getState().map;

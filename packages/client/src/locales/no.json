@@ -9,6 +9,9 @@
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området"
     },
+    "search_text": {
+        "title": "Søk etter tekst"
+    },
     "date_range": {
         "title": "Datoperiode",
         "min": "Minimum",
