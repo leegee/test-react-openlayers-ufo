@@ -44,7 +44,7 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
-      state.resultsCount = action.payload.results.features.length;
+      state.resultsCount = action.payload.results && action.payload.results.features ? action.payload.results.features.length : 0;
       state.featureCollection = action.payload.results as FeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },

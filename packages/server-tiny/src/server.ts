@@ -25,7 +25,7 @@ app.use(async (ctx) => {
         results: undefined as FeatureCollection | undefined,
     };
 
-    const q: QueryParams = {
+    const userArgs: QueryParams = {
         minlng: parseFloat(ctx.request.query.minlng as string),
         minlat: parseFloat(ctx.request.query.minlat as string),
         maxlng: parseFloat(ctx.request.query.maxlng as string),
@@ -34,35 +34,41 @@ app.use(async (ctx) => {
         from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : undefined,
         show_undated: ctx.request.query.show_undated === 'true',
         show_invalid_dates: ctx.request.query.show_invalid_dates === 'true',
+        q: ctx.request.query.q ? String(ctx.request.query.q).trim() : undefined,
     };
 
-    if (q.from_date && Number(q.from_date) < 1000) {
-        q.from_date = formatDateString(q.from_date);
+    if (userArgs.from_date && Number(userArgs.from_date) < 1000) {
+        userArgs.from_date = formatDateString(userArgs.from_date);
     }
 
-    if (q.to_date && Number(q.to_date) < 1000) {
-        q.to_date = formatDateString(q.to_date);
+    if (userArgs.to_date && Number(userArgs.to_date) < 1000) {
+        userArgs.to_date = formatDateString(userArgs.to_date);
     }
 
-    if (q !== null && q.minlat !== undefined && q.minlng !== undefined && q.maxlat !== undefined && q.maxlng !== undefined) {
+    if (userArgs !== null && userArgs.minlat !== undefined && userArgs.minlng !== undefined && userArgs.maxlat !== undefined && userArgs.maxlng !== undefined) {
         try {
-            const { whereClause, values } = where(q);
+            const { whereClause, whereValues, selectClause } = where(userArgs);
             const sql = geoJsonFor(
-                'SELECT location_text, address, report_text, datetime, datetime_invalid, datetime_original, point FROM sightings',
+                `SELECT
+                location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
+                ${selectClause} 
+                FROM sightings`,
                 whereClause
             );
 
-            const { rows } = await pool.query(sql, values ? values : undefined);
+            console.debug('BEFORE', { q: userArgs, sql, whereValues });
+
+            const { rows } = await pool.query(sql, whereValues ? whereValues : undefined);
 
             if (rows[0].jsonb_build_object.features === null) {
-                console.warn({ msg: 'features===null', sql, values });
+                console.warn({ msg: 'features===null', sql, whereValues });
             }
 
             body.results = rows[0].jsonb_build_object as FeatureCollection;
             body.dictionary = await getDictionary(body.results);
         }
         catch (e) {
-            console.debug(e);
+            console.debug('ERROR', e);
             body.status = 500;
             body.msg = new String(e);
         }
@@ -70,7 +76,7 @@ app.use(async (ctx) => {
 
     else {
         body.status = 400;
-        body.msg = 'Missing request parameters in ' + JSON.stringify(q);
+        body.msg = 'Missing request parameters in ' + JSON.stringify(userArgs);
     }
 
     ctx.body = JSON.stringify(body);
@@ -97,39 +103,70 @@ function geoJsonFor(selectClause: string, whereClause: string) {
             ${whereClause}
         ) AS s
     ) AS fc`;
-
 }
 
-function where(q: QueryParams) {
-    const clauses = [];
-    const values = [];
+function where(userArgs: QueryParams) {
+    const whereClauses: String[] = [];
+    const selectClauses: String[] = [];
+    const whereValues = [];
 
-    if (q.from_date !== undefined && q.to_date !== undefined) {
-        console.log(q);
-        clauses.push("(datetime BETWEEN $1 AND $2)");
-        values.push(q.from_date + "-01-01 00:00:00", q.to_date + "-12-31 23:59:59");
-    }
-    if (!q.show_undated) {
-        clauses.push("datetime IS NOT NULL");
-    }
-    if (!q.show_invalid_dates) {
-        clauses.push("datetime_invalid IS NOT true");
+    // if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
+    //     console.log(userArgs);
+    //     whereClauses.push(`(datetime BETWEEN $${whereValues.length + 1} AND $${whereValues.length + 2})`);
+    //     whereValues.push(userArgs.from_date + "-01-01 00:00:00", userArgs.to_date + "-12-31 23:59:59");
+    // }
+
+    // if (!userArgs.show_undated) {
+    //     whereClauses.push("datetime IS NOT NULL");
+    // }
+    // if (!userArgs.show_invalid_dates) {
+    //     whereClauses.push("datetime_invalid IS NOT true");
+    // }
+
+    if (userArgs.q !== undefined) {
+        whereClauses.push(`
+            (to_tsvector('norwegian', report_text) @@ to_tsquery('norwegian', $${whereValues.length + 1})
+            OR to_tsvector('english', report_text) @@ to_tsquery('english', $${whereValues.length + 1})
+            ) OR location_text ILIKE $${whereValues.length + 2}
+        `);
+        whereValues.push(userArgs.q);
+        whereValues.push('%' + userArgs.q + '%');
+        selectClauses.push(`
+            CASE
+                WHEN to_tsvector('norwegian', report_text) @@ to_tsquery('norwegian', $1) THEN 1
+                WHEN to_tsvector('english', report_text) @@ to_tsquery('english', $1) THEN 1
+                ELSE 0
+            END AS report_match,
+            CASE
+                WHEN location_text ILIKE $2 THEN 1
+                ELSE 0
+            END AS location_match
+        `);
     }
 
-    if (q.q) {
-        // clauses.push("report_text ");
-    }
+    whereClauses.push(`point && ST_Transform(ST_MakeEnvelope($${whereValues.length + 1}, $${whereValues.length + 2}, $${whereValues.length + 3}, $${whereValues.length + 4}, 4326), 3857)`);
+    whereValues.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
 
-    clauses.push(`point && ST_Transform(ST_MakeEnvelope($${values.length + 1}, $${values.length + 2}, $${values.length + 3}, $${values.length + 4}, 4326), 3857)`);
-    values.push(q.minlng, q.minlat, q.maxlng, q.maxlat);
-
-    return clauses.length ? {
-        whereClause: ' WHERE ' + clauses.join(' AND '),
-        values: values
-    } : {
+    const rv: {
+        whereClause: string,
+        selectClause: string,
+        whereValues: undefined | any[]
+    } = {
         whereClause: '',
-        values: undefined
+        whereValues: undefined,
+        selectClause: '',
     };
+
+    if (whereClauses.length) {
+        rv.whereClause = ' WHERE ' + whereClauses.join(' AND ');
+        rv.whereValues = whereValues;
+    }
+
+    if (selectClauses.length) {
+        rv.selectClause = ', ' + selectClauses.join(', ');
+    }
+
+    return rv;
 }
 
 async function getDictionary(featureCollection: FeatureCollection | undefined) {
