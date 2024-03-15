@@ -25,6 +25,8 @@ export interface MapState {
   bounds: [number, number, number, number] | null;
   featureCollection: FeatureCollection | null;
   dictionary: MapDictionary | undefined;
+  from_date?: number;
+  to_date?: number;
 }
 
 const rootReducer = combineReducers({

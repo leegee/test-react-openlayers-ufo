@@ -28,6 +28,8 @@ const initialState: MapState = {
   center: [19, 63.5],
   bounds: null,
   dictionary: undefined,
+  from_date: undefined,
+  to_date: undefined,
 };
 
 const mapSlice = createSlice({
@@ -43,13 +45,22 @@ const mapSlice = createSlice({
       state.featureCollection = action.payload.results as FeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
+    setFromDate(state, action: PayloadAction<number>) {
+      state.from_date = action.payload;
+    },
+    setToDate(state, action: PayloadAction<number>) {
+      state.to_date = action.payload;
+    },
   },
 });
 
-export const { setMapParams, setMapDataFromResponse } = mapSlice.actions;
+const { setMapDataFromResponse } = mapSlice.actions;
+
+export const { setMapParams, setFromDate, setToDate } = mapSlice.actions;
 
 export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
-  const { zoom, bounds } = getState().map;
+  const { zoom, bounds, from_date, to_date } = getState().map;
+
   if (!zoom || !bounds) return;
 
   try {
@@ -61,15 +72,16 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       maxlat: String(bounds[3]),
       show_undated: String(true),
       show_invalid_dates: String(true),
+      ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+      ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
     };
+
     const queryString = new URLSearchParams(queryObject);
     const response = await fetch(`${searchEndpoint}?${queryString}`);
-
     const data = await response.json(); // Parse the JSON response
 
     console.log('mapSlice.fetchData', queryObject, data);
 
-    // Dispatch action to update the fetched data in the state
     dispatch(setMapDataFromResponse(data));
   }
   catch (error) {

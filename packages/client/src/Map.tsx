@@ -9,7 +9,6 @@ import OSM from 'ol/source/OSM';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
-// import { updateVectorLayer, vectorLayer } from './lib/VectorLayer';
 import { updateVectorLayer, vectorLayer } from './lib/ClusterVectorLayer';
 
 import 'ol/ol.css';
