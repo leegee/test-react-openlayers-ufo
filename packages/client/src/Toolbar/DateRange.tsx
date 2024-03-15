@@ -1,34 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFromDate, setToDate } from '../redux/mapSlice';
+import debounce from 'debounce';
 
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
+import { fetchFeatures, setFromDate, setToDate } from '../redux/mapSlice';
 import { RootState } from '../redux/types';
 
 import './DateRange.css';
 import { get } from 'react-intl-universal';
 
+const DEBOUNCE_FETCH_MS = 900;
+
+function setError(msg: string) {
+    console.warn(msg); // TODO
+}
+
 const DateRange: React.FC = () => {
     const dispatch = useDispatch();
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
-
-    const [minYear, setMinYear] = useState<number | undefined>(undefined);
-    const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
-    const [error, setError] = useState<string | undefined>(undefined);
-
+    const { from_date, to_date } = useSelector((state: RootState) => state.map); // Access date range from Redux state
+    let initialised = false;
 
     useEffect(() => {
-        if (dictionary && dictionary.datetime && dictionary.datetime.min && dictionary.datetime.max) {
-            setMinYear(dictionary.datetime.min);
-            setMaxYear(dictionary.datetime.max);
+        if (!initialised && dictionary && dictionary.datetime && dictionary.datetime.min && dictionary.datetime.max) {
+            initialised = true;
+            dispatch(setFromDate(dictionary.datetime.min));
+            dispatch(setToDate(dictionary.datetime.max));
         }
-    }, [dictionary]);
+    }, [dispatch, dictionary]);
+
+    const debouncedFetchFeatures = debounce(() => dispatch(fetchFeatures() as any), DEBOUNCE_FETCH_MS);
+
+    useEffect(() => {
+        debouncedFetchFeatures();
+    }, [dispatch, from_date, to_date]);
 
     const handleMinYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value);
-        if (!isNaN(value) && (maxYear === undefined || value <= maxYear)) {
-            setMinYear(value);
-            setError(undefined);
+        if (!isNaN(value) && (to_date === undefined || value <= to_date)) {
             dispatch(setFromDate(value));
         } else {
             setError(get('date_range.error.min_range'));
@@ -37,9 +46,7 @@ const DateRange: React.FC = () => {
 
     const handleMaxYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value);
-        if (!isNaN(value) && (minYear === undefined || value >= minYear)) {
-            setMaxYear(value);
-            setError(undefined);
+        if (!isNaN(value) && (from_date === undefined || value >= from_date)) {
             dispatch(setToDate(value));
         } else {
             setError(get('date_range.error.max_range'));
@@ -50,21 +57,20 @@ const DateRange: React.FC = () => {
         <aside className='date-range'>
             <span className='grey calendar'>📅</span>
             <input
-                type='number'
+                type='text'
                 id='minYear'
                 name='minYear'
-                value={minYear === undefined ? '' : String(minYear).padStart(4, '0')}
+                value={from_date === undefined ? '' : from_date}
                 onChange={handleMinYearChange}
             />
             -
             <input
-                type='number'
+                type='text'
                 id='maxYear'
                 name='maxYear'
-                value={maxYear === undefined ? '' : maxYear}
+                value={to_date === undefined ? '' : to_date}
                 onChange={handleMaxYearChange}
             />
-            {/* {error && <span className='error'>{error}</span>} */}
         </aside>
     );
 }

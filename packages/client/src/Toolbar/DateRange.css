@@ -6,7 +6,7 @@
     justify-content: flex-start;
 }
 
-input[type=number] {
+input {
     width: 4em;
     text-align: center !important;
     font-family: 'Courier New', Courier, monospace;
