@@ -20,7 +20,7 @@ let initialised = false;
 const DateRange: React.FC = () => {
     const dispatch = useDispatch();
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
-    const { from_date, to_date } = useSelector((state: RootState) => state.map); // Access date range from Redux state
+    const { from_date, to_date } = useSelector((state: RootState) => state.map);
 
     useEffect(() => {
         if (!initialised && dictionary && dictionary.datetime && dictionary.datetime.min && dictionary.datetime.max) {
@@ -56,7 +56,7 @@ const DateRange: React.FC = () => {
 
     return (
         <aside className='date-range component'>
-            <span className='grey calendar' title={get('date_range.title')} />
+            <span className='grey calendar-icon' title={get('date_range.title')} />
             <input
                 title={get('date_range.min')}
                 type='text'

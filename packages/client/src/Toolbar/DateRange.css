@@ -12,11 +12,11 @@ input {
     font-family: 'Courier New', Courier, monospace;
 }
 
-.calendar {
+.calendar-icon {
     display: inline-block;
     padding-right: 0.5em;
 }
 
-.calendar::after {
+.calendar-icon::after {
     content: '📅';
 }
