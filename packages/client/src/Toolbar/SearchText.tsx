@@ -13,17 +13,15 @@ const SearchText: React.FC = () => {
 
     const handleQChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        if (value !== undefined && value !== '') {
-            dispatch(setQ(value));
-            dispatch(fetchFeatures() as any)
-        }
+        dispatch(setQ(value));
+        dispatch(fetchFeatures() as any)
     };
 
     return (
         <aside className='search-text component'>
             <input
                 title={get('search_text.title')}
-                type='text'
+                type='search'
                 id='q'
                 name='q'
                 value={q}

@@ -75,12 +75,17 @@ button:hover {
   outline: none;
 }
 
-input[type=text],
-input[type=number],
-input[type=email],
-input[type=password] {
+input {
   border: 0;
   border-bottom: 1pt dotted var(--ufo-primary-border-clr);
+  border-radius: 4pt;
+  caret-shape: bar;
+  caret-color: #FF3;
+}
+
+input:focus,
+input:focus-visible {
+  border-bottom: 1px solid #FF3;
 }
 
 .grey {
