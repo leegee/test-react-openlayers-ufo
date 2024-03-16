@@ -1,4 +1,5 @@
 \set ON_ERROR_STOP on
+SET client_encoding TO 'UTF8';
 
 DROP TABLE IF EXISTS sightings;
 
@@ -33,7 +34,13 @@ CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_tr
 
 UPDATE sightings
 SET
-    datetime_original = CONCAT("obs år", '-', "Obs måned", '-', observasjonsdato),
+    datetime_original = CONCAT(
+        COALESCE(LPAD("obs år", 2, '0'), '01'),
+         '-', 
+        COALESCE(LPAD("Obs måned", 2, '0'), '01'),
+         '-', 
+         COALESCE(LPAD("observasjonsdato", 2, '0'), '01'),
+    ),
     datetime = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(

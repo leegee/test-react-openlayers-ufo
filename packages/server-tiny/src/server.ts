@@ -48,7 +48,7 @@ app.use(async (ctx) => {
         let forErrorReporting = {};
 
         try {
-            const { whereClause, whereValues, selectClause } = where(userArgs);
+            const { whereClause, whereParams, selectClause } = where(userArgs);
             const sql = geoJsonFor(
                 `SELECT
                 location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
@@ -58,16 +58,16 @@ app.use(async (ctx) => {
             );
 
             const formattedQuery = sql.replace(/\$(\d+)/g, (_, index) => {
-                const param = whereValues ? whereValues[index - 1] : undefined;
+                const param = whereParams ? whereParams[index - 1] : undefined;
                 return typeof param === 'string' ? `'${param}'` : param;
             });
 
-            forErrorReporting = { sql, selectClause, whereClause, whereValues, formattedQuery };
+            forErrorReporting = { sql, selectClause, whereClause, whereParams, formattedQuery };
 
-            const { rows } = await pool.query(sql, whereValues ? whereValues : undefined);
+            const { rows } = await pool.query(sql, whereParams ? whereParams : undefined);
 
             if (rows[0].jsonb_build_object.features === null) {
-                console.warn({ msg: 'features===null', sql, whereValues });
+                console.warn({ msg: 'features===null', sql, whereParams });
             }
 
             body.results = rows[0].jsonb_build_object as FeatureCollection;
@@ -114,23 +114,25 @@ function geoJsonFor(selectClause: string, whereClause: string) {
 function where(userArgs: QueryParams) {
     const whereClauses: String[] = [];
     const selectClauses: String[] = ['id'];
-    const whereValues = [];
+    const whereParams = [];
     const orderBy = [];
 
     if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
         whereClauses.push(
-            `(datetime BETWEEN $${whereValues.length + 1} AND $${whereValues.length + 2})`,
+            `(datetime BETWEEN $${whereParams.length + 1} AND $${whereParams.length + 2})`
+        );
+        whereParams.push(
             userArgs.from_date + " 01-01 00:00:00",
             userArgs.to_date + " 12-31 23:59:59"
         );
     }
     else if (userArgs.from_date !== undefined) {
-        whereClauses.push(`(datetime >= ${whereValues.length + 1})`);
-        whereValues.push(userArgs.from_date + " 01-01 00:00:00");
+        whereClauses.push(`(datetime >= ${whereParams.length + 1})`);
+        whereParams.push(userArgs.from_date + " 01-01 00:00:00");
     }
     else if (userArgs.to_date !== undefined) {
-        whereClauses.push(`(datetime <= $${whereValues.length + 1})`);
-        whereValues.push(userArgs.to_date + " 12-31 23:59:59");
+        whereClauses.push(`(datetime <= $${whereParams.length + 1})`);
+        whereParams.push(userArgs.to_date + " 12-31 23:59:59");
     }
     else if (!userArgs.show_undated) {
         whereClauses.push("(datetime IS NOT NULL)");
@@ -142,35 +144,35 @@ function where(userArgs: QueryParams) {
 
     if (userArgs.q !== undefined && userArgs.q !== '') {
         whereClauses.push(`(
-            location_text ILIKE $${whereValues.length + 1}
-         OR report_text ILIKE $${whereValues.length + 1}
+            location_text ILIKE $${whereParams.length + 1}
+          OR report_text ILIKE $${whereParams.length + 1}
         )`);
         selectClauses.push(
-            `similarity(location_text, $${whereValues.length + 1}) AS location_text_score`,
-            `similarity(report_text, $${whereValues.length + 1}) AS report_text_score`
+            `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,
+            `similarity(report_text, $${whereParams.length + 1}) AS report_text_score`
         );
-        whereValues.push(userArgs.q + '%');
+        whereParams.push(userArgs.q + '%');
         orderBy.push('location_text_score DESC, report_text_score DESC');
     }
 
-    whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereValues.length + 1}, $${whereValues.length + 2}, $${whereValues.length + 3}, $${whereValues.length + 4}, 4326), 3857))`);
-    whereValues.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
+    whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+    whereParams.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
 
     const rv: {
         whereClause: string,
         selectClause: string,
         orderBy: string,
-        whereValues: any[] | undefined,
+        whereParams: any[] | undefined,
     } = {
         whereClause: '',
-        whereValues: undefined,
+        whereParams: undefined,
         selectClause: '',
         orderBy: '',
     };
 
     if (whereClauses.length) {
         rv.whereClause = ' WHERE ' + whereClauses.join(' AND ');
-        rv.whereValues = whereValues;
+        rv.whereParams = whereParams;
     }
 
     if (selectClauses.length) {

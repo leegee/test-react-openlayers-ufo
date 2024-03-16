@@ -1,3 +1,5 @@
+SET client_encoding TO 'UTF8';
+
 UPDATE sightings SET point = ST_Transform(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), 3857);
 
 CREATE INDEX spatial_index_point ON sightings USING GIST (point);
