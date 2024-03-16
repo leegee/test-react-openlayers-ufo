@@ -8,11 +8,13 @@
 
 From Erik via Fred, this directory contains an export of the MS Access database `Ufo_Norge_Hoveddatabase.mdb`, and scripts to convert it to PostGIS and, in part, to English.
 
-The database as exported is unusual in its format, and the scripts herein to attempt to tame it, little by little.
+The data does not contain latitude/longitude details, but most records contain place names and links to counties. 
 
-The data does not contain latitude/longitude details, but most records contain place names and (links to) county names.Some effort is spent to programmatically correct obvious spelling mistakes, and to add more details that can be provided to a geocoding service. So far geocoding has found maybe half of the locations. The remaining names may have to be done by hand.
+Some effort was spent to programmatically correct obvious spelling mistakes, and to add more details that can be provided to a geocoding service. So far geocoding has found maybe half of the locations. The remaining names may have to be done by hand.
 
 See the SQL for notes and a list of as yet unprocessed places.
+
+The MDB dump also contains a lot of joins that are not documented in the dump files: perhaps they are in the associated PDF, I will ahve to check. Currently, I have to ignore those, which renders inaccessible a lot of valuable data. Help needed!
 
     norge=# select location_text from sightings where latitude is null and location_text is not null ORDER BY location_text ASC; 
     
