@@ -1,15 +1,18 @@
 # Norge Data
 
-From Erik via Fred, this directory contains an export of the MS Access database `Ufo_Norge_Hoveddatabase.mdb`,
-though it may not be in Git due to privacy concerns.
+##  Synopsis
 
-The database as exported is unusual in its format, and here lie scripts to attempt to tame it, little by little.
+    ./create_db.sh
 
-The data does not contain latitude/longitude details, but most records contain place names and (links to) county names.
+## Notes
 
-Some effort is herein made to programmatically correct spelling mistakes, and add more details that can be provided to a geocoding service.
+From Erik via Fred, this directory contains an export of the MS Access database `Ufo_Norge_Hoveddatabase.mdb`, and scripts to convert it to PostGIS and, in part, to English.
 
-This has been done for the easiest bits: see the SQL for notes and a list of as yet unprocessed places.
+The database as exported is unusual in its format, and the scripts herein to attempt to tame it, little by little.
+
+The data does not contain latitude/longitude details, but most records contain place names and (links to) county names.Some effort is spent to programmatically correct obvious spelling mistakes, and to add more details that can be provided to a geocoding service. So far geocoding has found maybe half of the locations. The remaining names may have to be done by hand.
+
+See the SQL for notes and a list of as yet unprocessed places.
 
     norge=# select location_text from sightings where latitude is null and location_text is not null ORDER BY location_text ASC; 
     
