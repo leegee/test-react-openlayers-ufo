@@ -113,7 +113,7 @@ function geoJsonFor(selectClause: string, whereClause: string) {
 
 function where(userArgs: QueryParams) {
     const whereClauses: String[] = [];
-    const selectClauses: String[] = [];
+    const selectClauses: String[] = ['id'];
     const whereValues = [];
     const orderBy = [];
 
