@@ -16,6 +16,11 @@ const config = {
     searchable_text_col_keys: ['location_text', 'report_text'],
     debug: true,
   },
+  gui: {
+    map: {
+      centre: [12, 64] as [number, number]
+    }
+  }
 };
 
 export default config;

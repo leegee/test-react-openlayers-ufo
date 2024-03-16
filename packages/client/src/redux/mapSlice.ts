@@ -27,7 +27,7 @@ let timeoutId: ReturnType<typeof setTimeout> | null = null;
 const initialState: MapState = {
   featureCollection: null,
   zoom: 5,
-  center: [19, 63.5],
+  center: config.gui.map.centre,
   bounds: null,
   dictionary: undefined,
   from_date: undefined,
