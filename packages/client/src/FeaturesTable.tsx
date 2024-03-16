@@ -6,6 +6,17 @@ import { RootState } from './redux/types';
 
 import './FeatureTable.css';
 
+export const EVENT_SHOW_ROW = 'ufo-show-row';
+export interface ShowReportRowEventType extends CustomEvent {
+    detail: {
+        id: string;
+    };
+}
+
+function getRowId(id: number | string) {
+    return 'fid_' + id;
+}
+
 const FeatureTable: React.FC = () => {
     const featureCollection = useSelector((state: any) => state.map.featureCollection);
     const [features, setFeatures] = useState<any[]>([]);
@@ -16,6 +27,18 @@ const FeatureTable: React.FC = () => {
             setFeatures(featureCollection.features);
         }
     }, [featureCollection]);
+
+    useEffect(() => {
+        window.document.addEventListener(
+            EVENT_SHOW_ROW,
+            ((e: ShowReportRowEventType) => {
+                const element = document.getElementById(getRowId(e.detail.id));
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }) as EventListener
+        );
+    }, []);
 
     if (!features || !features.length) {
         return (<p className='no_data'>{get('report.no_data')}</p>);
@@ -40,17 +63,17 @@ const FeatureTable: React.FC = () => {
         <table className='feature-table'>
             <thead>
                 <tr>
-                    <th>{get('report.date')}</th>
-                    <th>{get('report.location')}</th>
-                    <th>{get('report.report')}</th>
+                    <th className='datetime'>{get('report.date')}</th>
+                    <th className='location_text'>{get('report.location')}</th>
+                    <th className='report_text'>{get('report.report')}</th>
                 </tr>
             </thead>
             <tbody>
-                {features.map((feature: any, index: number) => (
-                    <tr key={index}>
-                        <td>{feature.properties.datetime_original}</td>
-                        <td>{highlightText(feature.properties.location_text)}</td>
-                        <td>{highlightText(feature.properties.report_text)}</td>
+                {features.map((feature: any) => (
+                    <tr key={feature.properties.id} id={getRowId(feature.properties.id)}>
+                        <td className='datetime'>{feature.properties.datetime_original}</td>
+                        <td className='location_text'>{highlightText(feature.properties.location_text)}</td>
+                        <td className='report_text'>{highlightText(feature.properties.report_text)}</td>
                     </tr>
                 ))}
             </tbody>

@@ -29,7 +29,7 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
     };
 
     return (
-        <div className={`panel ${collapsed ? 'collapsed' : ''} ${fullWidth ? 'full-width' : ''}`}>
+        <div className={`panel ${collapsed ? 'collapsed' : ''} ${fullWidth ? 'full-width' : 'less-width'}`}>
             <header>
                 <button className="collapse-btn" onClick={toggleCollapse} />
                 <span>

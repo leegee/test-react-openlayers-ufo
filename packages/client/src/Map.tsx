@@ -10,6 +10,7 @@ import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
 import { updateVectorLayer, vectorLayer } from './lib/ClusterVectorLayer';
+import { EVENT_SHOW_ROW, ShowReportRowEventType } from './FeaturesTable';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -45,6 +46,20 @@ const OpenLayersMap: React.FC = () => {
         const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
         dispatch(setMapParams({ center, zoom, bounds }));
       });
+
+      map.on('click', function (e) {
+        map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, _layer) {
+          if (clickedFeature) {
+            const features = clickedFeature.get('features');
+            if (features.length === 1) {
+              window.document.dispatchEvent(
+                new CustomEvent(EVENT_SHOW_ROW, { detail: { id: features[0].get('id') } }) as ShowReportRowEventType
+              );
+            }
+          }
+        });
+      });
+
     }
 
     return () => map?.dispose();

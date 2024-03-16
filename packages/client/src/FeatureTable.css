@@ -31,6 +31,10 @@ table.feature-table {
         vertical-align: top;
     }
 
+    .datetime {
+        white-space: nowrap;
+    }
+
     tr th:last-child,
     tr td:last-child {
         padding-right: var(--ufo-div-padding);
@@ -40,4 +44,14 @@ table.feature-table {
         padding: 1em;
         text-align: center;
     }
+}
+
+/** Global **/
+.panel.less-width .datetime {
+    padding-right: 1em;
+    min-width: 30%;
+}
+
+.panel.less-width .report_text {
+    display: none;
 }

@@ -24,11 +24,9 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
-* Report width
-* Slider handles
-* On-screen info about points as tooltip
+* Normalise `location_date` (`1800-1-31 1800-01-31`)
+* On-screen info about points as tooltip?
 * Expose more data: shape, colour, direction, etc
-* Filter on all columns, firstly date
 * Store bounds and filter settings in the URI
 * Share common-type of request/response
 * Extract more config options
