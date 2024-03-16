@@ -6,7 +6,7 @@ table.feature-table {
     margin: 0;
     background-color: var(--ufo-primary-bg);
     padding: 0 var(--ufo-div-padding);
-    width: calc(100% - var(--ufo-div-padding));
+    width: calc(100% - (var(--ufo-div-padding) * 2));
 }
 
 table.feature-table {
@@ -33,6 +33,10 @@ table.feature-table {
 
     .datetime {
         white-space: nowrap;
+    }
+
+    tr td {
+        padding-top: 0.25em;
     }
 
     tr th:last-child,

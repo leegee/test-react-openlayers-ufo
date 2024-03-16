@@ -1,7 +1,8 @@
 :root {
+  --ufo-brand-clr: #FF3;
   --ufo-primary-fg: rgba(255, 255, 255, 0.85);
   --ufo-primary-bg: #242424;
-  --ufo-primary-bg-odd: #282828;
+  --ufo-primary-bg-odd: #223;
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.15);
   --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
   --ufo-ctrl-bg: #333;
@@ -80,13 +81,13 @@ input {
   border-bottom: 0.5pt dotted var(--ufo-primary-border-clr);
   border-radius: 0;
   caret-shape: bar;
-  caret-color: #FF3;
+  caret-color: var(--ufo-brand-clr);
   background-color: var(--ufo-ctrl-bg);
 }
 
 input:focus,
 input:focus-visible {
-  border-bottom: 1px solid #FF3;
+  border-bottom: 1px solid var(--ufo-brand-clr)
 }
 
 .grey {
@@ -97,6 +98,28 @@ input:focus-visible {
   border: 1pt solid var(--ufo-primary-border-clr);
   border-radius: 4pt;
   padding: 0 3pt;
+}
+
+
+@keyframes flash {
+  0% {
+    opacity: 1;
+    background: var(--ufo-brand-clr);
+  }
+
+  50% {
+    opacity: 0;
+    background: var(--ufo-brand-clr);
+  }
+
+  100% {
+    opacity: 1;
+    background-color: unset;
+  }
+}
+
+.flash {
+  animation: flash 1s;
 }
 
 /* @media (prefers-color-scheme: light) { */

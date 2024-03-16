@@ -5,8 +5,7 @@ import { get } from 'react-intl-universal';
 
 import './ResultsPanel.css';
 
-export const EVENT_FULL_WIDTH = 'ufo-show-row';
-export interface FulLWidthEventType extends CustomEvent { };
+export const EVENT_FULL_WIDTH = 'ufo-report-full-width';
 
 interface PanelProps {
     children: React.ReactNode;
@@ -34,7 +33,7 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
     useEffect(() => {
         window.document.addEventListener(
             EVENT_FULL_WIDTH,
-            ((e: FulLWidthEventType) => {
+            (() => {
                 setFullWidth(true);
                 setCollapsed(false);
             }) as EventListener

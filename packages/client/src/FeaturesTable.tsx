@@ -6,6 +6,8 @@ import { RootState } from './redux/types';
 
 import './FeatureTable.css';
 
+import { EVENT_FULL_WIDTH } from './ResultsPanel';
+
 export const EVENT_SHOW_ROW = 'ufo-show-row';
 export interface ShowReportRowEventType extends CustomEvent {
     detail: {
@@ -34,7 +36,12 @@ const FeatureTable: React.FC = () => {
             ((e: ShowReportRowEventType) => {
                 const element = document.getElementById(getRowId(e.detail.id));
                 if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    window.document.dispatchEvent(new CustomEvent(EVENT_FULL_WIDTH));
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                    setTimeout(() => {
+                        element.classList.add('flash');
+                        element.addEventListener('animationend', () => element.classList.remove('flash'));
+                    }, 500);
                 }
             }) as EventListener
         );
