@@ -3,12 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Map, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
 
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
+import baseLayer from './lib/map-base-layer/layer-dark';
 import { updateVectorLayer, vectorLayer } from './lib/ClusterVectorLayer';
 import { EVENT_SHOW_ROW, ShowReportRowEventType } from './FeaturesTable';
 
@@ -31,7 +30,7 @@ const OpenLayersMap: React.FC = () => {
           zoom,
         }),
         layers: [
-          new TileLayer({ source: new OSM() }),
+          baseLayer,
           vectorLayer
         ],
       });
