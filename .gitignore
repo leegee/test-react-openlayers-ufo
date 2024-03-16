@@ -29,21 +29,3 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 data/norge/Ufo_Norge_Hoveddatabase.mdb
-data/norge/mdb-export/93.sql
-data/norge/mdb-export/96.sql
-data/norge/mdb-export/97.sql
-data/norge/mdb-export/98.sql
-data/norge/mdb-export/104.sql
-data/norge/mdb-export/112.sql
-data/norge/mdb-export/121.sql
-data/norge/mdb-export/127.sql
-data/norge/mdb-export/132.sql
-data/norge/mdb-export/avdelinger.sql
-data/norge/mdb-export/fylke.sql
-data/norge/mdb-export/hovedtabell querybaerum.sql
-data/norge/mdb-export/hovedtabell.sql
-data/norge/mdb-export/postnumre_ansi.sql
-data/norge/mdb-export/postnumre.sql
-data/norge/mdb-export/rapportstatus.sql
-data/norge/mdb-export/switchboard items.sql
-data/norge/mdb-export/ukedag.sql
