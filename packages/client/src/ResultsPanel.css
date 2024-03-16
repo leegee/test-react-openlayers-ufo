@@ -110,6 +110,7 @@ header {
 
 .panel.full-width .full-width-btn::after {
     content: '◀';
+    color: var(--ufo-brand-clr)
 }
 
 

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { init } from 'react-intl-universal';
 
+import config from '@ufo-monorepo-test/config/src';
 import { store } from './redux/store';
 import App from './App';
 
@@ -14,7 +15,7 @@ const locales: Record<string, any> = {
   'no': import('./locales/no.json'),
 };
 
-const locale = 'no';
+const locale = config.locale;
 
 Promise.all([locales[locale]])
   .then(([translations]) => {

@@ -1,4 +1,5 @@
 const config = {
+  locale: 'no',
   db: {
     host: process.env.PGHOST || 'localhost',
     port: parseInt(process.env.PGPORT || '5432'),

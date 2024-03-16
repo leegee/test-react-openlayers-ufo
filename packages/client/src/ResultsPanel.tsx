@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { type RootState } from './redux/types';
 import { get } from 'react-intl-universal';
+import { useSelector } from 'react-redux';
+
+import config from '@ufo-monorepo-test/config/src';
+import { type RootState } from './redux/types';
 
 import './ResultsPanel.css';
 
 export const EVENT_FULL_WIDTH = 'ufo-report-full-width';
+
+const numberFormatter = new Intl.NumberFormat(config.locale);
 
 interface PanelProps {
     children: React.ReactNode;
@@ -45,7 +49,9 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
             <header>
                 <button className="collapse-btn" onClick={toggleCollapse} />
                 <span>
-                    {resultsCount ? resultsCount + ' ' + get('panel.results_count') : get('panel.headerTitle')}
+                    {resultsCount ?
+                        numberFormatter.format(resultsCount) + ' ' + get('panel.results_count')
+                        : get('panel.headerTitle')}
                 </span>
                 <button className="full-width-btn" onClick={toggleFullWidth} />
             </header>
