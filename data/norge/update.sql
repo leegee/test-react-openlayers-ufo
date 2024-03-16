@@ -5,12 +5,19 @@ DROP TABLE IF EXISTS sightings;
 CREATE TABLE sightings AS SELECT * FROM hovedtabell;
 
 ALTER TABLE sightings 
-    ADD COLUMN id SERIAL PRIMARY KEY,
-    ADD COLUMN data_report_number INTEGER,
     ADD COLUMN datetime_original VARCHAR(20),  
     ADD COLUMN datetime TIMESTAMP,
     ADD COLUMN datetime_invalid BOOLEAN
 ;
+
+-- Create a auto-incrementing primary key from 'datarapp nr':
+ALTER TABLE sightings DROP CONSTRAINT IF EXISTS sightings_pkey;
+ALTER TABLE sightings RENAME COLUMN "Datarapp nr" TO id;
+ALTER TABLE sightings ALTER COLUMN id TYPE SERIAL;
+ALTER TABLE sightings ADD PRIMARY KEY (id);
+CREATE SEQUENCE sightings_id_seq OWNED BY sightings.id;
+ALTER TABLE sightings ALTER COLUMN id SET DEFAULT nextval('sightings_id_seq');
+
 
 ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
 ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
