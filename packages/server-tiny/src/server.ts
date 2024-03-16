@@ -33,32 +33,24 @@ router.get('/', async (ctx: Koa.Context) => {
 
     const userArgs: QueryParams = getCleanArgs(ctx.request.query);
 
-    if (userArgs.from_date && Number(userArgs.from_date) === 1) {
-        delete userArgs.from_date;
-    }
-    if (userArgs.to_date && Number(userArgs.to_date) === 1) {
-        delete userArgs.to_date;
-    }
-
-    if (userArgs !== null && userArgs.minlat !== undefined && userArgs.minlng !== undefined && userArgs.maxlat !== undefined && userArgs.maxlng !== undefined) {
+    if (userArgs !== null && userArgs.minlat !== undefined && userArgs.minlng !== undefined
+        && userArgs.maxlat !== undefined && userArgs.maxlng !== undefined
+    ) {
         let forErrorReporting = {};
 
         try {
-            const { whereClause, whereParams, selectClause } = where(userArgs);
+            const { whereClause, whereParams, selectClause } = constructSqlBits(userArgs);
             const sql = geoJsonFor(
-                `SELECT
-                location_text, address, report_text, datetime, datetime_invalid, datetime_original, point
-                ${selectClause} 
-                FROM sightings`,
+                `SELECT ${selectClause} FROM sightings`,
                 whereClause
             );
 
-            const formattedQuery = sql.replace(/\$(\d+)/g, (_, index) => {
+            const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
                 const param = whereParams ? whereParams[index - 1] : undefined;
                 return typeof param === 'string' ? `'${param}'` : param;
             });
 
-            forErrorReporting = { sql, selectClause, whereClause, whereParams, formattedQuery };
+            forErrorReporting = { sql, selectClause, whereClause, whereParams, formattedQuery: formattedQueryForLogging };
 
             const { rows } = await pool.query(sql, whereParams ? whereParams : undefined);
 
@@ -107,9 +99,11 @@ function geoJsonFor(selectClause: string, whereClause: string) {
     ) AS fc`;
 }
 
-function where(userArgs: QueryParams) {
+function constructSqlBits(userArgs: QueryParams) {
     const whereClauses: String[] = [];
-    const selectClauses: String[] = ['id'];
+    const selectClauses: String[] = [
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point', 'point',
+    ];
     const whereParams = [];
     const orderBy = [];
 
@@ -220,7 +214,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
 }
 
 function getCleanArgs(args: ParsedUrlQuery) {
-    return {
+    const userArgs: QueryParams = {
         minlng: parseFloat(args.minlng as string),
         minlat: parseFloat(args.minlat as string),
         maxlng: parseFloat(args.maxlng as string),
@@ -239,5 +233,14 @@ function getCleanArgs(args: ParsedUrlQuery) {
         q_subject: args.q_subject && [config.api.searchable_text_col_keys].includes(
             [args.q_subject.toString()]
         ) ? String(args.q_subject) : undefined,
-    } as QueryParams;
+    };
+
+    if (userArgs.from_date && Number(userArgs.from_date) === 1) {
+        delete userArgs.from_date;
+    }
+    if (userArgs.to_date && Number(userArgs.to_date) === 1) {
+        delete userArgs.to_date;
+    }
+
+    return userArgs;
 }
