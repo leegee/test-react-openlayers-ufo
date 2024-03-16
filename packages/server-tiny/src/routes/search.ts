@@ -13,11 +13,9 @@ export async function search(ctx: Context) {
         results: undefined as FeatureCollection | undefined,
     };
 
-    const userArgs: QueryParams = getCleanArgs(ctx.request.query);
+    const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
 
-    if (userArgs !== null && userArgs.minlat !== undefined && userArgs.minlng !== undefined
-        && userArgs.maxlat !== undefined && userArgs.maxlng !== undefined
-    ) {
+    if (userArgs) {
         let forErrorReporting = {};
 
         try {
@@ -219,5 +217,9 @@ function getCleanArgs(args: ParsedUrlQuery) {
         delete userArgs.to_date;
     }
 
-    return userArgs;
+    return (
+        userArgs !== null &&
+        userArgs.minlat !== undefined && userArgs.minlng !== undefined &&
+        userArgs.maxlat !== undefined && userArgs.maxlng !== undefined
+    ) ? userArgs : null;
 }
