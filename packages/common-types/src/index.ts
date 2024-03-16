@@ -8,6 +8,7 @@ export interface QueryParams {
   show_undated?: boolean;
   show_invalid_dates?: boolean;
   q?: string;
+  q_subject?: string;
 }
 
 export interface DateTimeMinMax {

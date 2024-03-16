@@ -1,10 +1,12 @@
 import pg from "pg";
 import Koa from "koa";
+import Router from 'koa-router';
 import cors from "@koa/cors";
 import type { FeatureCollection } from 'geojson';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
+import { ParsedUrlQuery } from "querystring";
 
 const pool = new pg.Pool({
     user: config.db.user,
@@ -15,9 +17,13 @@ const pool = new pg.Pool({
 });
 
 const app = new Koa();
-app.use(cors({ origin: "*" }));
+const router = new Router();
 
-app.use(async (ctx) => {
+app.use(cors({ origin: "*" }));
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+router.get('/', async (ctx: Koa.Context) => {
     const body = {
         msg: new String(),
         status: 200,
@@ -25,17 +31,7 @@ app.use(async (ctx) => {
         results: undefined as FeatureCollection | undefined,
     };
 
-    const userArgs: QueryParams = {
-        minlng: parseFloat(ctx.request.query.minlng as string),
-        minlat: parseFloat(ctx.request.query.minlat as string),
-        maxlng: parseFloat(ctx.request.query.maxlng as string),
-        maxlat: parseFloat(ctx.request.query.maxlat as string),
-        to_date: ctx.request.query.to_date ? (Array.isArray(ctx.request.query.to_date) ? ctx.request.query.to_date[0] : ctx.request.query.to_date) : undefined,
-        from_date: ctx.request.query.from_date ? (Array.isArray(ctx.request.query.from_date) ? ctx.request.query.from_date[0] : ctx.request.query.from_date) : undefined,
-        show_undated: ctx.request.query.show_undated === 'true',
-        show_invalid_dates: ctx.request.query.show_invalid_dates === 'true',
-        q: ctx.request.query.q ? String(ctx.request.query.q).trim() : undefined,
-    };
+    const userArgs: QueryParams = getCleanArgs(ctx.request.query);
 
     if (userArgs.from_date && Number(userArgs.from_date) === 1) {
         delete userArgs.from_date;
@@ -223,3 +219,25 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     return dictionary;
 }
 
+function getCleanArgs(args: ParsedUrlQuery) {
+    return {
+        minlng: parseFloat(args.minlng as string),
+        minlat: parseFloat(args.minlat as string),
+        maxlng: parseFloat(args.maxlng as string),
+        maxlat: parseFloat(args.maxlat as string),
+
+        to_date: args.to_date ? (Array.isArray(args.to_date) ? args.to_date[0] : args.to_date) : undefined,
+        from_date: args.from_date ? (Array.isArray(args.from_date) ? args.from_date[0] : args.from_date) : undefined,
+
+        show_undated: args.show_undated === 'true',
+        show_invalid_dates: args.show_invalid_dates === 'true',
+
+        // Potentially the subject of a text search:
+        q: args.q ? String(args.q).trim() : undefined,
+
+        // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchable_text_col_keys
+        q_subject: args.q_subject && [config.api.searchable_text_col_keys].includes(
+            [args.q_subject.toString()]
+        ) ? String(args.q_subject) : undefined,
+    } as QueryParams;
+}

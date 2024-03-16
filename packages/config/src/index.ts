@@ -12,7 +12,8 @@ const config = {
     host: 'http://localhost',
     endopoint: {
       search: '/'
-    }
+    },
+    searchable_text_col_keys: ['location_text', 'report_text']
   },
 };
 
