@@ -108,16 +108,28 @@ function constructSqlBits(userArgs: QueryParams) {
     // }
 
     if (userArgs.q !== undefined && userArgs.q !== '') {
-        whereClauses.push(`(
-            location_text ILIKE $${whereParams.length + 1}
-          OR report_text ILIKE $${whereParams.length + 1}
-        )`);
-        selectClauses.push(
-            `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,
-            `similarity(report_text, $${whereParams.length + 1}) AS report_text_score`
-        );
+        const orWhere = [];
+        const orSelect = [];
+        const orOrderBy = [];
+        if (!userArgs.q_subject || userArgs.q_subject.includes('location_text')) {
+            orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
+            orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
+            orOrderBy.push('location_text_score DESC');
+        }
+        if (!userArgs.q_subject || userArgs.q_subject.includes('report_text')) {
+            orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
+            orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
+            orOrderBy.push('report_text_score DESC');
+        }
+        whereClauses.push('(' + orWhere.join(' OR ') + ')');
+
+        // whereClauses.push(`( location_text ILIKE $${whereParams.length + 1} OR report_text ILIKE $${whereParams.length + 1} )`);
+        // selectClauses.push( `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`, `similarity(report_text, $${whereParams.length + 1}) AS report_text_score` );
+        // whereParams.push(userArgs.q + '%');
+        // orderBy.push('location_text_score DESC, report_text_score DESC');
+
         whereParams.push(userArgs.q + '%');
-        orderBy.push('location_text_score DESC, report_text_score DESC');
+        orderBy.push(orOrderBy.join(', '));
     }
 
     whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
@@ -206,7 +218,7 @@ function getCleanArgs(args: ParsedUrlQuery) {
 
         // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchable_text_col_keys
         q_subject: args.q_subject && [config.api.searchable_text_col_keys].includes(
-            [args.q_subject.toString()]
+            args.q_subject instanceof Array ? args.q_subject : [args.q_subject]
         ) ? String(args.q_subject) : undefined,
     };
 
