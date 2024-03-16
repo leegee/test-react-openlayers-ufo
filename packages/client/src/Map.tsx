@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Map, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
+import { easeOut } from 'ol/easing';
 
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures } from './redux/mapSlice';
@@ -54,6 +55,14 @@ const OpenLayersMap: React.FC = () => {
               window.document.dispatchEvent(
                 new CustomEvent(EVENT_SHOW_ROW, { detail: { id: features[0].get('id') } }) as ShowReportRowEventType
               );
+            }
+            else {
+              map!.getView().animate({
+                center: e.coordinate,
+                zoom: 9,
+                duration: 500,
+                easing: easeOut
+              });
             }
           }
         });
