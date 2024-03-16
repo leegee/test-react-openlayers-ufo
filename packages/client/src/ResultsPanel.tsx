@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type RootState } from './redux/types';
 import { get } from 'react-intl-universal';
 
 import './ResultsPanel.css';
+
+export const EVENT_FULL_WIDTH = 'ufo-show-row';
+export interface FulLWidthEventType extends CustomEvent { };
 
 interface PanelProps {
     children: React.ReactNode;
@@ -27,6 +30,16 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
             setCollapsed(false);
         }
     };
+
+    useEffect(() => {
+        window.document.addEventListener(
+            EVENT_FULL_WIDTH,
+            ((e: FulLWidthEventType) => {
+                setFullWidth(true);
+                setCollapsed(false);
+            }) as EventListener
+        );
+    }, []);
 
     return (
         <div className={`panel ${collapsed ? 'collapsed' : ''} ${fullWidth ? 'full-width' : 'less-width'}`}>
