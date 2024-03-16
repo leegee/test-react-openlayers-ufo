@@ -24,6 +24,7 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
+* Logger transports/etc
 * Default sort of results when no filters set
 * Enable switching locale from `no` to `en` and back (1h)
 * Enable switching base map (1h)

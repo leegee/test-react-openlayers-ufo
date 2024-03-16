@@ -13,7 +13,8 @@ const config = {
     endopoint: {
       search: '/'
     },
-    searchable_text_col_keys: ['location_text', 'report_text']
+    searchable_text_col_keys: ['location_text', 'report_text'],
+    debug: true,
   },
 };
 
