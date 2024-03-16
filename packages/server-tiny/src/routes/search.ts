@@ -4,6 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
+import { CustomError } from 'middleware/errors';
 
 export async function search(ctx: Context) {
     const body = {
@@ -42,9 +43,7 @@ export async function search(ctx: Context) {
             body.dictionary = await getDictionary(body.results);
         }
         catch (e) {
-            console.error({ action: 'query', details: forErrorReporting, error: e });
-            body.status = 500;
-            body.msg = new String(e);
+            throw new CustomError({ action: 'query', details: forErrorReporting, error: e as Error });
         }
     }
 
