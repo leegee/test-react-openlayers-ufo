@@ -1,3 +1,5 @@
+import type { FeatureCollection } from "geojson";
+
 export interface QueryParams {
   minlng: number;
   minlat: number;
@@ -19,3 +21,10 @@ export interface DateTimeMinMax {
 export interface MapDictionary {
   datetime: DateTimeMinMax | undefined;
 }
+
+export type QueryResponseType = {
+  msg: string;
+  status: number;
+  dictionary: MapDictionary;
+  results: FeatureCollection | undefined;
+};

@@ -2,16 +2,16 @@ import { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import { ParsedUrlQuery } from "querystring";
 
-import { MapDictionary, QueryParams } from '@ufo-monorepo-test/common-types/src';
+import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from 'middleware/errors';
 
 export async function search(ctx: Context) {
-    const body = {
-        msg: new String(),
+    const body: QueryResponseType = {
+        msg: '',
         status: 200,
-        dictionary: {},
-        results: undefined as FeatureCollection | undefined,
+        dictionary: {} as MapDictionary,
+        results: undefined,
     };
 
     const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
@@ -48,8 +48,10 @@ export async function search(ctx: Context) {
     }
 
     else {
-        body.status = 400;
-        body.msg = 'Missing request parameters in ' + JSON.stringify(userArgs);
+        throw new CustomError({
+            action: 'query',
+            details: 'Missing request parameters in ' + JSON.stringify(userArgs)
+        })
     }
 
     ctx.body = JSON.stringify(body);

@@ -3,10 +3,10 @@ import Koa from 'koa';
 
 export type CustomErrorType = {
     action: string;
+    details: any;
     status?: number;
     msg?: string | string[];
-    details: any;
-    error: Error | string;
+    error?: Error | string;
 }
 
 export class CustomError extends Error {
