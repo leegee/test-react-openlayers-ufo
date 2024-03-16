@@ -20,18 +20,27 @@ export async function search(ctx: Context) {
         let forErrorReporting = {};
 
         try {
-            const { whereClause, whereParams, selectClause } = constructSqlBits(userArgs);
+            let clusterSelect = '';
+            let groupBy = '';
+
+            const { whereClause, whereParams, selectColumns } = constructSqlBits(userArgs);
+
+            if (userArgs.zoom < 10) {
+            }
+
             const sql = geoJsonFor(
-                `SELECT ${selectClause} FROM sightings`,
+                `SELECT ${selectColumns.join(', ')} 
+                ${clusterSelect}
+                FROM sightings`,
                 whereClause
-            );
+            ) + groupBy;
 
             const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
                 const param = whereParams ? whereParams[index - 1] : undefined;
                 return typeof param === 'string' ? `'${param}'` : param;
             });
 
-            forErrorReporting = { sql, selectClause, whereClause, whereParams, formattedQuery: formattedQueryForLogging };
+            forErrorReporting = { sql, selectColumns, whereClause, whereParams, formattedQuery: formattedQueryForLogging };
 
             const { rows } = await ctx.dbh.query(sql, whereParams ? whereParams : undefined);
 
@@ -57,7 +66,7 @@ export async function search(ctx: Context) {
     ctx.body = JSON.stringify(body);
 }
 
-function geoJsonFor(selectClause: string, whereClause: string) {
+function geoJsonFor(selectColumns: string, whereClause: string) {
     return `SELECT jsonb_build_object(
         'type', 'FeatureCollection',
         'features', jsonb_agg(feature)
@@ -69,7 +78,7 @@ function geoJsonFor(selectClause: string, whereClause: string) {
             'properties', to_jsonb(s) - 'point'
         ) AS feature
         FROM (
-            ${selectClause}
+            ${selectColumns}
             ${whereClause}
         ) AS s
     ) AS fc`;
@@ -77,7 +86,7 @@ function geoJsonFor(selectClause: string, whereClause: string) {
 
 function constructSqlBits(userArgs: QueryParams) {
     const whereClauses: String[] = [];
-    const selectClauses: String[] = [
+    const selectColumns: String[] = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
     ];
     const whereParams = [];
@@ -125,7 +134,7 @@ function constructSqlBits(userArgs: QueryParams) {
         whereClauses.push('(' + orWhere.join(' OR ') + ')');
 
         // whereClauses.push(`( location_text ILIKE $${whereParams.length + 1} OR report_text ILIKE $${whereParams.length + 1} )`);
-        // selectClauses.push( `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`, `similarity(report_text, $${whereParams.length + 1}) AS report_text_score` );
+        // selectColumns.push( `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`, `similarity(report_text, $${whereParams.length + 1}) AS report_text_score` );
         // whereParams.push(userArgs.q + '%');
         // orderBy.push('location_text_score DESC, report_text_score DESC');
 
@@ -138,13 +147,13 @@ function constructSqlBits(userArgs: QueryParams) {
 
     const rv: {
         whereClause: string,
-        selectClause: string,
+        selectColumns: string[] | String[],
         orderBy: string,
         whereParams: any[] | undefined,
     } = {
         whereClause: '',
         whereParams: undefined,
-        selectClause: '',
+        selectColumns: [],
         orderBy: '',
     };
 
@@ -153,8 +162,8 @@ function constructSqlBits(userArgs: QueryParams) {
         rv.whereParams = whereParams;
     }
 
-    if (selectClauses.length) {
-        rv.selectClause = selectClauses.join(', ');
+    if (selectColumns.length) {
+        rv.selectColumns = selectColumns;
     }
 
     if (orderBy.length) {
@@ -203,6 +212,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
 
 function getCleanArgs(args: ParsedUrlQuery) {
     const userArgs: QueryParams = {
+        zoom: parseInt(args.zoom as string),
         minlng: parseFloat(args.minlng as string),
         minlat: parseFloat(args.minlat as string),
         maxlng: parseFloat(args.maxlng as string),
@@ -236,3 +246,14 @@ function getCleanArgs(args: ParsedUrlQuery) {
         userArgs.maxlat !== undefined && userArgs.maxlng !== undefined
     ) ? userArgs : null;
 }
+
+
+
+/*
+
+SELECT ST_ClusterDBSCAN(geom, eps := 0.1, minpoints := 2) OVER() AS cluster_id,
+       ST_Centroid(ST_Collect(geom)) AS cluster_geom,
+       COUNT(*) AS num_points
+FROM your_points_table
+GROUP BY cluster_id;
+*/

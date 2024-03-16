@@ -5,6 +5,7 @@ export interface QueryParams {
   minlat: number;
   maxlng: number;
   maxlat: number;
+  zoom: number;
   to_date?: string | undefined;
   from_date?: string | undefined;
   show_undated?: boolean;
