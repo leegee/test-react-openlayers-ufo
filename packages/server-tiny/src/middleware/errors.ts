@@ -12,7 +12,7 @@ export type CustomErrorType = {
 export class CustomError extends Error {
     constructor(args: CustomErrorType) {
         args.status = args.status || 500;
-        const message = JSON.stringify(args);
+        const message = JSON.stringify(args, null, 4);
         super(message);
         this.name = this.constructor.name;
         Object.setPrototypeOf(this, CustomError.prototype);
