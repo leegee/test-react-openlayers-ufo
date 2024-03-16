@@ -10,7 +10,8 @@
         "no_data": "Ingen data for det synlige området"
     },
     "search_text": {
-        "title": "Søk etter tekst"
+        "title": "Søk",
+        "placeholder": "Søk"
     },
     "date_range": {
         "title": "Datoperiode",

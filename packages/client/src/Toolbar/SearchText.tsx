@@ -28,6 +28,7 @@ const SearchText: React.FC = () => {
 
     return (
         <aside className='search-text component'>
+            <span className='grey search-icon' />
             <input
                 title={get('search_text.title')}
                 type='search'
@@ -35,8 +36,8 @@ const SearchText: React.FC = () => {
                 name='q'
                 value={localQ}
                 onChange={handleQChange}
+                placeholder={get('search_text.placeholder')}
             />
-            <span className='grey search-icon' />
         </aside>
     );
 }

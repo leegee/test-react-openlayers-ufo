@@ -10,7 +10,8 @@
         "no_data": "No data for the visible area"
     },
     "search_text": {
-        "title": "Search for text"
+        "title": "Search",
+        "placeholder": "Search"
     },
     "date_range": {
         "title": "Date range",
