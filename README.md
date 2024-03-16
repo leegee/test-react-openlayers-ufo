@@ -24,15 +24,17 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
+* Tests.
 * Logger transports/etc
-* Default sort of results when no filters set
+* Decide on a default sort of results when no filters set
+* Sort order toggling (2h)
 * Enable switching locale from `no` to `en` and back (1h)
 * Enable switching base map (1h)
-* Normalise `location_date` (`1800-1-31 1800-01-31`) (1h)
 * On-screen info about points as tooltip? (4h)
-* Expose more data: shape, colour, direction, etc
 * Store bounds and filter settings in the URI (4h)
 * Share common-type of request/response (1h)
+
+* Expose more data: shape, colour, direction, etc
 * Extract more config options
 
 ## DB
