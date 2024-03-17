@@ -186,6 +186,7 @@ function constructSqlBits(userArgs: QueryParams) {
         // whereParams.push(userArgs.q + '%');
         // orderBy.push('location_text_score DESC, report_text_score DESC');
 
+        selectColumns.push(orSelect.join(', '));
         whereParams.push(userArgs.q + '%');
         orderBy.push(orOrderBy.join(', '));
     }
