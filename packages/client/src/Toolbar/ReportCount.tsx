@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import config from '@ufo-monorepo-test/config/src';
 import { REPORT_NARROW_WIDTH, REPORT_FULL_WIDTH } from '../custom-events/report-width';
-import { type RootState } from '../redux/types';
+import { type RootState } from '../redux/store';
 
 import './ReportCount.css';
 
