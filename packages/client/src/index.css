@@ -1,5 +1,5 @@
 :root {
-  --ufo-brand-clr: #FF3;
+  --ufo-brand-clr: #FFA500;
   --ufo-primary-fg: rgba(255, 255, 255, 0.85);
   --ufo-primary-bg: #242424;
   --ufo-primary-bg-odd: #223;
@@ -102,6 +102,11 @@ input:focus-visible {
   border-radius: 4pt;
   padding: 0 3pt;
   margin-left: 1rem;
+}
+
+.component:focus-within,
+.component.highlightable:focus-within:hover {
+  border-color: transparent;
 }
 
 .component.highlightable:hover {
