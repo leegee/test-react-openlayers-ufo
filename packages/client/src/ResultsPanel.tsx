@@ -34,9 +34,9 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
 
     if (resultsCount && !clusterCount) {
         return (
-            <main className='panel'>
+            <section className='panel'>
                 {children}
-            </main>
+            </section>
         );
     }
 
