@@ -21,6 +21,6 @@ app.use(router.allowedMethods());
 router.get('/', searchRoute);
 
 app.listen(config.api.port, () => {
-    console.debug({ action: 'start-up', msg: `Listening on ${config.api.port}`, config });
+    console.info({ action: 'start-up', port: config.api.port });
 });
 
