@@ -40,19 +40,16 @@ const FeatureTable: React.FC = () => {
     }, [featureCollection]);
 
     useEffect(() => {
-        document.addEventListener(
-            EVENT_SHOW_POINT,
-            ((e: ShowPointEventType) => {
-                const element = document.getElementById(getRowId(e.detail.id));
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
-                    setTimeout(() => {
-                        element.classList.add('flash');
-                        element.addEventListener('animationend', () => element.classList.remove('flash'));
-                    }, 500);
-                }
-            }) as EventListener
-        );
+        document.addEventListener(EVENT_SHOW_POINT, ((e: ShowPointEventType) => {
+            const element = document.getElementById(getRowId(e.detail.id));
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                setTimeout(() => {
+                    element.classList.add('flash');
+                    element.addEventListener('animationend', () => element.classList.remove('flash'));
+                }, 500);
+            }
+        }) as EventListener);
     }, []);
 
     function showPointOnMap(id: string) {
@@ -72,7 +69,7 @@ const FeatureTable: React.FC = () => {
                     <th className='datetime'>{get('report.date')}</th>
                     <th className='location_text'>{get('report.location')}</th>
                     <th className='report_text'>{get('report.report')}</th>
-                    <th className='cmd'>
+                    <th className='ctrls'>
                         <span className='close-full-report' onClick={() => setReportWidth('narrow')} />
                         <span className='open-full-report' onClick={() => setReportWidth('full-width')} />
                     </th>
@@ -84,7 +81,7 @@ const FeatureTable: React.FC = () => {
                         <td className='datetime'>{feature.properties.datetime_original}</td>
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
-                        <td className='cmd'>
+                        <td className='ctrls'>
                             <span className='ctrl goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
                             <span className='ctrl goto-map' onClick={() => showPointOnMap(feature.properties.id)} />
                         </td>

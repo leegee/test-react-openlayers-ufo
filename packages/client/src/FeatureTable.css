@@ -51,6 +51,13 @@ table.feature-table {
         text-align: center;
     }
 
+    .ctrls {
+        white-space: nowrap;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     .ctrl {
         opacity: 50%;
         filter: grayscale(100%);
@@ -64,7 +71,7 @@ table.feature-table {
     }
 
     .goto-map {
-        margin-left: 1em;
+        margin-left: 0.25em;
     }
 
     .goto-map::after {
@@ -74,7 +81,6 @@ table.feature-table {
     .goto-full-report::after {
         content: '🛈';
         font-size: 120%;
-        line-height: 80%;
     }
 
     .close-full-report::after {
@@ -93,10 +99,6 @@ table.feature-table {
 
 
 .REPORT_NARROW_WIDTH .feature-table .close-full-report {
-    display: none;
-}
-
-.REPORT_NARROW_WIDTH .feature-table .ctrl.goto-map {
     display: none;
 }
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Map, MapBrowserEvent, View } from 'ol';
+import { Feature, Map, MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 
@@ -9,7 +9,7 @@ import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
 import config from '@ufo-monorepo-test/config/src';
-import { showPoint } from './custom-events/point-show';
+import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
@@ -20,12 +20,28 @@ import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixe
 
 import 'ol/ol.css';
 import './Map.css';
+import Layer from 'ol/layer/Layer';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+
+type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
+
+type MapLayersI = {
+  [key in MapLayerKeyType]: VectorLayer<VectorSource<any>>;
+}
+
+const mapLayers: MapLayersI = {
+  clusterOnly: clusterOnlyLayer,
+  mixedSearchResults: mixedSearchResultsLayer,
+  points: pointsLayer,
+}
 
 const OpenLayersMap: React.FC = () => {
-  const mapRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
   const basemapSource = useSelector(selectBasemapSource);
+  const mapElementRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<Map | null>(null);
 
   setTheme(basemapSource);
 
@@ -37,14 +53,29 @@ const OpenLayersMap: React.FC = () => {
   };
 
   useEffect(() => {
+    const handleShowPointEvent = (e: ShowPointEventType) => {
+      if (!e.detail.id) return;
+      const feature = findFeature(pointsLayer, e.detail.id);
+      if (feature) {
+        centerMapOnFeature(mapRef.current!, feature);
+      }
+    };
+
+    document.addEventListener(EVENT_SHOW_POINT, handleShowPointEvent as EventListener);
+
+    return () => {
+      document.removeEventListener(EVENT_SHOW_POINT, handleShowPointEvent as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
     let map: Map | null = null;
 
-    pointsLayer.setVisible(false);
-    clusterOnlyLayer.setVisible(true);
+    if (mapElementRef.current) {
+      setVisibleDataLayer('clusterOnly');
 
-    if (mapRef.current) {
       map = new Map({
-        target: mapRef.current,
+        target: mapElementRef.current,
         view: new View({
           center: fromLonLat(center),
           zoom,
@@ -53,11 +84,11 @@ const OpenLayersMap: React.FC = () => {
           baseLayerDark,
           baseLayerLight,
           baseLayerGeo,
-          clusterOnlyLayer,
-          mixedSearchResultsLayer,
-          pointsLayer,
+          ...Object.values(mapLayers)
         ],
       });
+
+      mapRef.current = map;
 
       setupFeatureHighlighting(map);
 
@@ -84,31 +115,25 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
-    if (!mapRef.current || !featureCollection || featureCollection.features === null) return;
+    if (!mapElementRef.current || !featureCollection || featureCollection.features === null) return;
     if (q && q.length >= config.minQLength) {
-      clusterOnlyLayer.setVisible(false);
-      pointsLayer.setVisible(false);
-      mixedSearchResultsLayer.setVisible(true);
-      updateMixedSearchResultsLayer(featureCollection);
       setReportWidth('narrow');
-    }
-    else if (zoom < config.zoomLevelForPoints) {
-      mixedSearchResultsLayer.setVisible(false);
-      pointsLayer.setVisible(false);
+      updateMixedSearchResultsLayer(featureCollection);
+      setVisibleDataLayer('mixedSearchResults');
+    } else if (zoom < config.zoomLevelForPoints) {
       updateClusterOnlyLayer(featureCollection);
-      clusterOnlyLayer.setVisible(true);
+      setVisibleDataLayer('clusterOnly');
     } else {
-      mixedSearchResultsLayer.setVisible(false);
-      clusterOnlyLayer.setVisible(false);
       updatePointsLayer(featureCollection);
-      pointsLayer.setVisible(true);
+      setVisibleDataLayer('points');
     }
   }, [featureCollection]);
 
-  return (<section className='map' ref={mapRef} >
+  return (<section className='map' ref={mapElementRef} >
     <button onClick={handleToggleTheme} className='theme highlightable ol-unselectable ol-control' />
   </section>);
 };
+
 
 // Zoom to the cluster or point on click
 function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
@@ -170,6 +195,38 @@ const setTheme = (newBasemapSource: string) => {
       break;
   }
 };
+
+function centerMapOnFeature(map: Map, feature: any) { // ugh
+  const geometry = feature.getGeometry();
+  if (geometry) {
+    const coordinates = geometry.getCoordinates();
+    map.getView().animate({
+      center: coordinates,
+      zoom: config.zoomLevelForPoints + 2,
+      duration: 500,
+    });
+  }
+}
+
+function findFeature(layer: Layer, id: string | number): Feature | null {
+  // set layer to visible.
+  const source = layer.getSource() as VectorSource;
+  const features = source.getFeatures();
+
+  for (const feature of features) {
+    if (feature.get('id') == id) {
+      return feature;
+    }
+  }
+  return null;
+}
+
+function setVisibleDataLayer(layerName: MapLayerKeyType) {
+  console.info('setVisibleDataLayer', layerName);
+  for (let l of Object.keys(mapLayers)) {
+    (mapLayers as any)[l].setVisible(l === layerName);
+  }
+}
 
 export default OpenLayersMap;
 

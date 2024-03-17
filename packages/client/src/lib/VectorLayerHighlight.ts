@@ -10,7 +10,6 @@ import { Style, Stroke } from 'ol/style';
 const featureOverlay = new VectorLayer({
     source: new VectorSource(),
     style: (feature) => {
-        console.log(feature);
         return new Style({
             stroke: new Stroke({
                 color: 'yellow',
