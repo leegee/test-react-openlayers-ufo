@@ -1,31 +1,24 @@
-// ClusterVectorLayer.ts
+// ServerClustersOnlyLyaer.ts
+
 import { bbox } from "ol/loadingstrategy";
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import Cluster from 'ol/source/Cluster';
 
-import { sightingsStyleFunction } from "./sightings-styles";
 import type { UfoFeatureCollection } from '../redux/reducers';
-
-const CLUSTER_DISTANCE = 40;
+import { sightingsStyleFunction } from "./sightings-styles";
 
 const vectorSource = new VectorSource({
     strategy: bbox,
     format: new GeoJSON(),
 });
 
-const clusterSource = new Cluster({
-    distance: CLUSTER_DISTANCE,
-    source: vectorSource
-});
-
 export const vectorLayer = new VectorLayer({
-    source: clusterSource,
+    source: vectorSource,
     style: sightingsStyleFunction,
 });
 
-vectorLayer.set('name', 'clusters');
+vectorLayer.set('name', 'server-clusters-only');
 
 export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
     vectorSource.clear();

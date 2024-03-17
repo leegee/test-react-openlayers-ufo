@@ -5,10 +5,25 @@ import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 
 export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number): Style => {
     const features = feature.get('features');
+    const serverClusterNumPoints = feature.get('num_points');
     const size = features ? features.length : undefined;
     let style;
 
-    if (size) {
+    if (serverClusterNumPoints) {
+        style = new Style({
+            image: new Circle({
+                radius: 10,
+                fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
+                stroke: new Stroke({ color: '#3399CC', width: 2 })
+            }),
+            text: new Text({
+                text: serverClusterNumPoints.toString(),
+                fill: new Fill({ color: 'white' })
+            })
+        });
+    }
+
+    else if (size) {
         style = new Style({
             image: new Circle({
                 radius: 10,

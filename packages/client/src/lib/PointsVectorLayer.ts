@@ -5,7 +5,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
-import type { FeatureCollection } from '../redux/reducers';
+import type { UfoFeatureCollection } from '../redux/reducers';
 import { sightingsStyleFunction } from "./sightings-styles";
 
 const vectorSource = new VectorSource({
@@ -20,7 +20,7 @@ export const vectorLayer = new VectorLayer({
 
 vectorLayer.set('name', 'points');
 
-export function updateVectorLayer(featureCollection: FeatureCollection) {
+export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
     vectorSource.clear();
     vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
     console.debug("Number of features added:", vectorSource.getFeatures().length);

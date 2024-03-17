@@ -12,7 +12,8 @@ import config from '@ufo-monorepo-test/config/src';
 import { showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayer from './lib/map-base-layer/layer-dark';
-import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
+// import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
+import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 
 import 'ol/ol.css';
