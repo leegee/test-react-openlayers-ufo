@@ -80,9 +80,23 @@ table.feature-table {
     .close-full-report::after {
         content: '◀';
     }
+
+    .open-full-report::after {
+        content: '▶';
+        opacity: 50%;
+    }
 }
 
+.REPORT_FULL_WIDTH .feature-table .open-full-report {
+    display: none;
+}
+
+
 .REPORT_NARROW_WIDTH .feature-table .close-full-report {
+    display: none;
+}
+
+.REPORT_NARROW_WIDTH .feature-table .ctrl.goto-map {
     display: none;
 }
 

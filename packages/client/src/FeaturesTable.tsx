@@ -4,7 +4,7 @@ import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
 import { RootState } from './redux/store';
-import { EVENT_SHOW_POINT, ShowPointEventType } from './custom-events/point-show';
+import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import { setReportWidth } from './custom-events/report-width';
 
 import './FeatureTable.css';
@@ -55,6 +55,15 @@ const FeatureTable: React.FC = () => {
         );
     }, []);
 
+    function showPointOnMap(id: string) {
+        setReportWidth('narrow');
+        showPoint(id);
+    }
+
+    function gotoFulLReport(id: string) {
+        setReportWidth('full-width')
+    }
+
     return (
         <table className='feature-table'>
             <thead>
@@ -64,6 +73,7 @@ const FeatureTable: React.FC = () => {
                     <th className='report_text'>{get('report.report')}</th>
                     <th className='cmd'>
                         <span className='close-full-report' onClick={() => setReportWidth('narrow')} />
+                        <span className='open-full-report' onClick={() => setReportWidth('full-width')} />
                     </th>
                 </tr>
             </thead>
@@ -74,8 +84,8 @@ const FeatureTable: React.FC = () => {
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                         <td className='cmd'>
-                            <span className='ctrl goto-full-report' onClick={() => setReportWidth('full-width')} />
-                            <span className='ctrl goto-map' />
+                            <span className='ctrl goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
+                            <span className='ctrl goto-map' onClick={() => showPointOnMap(feature.properties.id)} />
                         </td>
                     </tr>
                 ))}
