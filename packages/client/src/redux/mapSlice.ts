@@ -79,6 +79,7 @@ const mapSlice = createSlice({
     },
     setBasemapSource: (state, action) => {
       state.basemapSource = action.payload;
+      localStorage.setItem('basemap_source', state.basemapSource);
     },
   },
 });

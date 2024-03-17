@@ -6,15 +6,16 @@ import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 
 import { RootState } from './redux/store';
-import { setMapParams, fetchFeatures } from './redux/mapSlice';
+import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
 import config from '@ufo-monorepo-test/config/src';
 import { showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
-import baseLayer from './lib/map-base-layer/layer-dark';
-// import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
+import baseLayerDark from './lib/map-base-layer/layer-dark';
+import baseLayerLight from './lib/map-base-layer/layer-osm';
 import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
+// import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -23,6 +24,20 @@ const OpenLayersMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const { center, zoom, bounds, featureCollection } = useSelector((state: RootState) => state.map);
+  const basemapSource = useSelector(selectBasemapSource);
+
+  const setTheme = () => {
+    baseLayerDark.setVisible(basemapSource === 'dark');
+    baseLayerLight.setVisible(basemapSource !== 'dark');
+  };
+
+  setTheme();
+
+  const handleToggleTheme = () => {
+    const newBasemapSource = basemapSource === 'dark' ? 'light' : 'dark';
+    dispatch(setBasemapSource(newBasemapSource));
+    setTheme();
+  };
 
   useEffect(() => {
     let map: Map | null = null;
@@ -38,7 +53,8 @@ const OpenLayersMap: React.FC = () => {
           zoom,
         }),
         layers: [
-          baseLayer,
+          baseLayerDark,
+          baseLayerLight,
           clusterLayer,
           pointsLayer,
         ],
@@ -81,7 +97,9 @@ const OpenLayersMap: React.FC = () => {
     }
   }, [featureCollection]);
 
-  return <div className='map' ref={mapRef} />;
+  return (<section className='map' ref={mapRef} >
+    <button onClick={handleToggleTheme} className='theme highlightable ol-unselectable ol-control' />
+  </section>);
 };
 
 // Zoom to the cluster or point on click
@@ -106,6 +124,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
     }
   });
 }
+
 
 export default OpenLayersMap;
 

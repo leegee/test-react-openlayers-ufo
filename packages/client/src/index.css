@@ -109,7 +109,7 @@ input:focus-visible {
   border-color: transparent;
 }
 
-.component.highlightable:hover {
+.highlightable:hover {
   border-color: var(--ufo-brand-clr)
 }
 
