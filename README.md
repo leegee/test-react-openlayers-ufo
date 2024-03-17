@@ -31,13 +31,11 @@ Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 * Decide on a default sort of results when no filters set
 * Sort order toggling (2h)
 * Enable switching locale from `no` to `en` and back (1h)
-* Enable switching base map (1h)
 * On-screen info about points as tooltip? (4h)
 * Store bounds and filter settings in the URI (4h)
 * Share common-type of request/response (1h)
-
+* Server should infer number of clusters (`cluster_eps`) from zoom level.
 * Expose more data: shape, colour, direction, etc
-* Extract more config options
 
 ## DB
 
