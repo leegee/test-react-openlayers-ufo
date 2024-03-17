@@ -3,12 +3,12 @@ import React from 'react';
 
 import DateRange from './Toolbar/DateRange';
 import SearchText from './Toolbar/SearchText';
-import ReportCtrl from './Toolbar/ReportCount'
+import ReportCount from './Toolbar/ReportCount'
 import './Toolbar.css';
 
 const Toolbar: React.FC = () => {
     return (<nav className='toolbar'>
-        <ReportCtrl />
+        <ReportCount />
         <DateRange />
         <SearchText />
     </nav>)
