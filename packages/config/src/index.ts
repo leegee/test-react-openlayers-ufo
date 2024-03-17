@@ -20,6 +20,7 @@ const config = {
   gui: {
     map: {
       centre: [18, 64] as [number, number],
+      cluster_eps_metres: 50000, // The distance between clusters
     }
   },
   zoomLevelForPoints: 8,

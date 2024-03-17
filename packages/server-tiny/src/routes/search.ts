@@ -69,7 +69,7 @@ export async function search(ctx: Context) {
                                 COUNT(*) AS num_points
                             FROM (
                                 SELECT 
-                                    ST_ClusterDBSCAN(point, eps := 0.1, minpoints := 2) OVER() AS cluster_id,
+                                    ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
                                     point
                                 FROM sightings
                                 WHERE (point && ST_Transform(ST_MakeEnvelope($1, $2, $3, $4, 4326), 3857))
