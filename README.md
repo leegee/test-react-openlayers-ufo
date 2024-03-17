@@ -10,9 +10,11 @@ WIP, just testing.
 
 ## Description
 
-Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux.
+A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`), with a portable Koa data access layer.
 
-A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`), with a tiny Koa data access layer.
+Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux. I prefer Vue and Pinia, but....
+
+Currently the master branch has server- and client-side clustering, but  the is also a slightly-outdate `no-clusters` branch.
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
