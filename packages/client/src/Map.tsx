@@ -14,9 +14,9 @@ import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
-import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ServerClustersOnlyLyaer';
+import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-// import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
+import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixedSearchResultsLayer } from './lib/ClusterVectorLayer';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -24,33 +24,8 @@ import './Map.css';
 const OpenLayersMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-  const { center, zoom, bounds, featureCollection } = useSelector((state: RootState) => state.map);
+  const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
   const basemapSource = useSelector(selectBasemapSource);
-
-  const setTheme = (newBasemapSource: string) => {
-    switch (newBasemapSource) {
-      case 'dark':
-        baseLayerDark.setVisible(true);
-        baseLayerLight.setVisible(false);
-        baseLayerGeo.setVisible(false);
-        break;
-      case 'light':
-        baseLayerDark.setVisible(false);
-        baseLayerLight.setVisible(true);
-        baseLayerGeo.setVisible(false);
-        break;
-      case 'geo':
-        baseLayerDark.setVisible(false);
-        baseLayerLight.setVisible(false);
-        baseLayerGeo.setVisible(true);
-        break;
-      default:
-        baseLayerDark.setVisible(false);
-        baseLayerLight.setVisible(false);
-        baseLayerGeo.setVisible(true);
-        break;
-    }
-  };
 
   setTheme(basemapSource);
 
@@ -65,7 +40,7 @@ const OpenLayersMap: React.FC = () => {
     let map: Map | null = null;
 
     pointsLayer.setVisible(false);
-    clusterLayer.setVisible(true);
+    clusterOnlyLayer.setVisible(true);
 
     if (mapRef.current) {
       map = new Map({
@@ -78,7 +53,8 @@ const OpenLayersMap: React.FC = () => {
           baseLayerDark,
           baseLayerLight,
           baseLayerGeo,
-          clusterLayer,
+          clusterOnlyLayer,
+          mixedSearchResultsLayer,
           pointsLayer,
         ],
       });
@@ -109,13 +85,22 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     if (!mapRef.current || !featureCollection || featureCollection.features === null) return;
-    if (zoom < config.zoomLevelForPoints) {
-      updateClusterLayer(featureCollection);
-      clusterLayer.setVisible(true);
+    if (q && q.length >= config.minQLength) {
+      clusterOnlyLayer.setVisible(false);
       pointsLayer.setVisible(false);
+      mixedSearchResultsLayer.setVisible(true);
+      updateMixedSearchResultsLayer(featureCollection);
+      setReportWidth('narrow');
+    }
+    else if (zoom < config.zoomLevelForPoints) {
+      mixedSearchResultsLayer.setVisible(false);
+      pointsLayer.setVisible(false);
+      updateClusterOnlyLayer(featureCollection);
+      clusterOnlyLayer.setVisible(true);
     } else {
+      mixedSearchResultsLayer.setVisible(false);
+      clusterOnlyLayer.setVisible(false);
       updatePointsLayer(featureCollection);
-      clusterLayer.setVisible(false);
       pointsLayer.setVisible(true);
     }
   }, [featureCollection]);
@@ -131,7 +116,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
     if (clickedFeature && !didOneFeature) {
       const features = clickedFeature.get('features');
-      if (layer.get('name') == clusterLayer.get('name')) {
+      if (layer.get('name') == clusterOnlyLayer.get('name')) {
         map!.getView().animate({
           center: e.coordinate,
           zoom: config.zoomLevelForPoints,
@@ -158,6 +143,31 @@ const getNextBasemapSource = (currentBasemapSource: string) => {
     case 'geo':
     default:
       return 'dark';
+  }
+};
+
+const setTheme = (newBasemapSource: string) => {
+  switch (newBasemapSource) {
+    case 'dark':
+      baseLayerDark.setVisible(true);
+      baseLayerLight.setVisible(false);
+      baseLayerGeo.setVisible(false);
+      break;
+    case 'light':
+      baseLayerDark.setVisible(false);
+      baseLayerLight.setVisible(true);
+      baseLayerGeo.setVisible(false);
+      break;
+    case 'geo':
+      baseLayerDark.setVisible(false);
+      baseLayerLight.setVisible(false);
+      baseLayerGeo.setVisible(true);
+      break;
+    default:
+      baseLayerDark.setVisible(false);
+      baseLayerLight.setVisible(false);
+      baseLayerGeo.setVisible(true);
+      break;
   }
 };
 

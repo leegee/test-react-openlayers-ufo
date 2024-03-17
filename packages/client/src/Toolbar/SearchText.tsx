@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
+import config from '@ufo-monorepo-test/config/src';
 import { fetchFeatures, setQ } from '../redux/mapSlice';
 import { setReportWidth } from '../custom-events/report-width';
 import { RootState } from '../redux/store';
@@ -38,6 +39,7 @@ const SearchText: React.FC = () => {
                 name='q'
                 value={localQ}
                 onChange={handleQChange}
+                minLength={config.minQLength}
                 placeholder={get('search_text.placeholder')}
             />
         </nav>

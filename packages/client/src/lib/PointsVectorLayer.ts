@@ -5,7 +5,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
-import type { UfoFeatureCollection } from '../redux/reducers';
+import type { UfoFeatureCollection } from '../redux/mapSlice';
 import { sightingsStyleFunction } from "./sightings-styles";
 
 const vectorSource = new VectorSource({

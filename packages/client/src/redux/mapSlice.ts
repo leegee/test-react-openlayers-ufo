@@ -109,6 +109,10 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       ...(q !== '' ? { q: q } : {}),
     };
 
+    if (queryObject.q && queryObject.q.length < config.minQLength) {
+      return;
+    }
+
     const queryString = new URLSearchParams(queryObject);
 
     const debounceTimeout = config.api.fetchDebounceMs;

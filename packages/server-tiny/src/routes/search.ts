@@ -23,31 +23,48 @@ export async function search(ctx: Context) {
 
     const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
 
-    if (userArgs) {
-        let forErrorReporting = {};
+    if (!userArgs) {
+        throw new CustomError({
+            action: 'query',
+            msg: 'Missing request parameters',
+            details: userArgs
+        })
+    }
 
-        try {
-            let sql: string;
-            let sqlBits: SqlBitsType = {
-                whereClause: '',
-                whereParams: [],
-                selectColumns: [],
-            };
+    if (userArgs.q && userArgs.q.length < config.minQLength) {
+        throw new CustomError({
+            action: 'query',
+            msg: 'Text query too short',
+            details: { q: userArgs.q }
+        });
+    }
 
-            // console.debug({
-            //     supplieZoom: userArgs.zoom,
-            //     configZoom: config.zoomLevelForPoints
-            // })
+    let forErrorReporting = {};
 
-            if (userArgs.zoom >= config.zoomLevelForPoints) {
-                sqlBits = constructSqlBits(userArgs);
-                sql = geoJsonForPoints(
-                    `SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings`,
-                    sqlBits.whereClause
-                ) + sqlBits.orderBy;
-            }
-            else {
-                sql = `
+    try {
+        let sql: string;
+        let sqlBits: SqlBitsType = {
+            whereClause: '',
+            whereParams: [],
+            selectColumns: [],
+        };
+
+        // console.debug({
+        //     supplieZoom: userArgs.zoom,
+        //     configZoom: config.zoomLevelForPoints
+        // })
+
+        // Return points for queries, or when zoomed in
+        if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
+            sqlBits = constructSqlBits(userArgs);
+            sql = geoJsonForPoints(
+                `SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings`,
+                sqlBits.whereClause,
+                sqlBits.orderBy
+            );
+        }
+        else {
+            sql = `
                     SELECT jsonb_build_object(
                         'type', 'FeatureCollection',
                         'features', jsonb_agg(feature),
@@ -77,44 +94,35 @@ export async function search(ctx: Context) {
                             GROUP BY cluster_id
                         ) AS s
                     ) AS fc `,
-                    sqlBits.whereParams = [userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat];
-            }
-
-            const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
-                const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
-                return typeof param === 'string' ? `'${param}'` : param;
-            });
-
-            forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging };
-
-            const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
-
-            if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-                if (config.api.debug) {
-                    console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
-                }
-            }
-
-            body.results = rows[0].jsonb_build_object as FeatureCollection;
-            body.dictionary = await getDictionary(body.results);
+                sqlBits.whereParams = [userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat];
         }
-        catch (e) {
-            throw new CustomError({ action: 'query', details: forErrorReporting, error: e as Error });
+
+        const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
+            const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
+            return typeof param === 'string' ? `'${param}'` : param;
+        });
+
+        forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging };
+
+        const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+
+        if (rows[0].jsonb_build_object.features === null && config.api.debug) {
+            if (config.api.debug) {
+                console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
+            }
         }
+
+        body.results = rows[0].jsonb_build_object as FeatureCollection;
+        body.dictionary = await getDictionary(body.results);
     }
-
-    else {
-        throw new CustomError({
-            action: 'query',
-            msg: 'Missing request parameters',
-            details: userArgs
-        })
+    catch (e) {
+        throw new CustomError({ action: 'query', details: forErrorReporting, error: e as Error });
     }
 
     ctx.body = JSON.stringify(body);
 }
 
-function geoJsonForPoints(selectStr: string, whereStr: string) {
+function geoJsonForPoints(selectStr: string, whereStr: string, orderBy = '') {
     return `SELECT jsonb_build_object(
         'type', 'FeatureCollection',
         'features', jsonb_agg(feature)
@@ -128,6 +136,7 @@ function geoJsonForPoints(selectStr: string, whereStr: string) {
         FROM (
             ${selectStr}
             ${whereStr}
+            ${orderBy}
         ) AS s
     ) AS fc`;
 }

@@ -6,7 +6,7 @@ import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 
 import { sightingsStyleFunction } from "./sightings-styles";
-import type { UfoFeatureCollection } from '../redux/reducers';
+import type { UfoFeatureCollection } from '../redux/mapSlice';
 
 const CLUSTER_DISTANCE = 40;
 
