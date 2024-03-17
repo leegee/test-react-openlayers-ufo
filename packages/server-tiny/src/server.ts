@@ -6,7 +6,7 @@ import cors from "@koa/cors";
 import config from '@ufo-monorepo-test/config/src';
 
 import { search as searchRoute } from './routes/search';
-import { errorHandler } from "middleware/errors";
+import { errorHandler } from "./middleware/errors";
 import { dbhMiddleware } from './middleware/dbh';
 
 const app = new Koa();

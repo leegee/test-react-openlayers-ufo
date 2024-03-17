@@ -9,13 +9,19 @@
 .map {
     position: fixed;
     top: var(--ufo-toolbar-height);
-    left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: 100%;
+    right: 0;
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+.map.full-width {
+    width: 100%;
+}
+
+.map.narrow-width {
+    width: calc(100% - var(--ufo-panel-narrow-width));
+    max-width: calc(100% - var(--ufo-panel-narrow-width));
 }
 
 .ol-zoom {

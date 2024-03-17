@@ -9,7 +9,6 @@ const Toolbar: React.FC = () => {
     return (<nav className='toolbar'>
         <DateRange />
         <SearchText />
-        <span> Todo </span>
     </nav>)
 }
 

@@ -11,11 +11,12 @@ const App: React.FC = () => {
   return (
     <div>
       <Toolbar />
-      <Map />
-      <Panel >
-        <FeatureTable />
-      </Panel>
-
+      <div className='map-panel-container'>
+        <Map />
+        <Panel >
+          <FeatureTable />
+        </Panel>
+      </div>
     </div>
   );
 }

@@ -14,8 +14,9 @@ export interface GeoJSONFeature {
   };
 }
 
-export interface FeatureCollection {
+export interface UfoFeatureCollection {
   type: "FeatureCollection";
+  clusterCount: number;
   features: GeoJSONFeature[];
 }
 
@@ -23,7 +24,7 @@ export interface MapState {
   center: [number, number];
   zoom: number;
   bounds: [number, number, number, number] | null;
-  featureCollection: FeatureCollection | null;
+  featureCollection: UfoFeatureCollection | null;
   resultsCount: number | undefined;
   dictionary: MapDictionary | undefined;
   from_date?: number;

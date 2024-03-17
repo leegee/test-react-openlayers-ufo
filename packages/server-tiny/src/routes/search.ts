@@ -6,6 +6,13 @@ import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-tes
 import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from 'middleware/errors';
 
+type SqlBitsType = {
+    whereClause: string,
+    selectColumns: string[] | String[],
+    orderBy?: string,
+    whereParams: any[] | undefined,
+};
+
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
         msg: '',
@@ -20,32 +27,72 @@ export async function search(ctx: Context) {
         let forErrorReporting = {};
 
         try {
-            let clusterSelect = '';
-            let groupBy = '';
+            let sql: string;
+            let sqlBits: SqlBitsType = {
+                whereClause: '',
+                whereParams: [],
+                selectColumns: [],
+            };
 
-            const { whereClause, whereParams, selectColumns } = constructSqlBits(userArgs);
+            // console.debug({
+            //     supplieZoom: userArgs.zoom,
+            //     configZoom: config.zoomLevelForPoints
+            // })
 
-            if (userArgs.zoom < 10) {
+            if (userArgs.zoom >= config.zoomLevelForPoints) {
+                sqlBits = constructSqlBits(userArgs);
+                sql = geoJsonForPoints(
+                    `SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings`,
+                    sqlBits.whereClause
+                ) + sqlBits.orderBy;
+            }
+            else {
+                sql = `
+                    SELECT jsonb_build_object(
+                        'type', 'FeatureCollection',
+                        'features', jsonb_agg(feature),
+                        'clusterCount', COUNT(*)  
+                    ) 
+                    FROM (
+                        SELECT jsonb_build_object(
+                            'type', 'Feature',
+                            'geometry', ST_AsGeoJSON(s.cluster_geom, 3857)::jsonb,
+                            'properties', jsonb_build_object(
+                                'cluster_id', s.cluster_id,
+                                'num_points', s.num_points
+                            )
+                        ) AS feature
+                        FROM (
+                            SELECT 
+                                cluster_id,
+                                ST_Centroid(ST_Collect(point)) AS cluster_geom,
+                                COUNT(*) AS num_points
+                            FROM (
+                                SELECT 
+                                    ST_ClusterDBSCAN(point, eps := 0.1, minpoints := 2) OVER() AS cluster_id,
+                                    point
+                                FROM sightings
+                                WHERE (point && ST_Transform(ST_MakeEnvelope($1, $2, $3, $4, 4326), 3857))
+                            ) AS clustered_points
+                            GROUP BY cluster_id
+                        ) AS s
+                    ) AS fc `,
+                    sqlBits.whereParams = [userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat];
             }
 
-            const sql = geoJsonFor(
-                `SELECT ${selectColumns.join(', ')} 
-                ${clusterSelect}
-                FROM sightings`,
-                whereClause
-            ) + groupBy;
-
             const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
-                const param = whereParams ? whereParams[index - 1] : undefined;
+                const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
                 return typeof param === 'string' ? `'${param}'` : param;
             });
 
-            forErrorReporting = { sql, selectColumns, whereClause, whereParams, formattedQuery: formattedQueryForLogging };
+            forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging };
 
-            const { rows } = await ctx.dbh.query(sql, whereParams ? whereParams : undefined);
+            const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
 
             if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-                console.warn({ action: 'query', msg: 'Found no features', sql, whereParams });
+                if (config.api.debug) {
+                    console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
+                }
             }
 
             body.results = rows[0].jsonb_build_object as FeatureCollection;
@@ -59,14 +106,15 @@ export async function search(ctx: Context) {
     else {
         throw new CustomError({
             action: 'query',
-            details: 'Missing request parameters in ' + JSON.stringify(userArgs)
+            msg: 'Missing request parameters',
+            details: userArgs
         })
     }
 
     ctx.body = JSON.stringify(body);
 }
 
-function geoJsonFor(selectColumns: string, whereClause: string) {
+function geoJsonForPoints(selectStr: string, whereStr: string) {
     return `SELECT jsonb_build_object(
         'type', 'FeatureCollection',
         'features', jsonb_agg(feature)
@@ -78,8 +126,8 @@ function geoJsonFor(selectColumns: string, whereClause: string) {
             'properties', to_jsonb(s) - 'point'
         ) AS feature
         FROM (
-            ${selectColumns}
-            ${whereClause}
+            ${selectStr}
+            ${whereStr}
         ) AS s
     ) AS fc`;
 }
@@ -145,12 +193,7 @@ function constructSqlBits(userArgs: QueryParams) {
     whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
     whereParams.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
 
-    const rv: {
-        whereClause: string,
-        selectColumns: string[] | String[],
-        orderBy: string,
-        whereParams: any[] | undefined,
-    } = {
+    const rv: SqlBitsType = {
         whereClause: '',
         whereParams: undefined,
         selectColumns: [],
@@ -227,8 +270,8 @@ function getCleanArgs(args: ParsedUrlQuery) {
         // Potentially the subject of a text search:
         q: args.q ? String(args.q).trim() : undefined,
 
-        // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchable_text_col_keys
-        q_subject: args.q_subject && [config.api.searchable_text_col_keys].includes(
+        // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchableTextColumnNames
+        q_subject: args.q_subject && [config.api.searchableTextColumnNames].includes(
             args.q_subject instanceof Array ? args.q_subject : [args.q_subject]
         ) ? String(args.q_subject) : undefined,
     };

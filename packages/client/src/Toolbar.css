@@ -3,7 +3,7 @@
 nav.toolbar {
     position: absolute;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     width: auto;
     min-width: 100vw;

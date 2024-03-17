@@ -15,6 +15,10 @@ import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
 
+export interface UfoFeatureCollection extends FeatureCollection {
+  clusterCount: number;
+}
+
 export interface FeatureCollectionResponse {
   results: FeatureCollection;
   dictionary: MapDictionary | undefined;
@@ -87,7 +91,7 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
 
     const queryString = new URLSearchParams(queryObject);
 
-    const debounceTimeout = 500; // Adjust as needed
+    const debounceTimeout = config.api.fetchDebounceMs;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -96,16 +100,15 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       try {
         const response = await fetch(`${searchEndpoint}?${queryString}`);
         const data = await response.json();
-        console.log('mapSlice.fetchData', queryObject, data);
         dispatch(setMapDataFromResponse(data));
       } catch (error) {
-        // Handle errors
+        // TODO: handle errors
         console.error(error);
       }
     }, debounceTimeout);
   }
   catch (error) {
-    // TODO Handle errors
+    // TODO: Handle errors
     console.error(error);
   }
 };

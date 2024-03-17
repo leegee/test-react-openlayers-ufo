@@ -9,6 +9,7 @@
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
   --ufo-div-padding: 0.75rem;
   --ufo-toolbar-height: 3rem;
+  --ufo-panel-narrow-width: 30vw;
 
   --ol-background-color: var(--ufo-ctrl-bg);
   --ol-subtle-foreground-color: var(--ufo-ctrl-fg);

@@ -13,14 +13,16 @@ const config = {
     endopoint: {
       search: '/'
     },
-    searchable_text_col_keys: ['location_text', 'report_text'],
+    searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
+    fetchDebounceMs: 500,
   },
   gui: {
     map: {
-      centre: [12, 64] as [number, number]
+      centre: [18, 64] as [number, number],
     }
-  }
+  },
+  zoomLevelForPoints: 10,
 };
 
 export default config;
