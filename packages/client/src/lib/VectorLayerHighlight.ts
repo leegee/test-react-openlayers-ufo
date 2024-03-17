@@ -1,7 +1,5 @@
 // VectorlayerHighlight
 
-// wip
-
 import { Map } from 'ol';
 import Feature from 'ol/Feature';
 import { Geometry } from 'ol/geom';
@@ -11,33 +9,30 @@ import { Style, Stroke } from 'ol/style';
 
 const featureOverlay = new VectorLayer({
     source: new VectorSource(),
-    style: new Style({
-        stroke: new Stroke({
-            color: 'rgba(255, 255, 255, 0.7)',
-            width: 2,
-        }),
-    }),
+    style: () => {
+        return new Style({
+            stroke: new Stroke({
+                color: 'yellow',
+                width: 4,
+            }),
+        });
+    },
 });
 
 let highlight: Feature<Geometry>;
 
 export function setupFeatureHighlighting(map: Map) {
+    featureOverlay.setVisible(true);
     map.addLayer(featureOverlay);
 
     map.on('pointermove', function (evt) {
-        if (evt.dragging) {
-            return;
-        }
+        if (evt.dragging) return;
         const pixel = map.getEventPixel(evt.originalEvent);
-        displayFeatureInfo(map, pixel);
-    });
-
-    map.on('click', function (evt) {
-        displayFeatureInfo(map, evt.pixel);
+        highlightFeature(map, pixel);
     });
 }
 
-function displayFeatureInfo(map: Map, pixel: number[]) {
+function highlightFeature(map: Map, pixel: number[]) {
     const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
         return feature;
     });
