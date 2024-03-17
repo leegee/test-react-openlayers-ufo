@@ -13,7 +13,7 @@
     padding: 0;
     background-color: var(--ufo-primary-bg);
     color: var(--ufo-primary-fg);
-    border-right: 1pt solid var(--ufo-primary-border-clr);
+    border: 1pt solid var(--ufo-primary-border-clr);
     transition: height 0.3s ease;
     transition: width 0.1s;
     transition: margin 0.1s;
@@ -24,6 +24,7 @@
     margin-top: var(--ufo-div-padding);
     margin-left: var(--ufo-div-padding);
     height: 3rem;
+    height: auto;
     overflow: hidden !important;
 }
 
@@ -62,12 +63,24 @@
 
 header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0;
-    padding-bottom: var(--ufo-div-padding);
-    padding-right: var(--ufo-div-padding);
+    padding: 4pt;
     margin: 0;
+    padding-right: var(--ufo-div-padding);
+}
+
+.panel.full-width header {
+    padding: 8pt;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+header.clusters {
+    justify-content: center;
+}
+
+header.points {
+    justify-content: space-between;
 }
 
 @media (max-width: 768px) {
@@ -84,6 +97,7 @@ header {
     width: 1em;
     transition: all 0.3s ease;
     opacity: 50%;
+    font-size: 1rem;
 }
 
 .panel .collapse-btn::after {
@@ -110,7 +124,6 @@ header {
 
 .panel.full-width .full-width-btn::after {
     content: '◀';
-    color: var(--ufo-brand-clr)
 }
 
 
@@ -118,7 +131,3 @@ main {
     flex: 1;
     overflow: auto;
 }
-
-/* main:hover {
-    overflow-y: auto;
-} */

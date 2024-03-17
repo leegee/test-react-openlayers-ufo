@@ -19,8 +19,9 @@ table.feature-table {
 
     thead th {
         border-bottom: 1pt solid var(--ufo-primary-border-clr);
-        padding-bottom: 0.5rem;
+        padding: 0.25rem;
         text-align: left;
+        font-weight: 100;
     }
 
     tr:nth-child(even) {
@@ -51,11 +52,11 @@ table.feature-table {
 }
 
 /** Global **/
-.panel.less-width .datetime {
+.panel.narrow-width .datetime {
     padding-right: 1em;
     min-width: 30%;
 }
 
-.panel.less-width .report_text {
+.panel.narrow-width .report_text {
     display: none;
 }

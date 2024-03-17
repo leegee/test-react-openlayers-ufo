@@ -60,7 +60,6 @@ h1 {
 button {
   border-radius: 8pt;
   border: 1pt solid transparent;
-  padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -99,6 +98,7 @@ input:focus-visible {
   border: 1pt solid var(--ufo-primary-border-clr);
   border-radius: 4pt;
   padding: 0 3pt;
+  margin-left: 1rem;
 }
 
 .component:hover {

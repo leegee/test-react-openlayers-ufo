@@ -1,7 +1,8 @@
 {
     "panel": {
-        "headerTitle": "Tittel",
-        "results_count": "resultater"
+        "results_count": "observasjoner",
+        "cluster_count": "grupper av observasjoner",
+        "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner."
     },
     "report": {
         "date": "Dato",

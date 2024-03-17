@@ -1,7 +1,8 @@
 {
     "panel": {
-        "results_count": "results",
-        "headerTitle": "Title"
+        "results_count": "sightings",
+        "cluster_count": "clusters of sightings",
+        "only_clusters_not_points": "Please zoom to for details of sightings."
     },
     "report": {
         "date": "Date",

@@ -48,20 +48,42 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
         );
     }, []);
 
+    useEffect(() => {
+        if (clusterCount === 0 && !collapsed) {
+            setCollapsed(true);
+        }
+    }, [clusterCount, collapsed]);
+
     return (
         <div className={`panel ${collapsed ? 'collapsed' : ''} ${fullWidth ? 'full-width' : 'narrow-width'}`}>
-            <header>
-                <button className="collapse-btn" onClick={toggleCollapse} />
-                <span>
-                    {new Intl.NumberFormat(config.locale).format(clusterCount ? (clusterCount || 0) : (resultsCount || 0))}
+
+            {!clusterCount && resultsCount && resultsCount > 0 ? (
+                <header className='points'>
+                    <button className="collapse-btn" onClick={toggleCollapse} />
+                    <span>
+                        {new Intl.NumberFormat(config.locale).format(resultsCount || 0)}
+                        {' '}
+                        {get('panel.results_count')}
+                    </span>
+                    <button className="full-width-btn" onClick={toggleFullWidth} />
+                </header>
+            ) : (
+                <header className='clusters'>
+                    {new Intl.NumberFormat(config.locale).format(clusterCount)}
                     {' '}
-                    {get('panel.results_count')}
-                </span>
-                <button className="full-width-btn" onClick={toggleFullWidth} />
-            </header>
+                    {get('panel.cluster_count')}
+                </header>
+            )}
+
+
             <main>
-                {children}
+                {clusterCount !== 0 ? (
+                    <>{children}</>
+                ) : (
+                    <div>{get('panel.only_clusters_not_points')}</div>
+                )}
             </main>
+
         </div>
     );
 };
