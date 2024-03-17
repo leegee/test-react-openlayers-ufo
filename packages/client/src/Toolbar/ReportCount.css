@@ -1,4 +1,4 @@
-/* ReportCtrl.css */
+/* ReportCount.css */
 
 .report-ctrl {
     line-height: 175% !important;
@@ -10,6 +10,7 @@
 .report-ctrl header {
     display: flex;
     align-items: center;
+    margin: 0 0.5em;
 }
 
 .collapse-btn,

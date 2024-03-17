@@ -6,7 +6,7 @@ import config from '@ufo-monorepo-test/config/src';
 import { REPORT_NARROW_WIDTH, REPORT_FULL_WIDTH } from '../custom-events/report-width';
 import { type RootState } from '../redux/types';
 
-import './ReportCtrl.css';
+import './ReportCount.css';
 
 const Panel: React.FC = () => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -30,9 +30,9 @@ const Panel: React.FC = () => {
     };
 
     return (
-        <header className='report-ctrl component'>
+        <hgroup className='report-ctrl component'>
             {!clusterCount && resultsCount && resultsCount > 0 ? (
-                <>
+                <header>
                     <button className="collapse-btn" onClick={toggleCollapse} />
                     <span>
                         {new Intl.NumberFormat(config.locale).format(resultsCount || 0)}
@@ -40,15 +40,15 @@ const Panel: React.FC = () => {
                         {get('panel.results_count')}
                     </span>
                     <button className="full-width-btn" onClick={toggleFullWidth} />
-                </>
+                </header>
             ) : (
-                <>
+                <header>
                     {new Intl.NumberFormat(config.locale).format(clusterCount)}
                     {' '}
                     {get('panel.cluster_count')}
-                </>
+                </header>
             )}
-        </header>
+        </hgroup>
     );
 };
 

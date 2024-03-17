@@ -34,3 +34,10 @@
     right: var(--ufo-div-padding);
     top: var(--ufo-div-padding);
 }
+
+.ol-zoom button:hover {
+    outline-color: var(--ufo-brand-clr) !important;
+    color: var(--ufo-brand-clr) !important;
+}
+
+}

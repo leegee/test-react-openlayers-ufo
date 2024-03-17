@@ -6,6 +6,7 @@
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.15);
   --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
   --ufo-ctrl-bg: #333;
+  --ufo-ctrl-bg-focus: #040404;
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
   --ufo-div-padding: 0.75rem;
   --ufo-toolbar-height: 3rem;
@@ -87,7 +88,8 @@ input {
 
 input:focus,
 input:focus-visible {
-  border-bottom: 1px solid var(--ufo-brand-clr)
+  border-bottom: 1px solid var(--ufo-brand-clr);
+  background-color: var(--ufo-ctrl-bg-focus);
 }
 
 .grey {
@@ -101,7 +103,7 @@ input:focus-visible {
   margin-left: 1rem;
 }
 
-.component:hover {
+.component.highlightable:hover {
   border-color: var(--ufo-brand-clr)
 }
 

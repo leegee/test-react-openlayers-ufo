@@ -50,7 +50,7 @@ const DateRange: React.FC = () => {
     };
 
     return (
-        <aside className='date-range component'>
+        <nav className='date-range component highlightable'>
             <span className='grey calendar-icon' title={get('date_range.title')} />
             <input
                 title={get('date_range.min')}
@@ -69,7 +69,7 @@ const DateRange: React.FC = () => {
                 value={to_date === undefined ? '' : to_date}
                 onChange={handleMaxYearChange}
             />
-        </aside>
+        </nav>
     );
 }
 
