@@ -19,9 +19,11 @@ Currently the master branch has server- and client-side clustering, but  the is 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
 
 ## Todo:
 
