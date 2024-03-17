@@ -11,6 +11,7 @@
   --ufo-div-padding: 0.75rem;
   --ufo-toolbar-height: 3rem;
   --ufo-panel-narrow-width: 30vw;
+  --ufo-panel-small-screen-height: 30vh;
 
   --ol-background-color: var(--ufo-ctrl-bg);
   --ol-subtle-foreground-color: var(--ufo-ctrl-fg);

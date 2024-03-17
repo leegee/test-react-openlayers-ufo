@@ -32,7 +32,7 @@
     content: '▼';
 }
 
-@media (max-width: 768px) {
+body.small-screen {
     .panel .collapse-btn::after {
         content: '▼';
     }

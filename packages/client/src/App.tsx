@@ -8,6 +8,16 @@ import Toolbar from './Toolbar';
 
 import './App.css';
 
+function setScreenSizeClass() {
+  if (window.innerWidth < 768) {
+    document.body.classList.add('small-screen');
+    document.body.classList.remove('larger-screen');
+  } else {
+    document.body.classList.remove('small-screen');
+    document.body.classList.add('larger-screen');
+  }
+}
+
 const App: React.FC = () => {
   useEffect(() => {
     document.addEventListener(REPORT_FULL_WIDTH, () => {
@@ -18,6 +28,9 @@ const App: React.FC = () => {
       document.body.classList.remove(REPORT_FULL_WIDTH);
       document.body.classList.add(REPORT_NARROW_WIDTH);
     });
+
+    window.addEventListener('resize', setScreenSizeClass);
+    setScreenSizeClass();
   }, []);
 
   return (
@@ -34,3 +47,4 @@ const App: React.FC = () => {
 }
 
 export default App;
+

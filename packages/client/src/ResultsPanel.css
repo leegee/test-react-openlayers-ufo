@@ -37,14 +37,14 @@
     transition: width 0.1s;
 }
 
-@media (max-width: 768px) {
+body.small-screen {
     .panel {
         top: unset;
         right: 0;
         left: 0;
         bottom: 0;
         width: auto;
-        height: 30vh;
+        height: var(--ufo-panel-small-screen-height);
         padding: 0 var(--ufo-div-padding);
         border-right: unset;
         border-top: 1pt solid var(--ufo-primary-border-clr);
@@ -83,7 +83,7 @@ header.points {
     justify-content: space-between;
 }
 
-@media (max-width: 768px) {
+body.small-screen {
     header {
         padding: 0.25rem 0;
     }
@@ -108,7 +108,7 @@ header.points {
     content: '▼';
 }
 
-@media (max-width: 768px) {
+body.small-screen {
     .panel .collapse-btn::after {
         content: '▼';
     }

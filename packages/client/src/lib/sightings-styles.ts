@@ -41,7 +41,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         style = new Style({
             image: new Circle({
                 radius: 10,
-                fill: new Fill({ color: 'cyan' }),
+                fill: new Fill({ color: 'blue' }),
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
         });
