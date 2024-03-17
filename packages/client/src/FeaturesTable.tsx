@@ -60,8 +60,9 @@ const FeatureTable: React.FC = () => {
         showPoint(id);
     }
 
-    function gotoFulLReport() {
-        setReportWidth('full-width')
+    function gotoFulLReport(id: string) {
+        setReportWidth('full-width');
+        // todo highlgiht row?
     }
 
     return (
