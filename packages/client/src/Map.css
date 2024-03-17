@@ -63,7 +63,3 @@ body.small-screen .REPORT_NARROW_WIDTH .map {
 .map .theme::after {
     content: '🗺️';
 }
-
-.map .theme:hover {
-    filter: none;
-}

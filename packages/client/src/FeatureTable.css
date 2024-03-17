@@ -23,6 +23,10 @@ table.feature-table {
         background-color: var(--ufo-primary-bg-odd);
     }
 
+    tr:hover {
+        outline: 1px solid var(--ufo-brand-clr);
+    }
+
     th {
         border-bottom: 1pt solid var(--ufo-primary-border-clr);
         text-align: left;
@@ -47,9 +51,39 @@ table.feature-table {
         text-align: center;
     }
 
+    .ctrl {
+        opacity: 50%;
+        filter: grayscale(100%);
+        cursor: pointer;
+    }
+
+    .ctrl:hover {
+        outline: 1px solid var(--ufo-brand-clr);
+        filter: none;
+        opacity: 1;
+    }
+
     .goto-map {
         margin-left: 1em;
     }
+
+    .goto-map::after {
+        content: '🗺️';
+    }
+
+    .goto-full-report::after {
+        content: '🛈';
+        font-size: 120%;
+        line-height: 80%;
+    }
+
+    .close-full-report::after {
+        content: '◀';
+    }
+}
+
+.REPORT_NARROW_WIDTH .feature-table .close-full-report {
+    display: none;
 }
 
 .REPORT_NARROW_WIDTH table.feature-table {

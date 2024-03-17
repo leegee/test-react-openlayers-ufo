@@ -62,7 +62,9 @@ const FeatureTable: React.FC = () => {
                     <th className='datetime'>{get('report.date')}</th>
                     <th className='location_text'>{get('report.location')}</th>
                     <th className='report_text'>{get('report.report')}</th>
-                    <th className='cmd'></th>
+                    <th className='cmd'>
+                        <span className='close-full-report' onClick={() => setReportWidth('narrow')} />
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -72,8 +74,8 @@ const FeatureTable: React.FC = () => {
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                         <td className='cmd'>
-                            <span className='goto-full-report' onClick={() => setReportWidth('full-width')}>R</span>
-                            <span className='goto-map'>M</span>
+                            <span className='ctrl goto-full-report' onClick={() => setReportWidth('full-width')} />
+                            <span className='ctrl goto-map' />
                         </td>
                     </tr>
                 ))}
