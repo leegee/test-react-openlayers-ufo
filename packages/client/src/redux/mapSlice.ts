@@ -7,7 +7,7 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { FeatureCollection } from './reducers';
+import type { UfoFeatureCollection } from './reducers';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
@@ -15,12 +15,8 @@ import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
 
-export interface UfoFeatureCollection extends FeatureCollection {
-  clusterCount: number;
-}
-
 export interface FeatureCollectionResponse {
-  results: FeatureCollection;
+  results: UfoFeatureCollection;
   dictionary: MapDictionary | undefined;
 }
 
@@ -51,7 +47,7 @@ const mapSlice = createSlice({
     },
     setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
       state.resultsCount = action.payload.results && action.payload.results.features ? action.payload.results.features.length : 0;
-      state.featureCollection = action.payload.results as FeatureCollection;
+      state.featureCollection = action.payload.results as UfoFeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
     setFromDate(state, action: PayloadAction<number | undefined>) {
