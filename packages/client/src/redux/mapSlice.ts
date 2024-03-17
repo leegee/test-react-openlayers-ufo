@@ -7,13 +7,30 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { UfoFeatureCollection } from './reducers';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
+import { RootState } from './store';
+
+export interface GeoJSONFeature {
+  type: "Feature";
+  geometry: {
+    type: string;
+    coordinates: number[] | number[][] | number[][][];
+  };
+  properties: {
+    [key: string]: any;
+  };
+}
+
+export interface UfoFeatureCollection {
+  type: "FeatureCollection";
+  clusterCount: number;
+  features: GeoJSONFeature[];
+}
 
 export interface FeatureCollectionResponse {
   results: UfoFeatureCollection;
@@ -33,7 +50,8 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   resultsCount: undefined,
-  q: ''
+  q: '',
+  basemapSource: localStorage.getItem('basemap_source') || 'dark',
 };
 
 const mapSlice = createSlice({
@@ -59,12 +77,17 @@ const mapSlice = createSlice({
     setQ(state, action: PayloadAction<string | undefined>) {
       state.q = action.payload ? action.payload.trim() : '';
     },
+    setBasemapSource: (state, action) => {
+      state.basemapSource = action.payload;
+    },
   },
 });
 
 const { setMapDataFromResponse } = mapSlice.actions;
 
-export const { setMapParams, setFromDate, setToDate, setQ } = mapSlice.actions;
+export const { setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
+
+export const selectBasemapSource = (state: RootState) => state.map.basemapSource;
 
 export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
   const { zoom, bounds, from_date, to_date, q } = getState().map;

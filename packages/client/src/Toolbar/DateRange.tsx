@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import { fetchFeatures, setFromDate, setToDate } from '../redux/mapSlice';
-import { RootState } from '../redux/types';
+import { RootState } from '../redux/store';
 
 import './DateRange.css';
 import { get } from 'react-intl-universal';

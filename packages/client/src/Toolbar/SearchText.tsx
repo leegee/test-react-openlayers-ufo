@@ -4,7 +4,7 @@ import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
 import { fetchFeatures, setQ } from '../redux/mapSlice';
-import { RootState } from '../redux/types';
+import { RootState } from '../redux/store';
 
 import './SearchText.css';
 

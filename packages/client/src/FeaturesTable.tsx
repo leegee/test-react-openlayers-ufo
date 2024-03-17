@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
-import { RootState } from './redux/types';
+import { RootState } from './redux/store';
 import { EVENT_SHOW_POINT, ShowPointEventType } from './custom-events/point-show';
 import { setReportWidth } from './custom-events/report-width';
 

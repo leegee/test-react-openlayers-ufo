@@ -1,24 +1,7 @@
 // reducers.ts
 import { combineReducers } from '@reduxjs/toolkit';
-import mapReducer from './mapSlice';
+import mapReducer, { UfoFeatureCollection } from './mapSlice';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-
-export interface GeoJSONFeature {
-  type: "Feature";
-  geometry: {
-    type: string;
-    coordinates: number[] | number[][] | number[][][];
-  };
-  properties: {
-    [key: string]: any;
-  };
-}
-
-export interface UfoFeatureCollection {
-  type: "FeatureCollection";
-  clusterCount: number;
-  features: GeoJSONFeature[];
-}
 
 export interface MapState {
   center: [number, number];
@@ -30,6 +13,7 @@ export interface MapState {
   from_date?: number;
   to_date?: number;
   q?: string;
+  basemapSource: string;
 }
 
 const rootReducer = combineReducers({
