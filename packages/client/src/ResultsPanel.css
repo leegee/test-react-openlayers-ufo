@@ -14,6 +14,7 @@
     background-color: var(--ufo-primary-bg);
     color: var(--ufo-primary-fg);
     border: 1pt solid var(--ufo-primary-border-clr);
+    border-top: none;
     transition: height 0.3s ease;
     transition: width 0.1s;
     transition: margin 0.1s;
@@ -22,7 +23,6 @@
 .panel.collapsed {
     transition: margin 0.1s;
     margin-top: var(--ufo-div-padding);
-    margin-left: var(--ufo-div-padding);
     height: 3rem;
     height: auto;
     overflow: hidden !important;
@@ -32,7 +32,7 @@
     display: none;
 }
 
-.panel.full-width {
+.REPORT_FULL_WIDTH .panel {
     width: 100vw;
     transition: width 0.1s;
 }
@@ -69,7 +69,7 @@ header {
     padding-right: var(--ufo-div-padding);
 }
 
-.panel.full-width header {
+.REPORT_FULL_WIDTH .panel header {
     padding: 8pt;
     font-weight: bold;
     font-size: 1.2em;
@@ -125,7 +125,6 @@ header.points {
 .panel.full-width .full-width-btn::after {
     content: '◀';
 }
-
 
 main {
     flex: 1;

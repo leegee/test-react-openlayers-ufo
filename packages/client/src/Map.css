@@ -15,11 +15,15 @@
     padding: 0;
 }
 
-.map.full-width {
+.map {
     width: 100%;
 }
 
-.map.narrow-width {
+.REPORT_HIDDEN .map {
+    width: 100%;
+}
+
+.REPORT_NARROW_WIDTH .map {
     width: calc(100% - var(--ufo-panel-narrow-width));
     max-width: calc(100% - var(--ufo-panel-narrow-width));
 }

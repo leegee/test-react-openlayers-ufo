@@ -22,7 +22,7 @@ const config = {
       centre: [18, 64] as [number, number],
     }
   },
-  zoomLevelForPoints: 10,
+  zoomLevelForPoints: 8,
 };
 
 export default config;

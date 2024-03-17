@@ -9,4 +9,5 @@ nav.toolbar {
     min-width: 100vw;
     height: var(--ufo-toolbar-height);
     padding: 0 var(--ufo-div-padding);
+    border: 1pt solid var(--ufo-primary-border-clr);
 }

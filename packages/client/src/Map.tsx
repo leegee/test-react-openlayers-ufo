@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Map, View } from 'ol';
+import { Map, MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 
@@ -10,10 +10,10 @@ import { setMapParams, fetchFeatures } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
 import config from '@ufo-monorepo-test/config/src';
 import { showPoint } from './custom-events/point-show';
+import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayer from './lib/map-base-layer/layer-dark';
 import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { REPORT_FULL_WIDTH, REPORT_NARROW_WIDTH } from './ResultsPanel';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -22,16 +22,6 @@ const OpenLayersMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const { center, zoom, bounds, featureCollection } = useSelector((state: RootState) => state.map);
-  const [fullWidth, setFullWidth] = useState<boolean>(false);
-
-  useEffect(() => {
-    window.document.addEventListener(REPORT_FULL_WIDTH, (() => setFullWidth(true)) as EventListener);
-  }, []);
-
-  useEffect(() => {
-    window.document.addEventListener(REPORT_NARROW_WIDTH, (() => setFullWidth(false)) as EventListener);
-  }, []);
-
 
   useEffect(() => {
     let map: Map | null = null;
@@ -64,34 +54,17 @@ const OpenLayersMap: React.FC = () => {
         dispatch(setMapParams({ center, zoom, bounds }));
       });
 
-      map.on('click', function (e) {
-        // Zoom to the cluster or point
-        map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
-          if (clickedFeature) {
-            const features = clickedFeature.get('features');
-            if (layer.get('name') == clusterLayer.get('name')) { // if (zoom < config.zoomLevelForPoints) {
-              map!.getView().animate({
-                center: e.coordinate,
-                zoom: config.zoomLevelForPoints,
-                duration: 500,
-                easing: easeOut
-              });
-            } else {
-              showPoint(
-                features ? features[0].get('id') : clickedFeature.get('id')
-              );
-            }
-          }
-        });
-      });
-
+      map.on('click', (e) => clickMap(e, map));
     }
 
     return () => map?.dispose();
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchFeatures() as any)
+    dispatch(fetchFeatures() as any);
+    if (zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
+      hideReport();
+    }
   }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
@@ -107,8 +80,31 @@ const OpenLayersMap: React.FC = () => {
     }
   }, [featureCollection]);
 
-  return <div className={fullWidth ? 'full-width map' : 'narrow-width map'} ref={mapRef} />;
+  return <div className='map' ref={mapRef} />;
 };
+
+// Zoom to the cluster or point on click
+function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
+  let didOneFeature = false;
+  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
+    if (clickedFeature && !didOneFeature) {
+      const features = clickedFeature.get('features');
+      if (layer.get('name') == clusterLayer.get('name')) {
+        map!.getView().animate({
+          center: e.coordinate,
+          zoom: config.zoomLevelForPoints,
+          duration: 500,
+          easing: easeOut
+        });
+      }
+      else {
+        showPoint(features ? features[0].get('id') : clickedFeature.get('id'));
+      }
+      didOneFeature = true;
+      setReportWidth('narrow');
+    }
+  });
+}
 
 export default OpenLayersMap;
 

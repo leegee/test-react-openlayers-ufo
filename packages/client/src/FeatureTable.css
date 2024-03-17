@@ -6,7 +6,9 @@ table.feature-table {
     margin: 0;
     background-color: var(--ufo-primary-bg);
     padding: 0 var(--ufo-div-padding);
-    width: calc(100% - (var(--ufo-div-padding) * 2));
+    margin: 1rem;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 table.feature-table {
@@ -17,15 +19,19 @@ table.feature-table {
         z-index: 1;
     }
 
-    thead th {
+    tr:nth-child(even) {
+        background-color: var(--ufo-primary-bg-odd);
+    }
+
+    th {
         border-bottom: 1pt solid var(--ufo-primary-border-clr);
-        padding: 0.25rem;
         text-align: left;
         font-weight: 100;
     }
 
-    tr:nth-child(even) {
-        background-color: var(--ufo-primary-bg-odd);
+    th,
+    td {
+        padding: 0.5em;
     }
 
     td {
@@ -36,27 +42,29 @@ table.feature-table {
         white-space: nowrap;
     }
 
-    tr td {
-        padding-top: 0.25em;
-    }
-
-    tr th:last-child,
-    tr td:last-child {
-        padding-right: var(--ufo-div-padding);
-    }
-
     .no_data {
         padding: 1em;
         text-align: center;
     }
+
+    .goto-map {
+        margin-left: 1em;
+    }
 }
 
-/** Global **/
-.panel.narrow-width .datetime {
+.REPORT_NARROW_WIDTH table.feature-table {
+    margin: 0.25rem;
+}
+
+.REPORT_FULL_WIDTH .goto-full-report {
+    display: none;
+}
+
+.REPORT_NARROW_WIDTH .datetime {
     padding-right: 1em;
     min-width: 30%;
 }
 
-.panel.narrow-width .report_text {
+.REPORT_NARROW_WIDTH .report_text {
     display: none;
 }
