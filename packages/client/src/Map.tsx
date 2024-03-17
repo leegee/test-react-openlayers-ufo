@@ -13,6 +13,7 @@ import { showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
+import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 // import { updateVectorLayer as updateClusterLayer, vectorLayer as clusterLayer } from './lib/ClusterVectorLayer';
@@ -26,17 +27,38 @@ const OpenLayersMap: React.FC = () => {
   const { center, zoom, bounds, featureCollection } = useSelector((state: RootState) => state.map);
   const basemapSource = useSelector(selectBasemapSource);
 
-  const setTheme = () => {
-    baseLayerDark.setVisible(basemapSource === 'dark');
-    baseLayerLight.setVisible(basemapSource !== 'dark');
+  const setTheme = (newBasemapSource: string) => {
+    switch (newBasemapSource) {
+      case 'dark':
+        baseLayerDark.setVisible(true);
+        baseLayerLight.setVisible(false);
+        baseLayerGeo.setVisible(false);
+        break;
+      case 'light':
+        baseLayerDark.setVisible(false);
+        baseLayerLight.setVisible(true);
+        baseLayerGeo.setVisible(false);
+        break;
+      case 'geo':
+        baseLayerDark.setVisible(false);
+        baseLayerLight.setVisible(false);
+        baseLayerGeo.setVisible(true);
+        break;
+      default:
+        baseLayerDark.setVisible(false);
+        baseLayerLight.setVisible(false);
+        baseLayerGeo.setVisible(true);
+        break;
+    }
   };
 
-  setTheme();
+  setTheme(basemapSource);
 
   const handleToggleTheme = () => {
-    const newBasemapSource = basemapSource === 'dark' ? 'light' : 'dark';
+    const newBasemapSource = getNextBasemapSource(basemapSource);
+    console.debug(`Map theme was ${basemapSource} now ${newBasemapSource}`);
     dispatch(setBasemapSource(newBasemapSource));
-    setTheme();
+    setTheme(newBasemapSource);
   };
 
   useEffect(() => {
@@ -55,6 +77,7 @@ const OpenLayersMap: React.FC = () => {
         layers: [
           baseLayerDark,
           baseLayerLight,
+          baseLayerGeo,
           clusterLayer,
           pointsLayer,
         ],
@@ -125,6 +148,18 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   });
 }
 
+
+const getNextBasemapSource = (currentBasemapSource: string) => {
+  switch (currentBasemapSource) {
+    case 'dark':
+      return 'light';
+    case 'light':
+      return 'geo';
+    case 'geo':
+    default:
+      return 'dark';
+  }
+};
 
 export default OpenLayersMap;
 
