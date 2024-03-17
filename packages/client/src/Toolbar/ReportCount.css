@@ -10,6 +10,7 @@
 .report-ctrl header {
     display: flex;
     align-items: center;
+    padding: 0;
     margin: 0 0.5em;
 }
 
