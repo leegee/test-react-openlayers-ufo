@@ -29,6 +29,7 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
+* Apply text search to clusters!
 * Tests.
 * Close report; link report rows to map; icons
 * Logger transports/etc
