@@ -18,7 +18,10 @@ Currently the master branch has server- and client-side clustering, but  the is 
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
-![Screenshot](./docs/images/Screenshot%202024-03-14%20155152.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
 
 ## Todo:
 
@@ -27,6 +30,7 @@ Currently we send everything in the bounding box and cluster on the client.
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
 * Tests.
+* Close report; link report rows to map; icons
 * Logger transports/etc
 * Decide on a default sort of results when no filters set
 * Sort order toggling (2h)
