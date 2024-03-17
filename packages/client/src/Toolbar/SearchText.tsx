@@ -4,6 +4,7 @@ import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
 import { fetchFeatures, setQ } from '../redux/mapSlice';
+import { setReportWidth } from '../custom-events/report-width';
 import { RootState } from '../redux/store';
 
 import './SearchText.css';
@@ -17,7 +18,8 @@ const SearchText: React.FC = () => {
 
     const debouncedDispatch = debounce((value: string) => {
         dispatch(setQ(value));
-        dispatch(fetchFeatures() as any);
+        dispatch((fetchFeatures() as any));
+        setReportWidth('narrow');
     }, DEBOUNCE_INPUT_MS);
 
     const handleQChange = (event: React.ChangeEvent<HTMLInputElement>) => {

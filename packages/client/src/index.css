@@ -106,7 +106,8 @@ input:focus-visible {
 
 .component:focus-within,
 .component.highlightable:focus-within:hover {
-  border-color: transparent;
+  border-color: var(--ufo-primary-border-clr);
+  background-color: var(--ufo-ctrl-bg-focus);
 }
 
 .highlightable:hover {
@@ -114,7 +115,6 @@ input:focus-visible {
   filter: none;
   opacity: 1;
 }
-
 
 @keyframes flash {
   0% {
