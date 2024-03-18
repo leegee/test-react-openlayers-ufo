@@ -57,12 +57,12 @@ const FeatureTable: React.FC = () => {
     }, []);
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
-        // setReportWidth('narrow');
+        setReportWidth('narrow');
         showPointByCoords(feature.geometry.coordinates);
     }
 
     function gotoFulLReport(id: string) {
-        // setReportWidth('full-width');
+        setReportWidth('full-width');
         // todo highlgiht row with EVENT_SHOW_POINT or directly
     }
 
@@ -74,8 +74,8 @@ const FeatureTable: React.FC = () => {
                     <th className='location_text'>{get('report.location')}</th>
                     <th className='report_text'>{get('report.report')}</th>
                     <th className='ctrls'>
-                        <span className='close-full-report' onClick={() => setReportWidth('narrow')} />
-                        <span className='open-full-report' onClick={() => setReportWidth('full-width')} />
+                        <span className='close-full-width' onClick={() => setReportWidth('narrow')} />
+                        <span className='open-full-width' onClick={() => setReportWidth('full-width')} />
                     </th>
                 </tr>
             </thead>
@@ -86,8 +86,8 @@ const FeatureTable: React.FC = () => {
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                         <td className='ctrls'>
-                            <span className='ctrl goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
-                            <span className='ctrl goto-map' onClick={() => showPointOnMap(feature)} />
+                            <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
+                            <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
                         </td>
                     </tr>
                 ))}

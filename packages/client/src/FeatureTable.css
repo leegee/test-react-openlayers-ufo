@@ -69,49 +69,55 @@ table.feature-table {
         opacity: 1;
     }
 
-    .goto-map {
+    .row-goto-map {
         margin-left: 0.25em;
     }
 
-    .goto-map::after {
+    .row-goto-map::after {
         content: '🗺️';
     }
 
-    .goto-full-report::after {
+    .row-goto-full-report::after {
         content: '🛈';
         font-size: 120%;
     }
 
-    .close-full-report::after {
+    .close-full-width::after {
         content: '◀';
     }
 
-    .open-full-report::after {
+    .open-full-width::after {
         content: '▶';
         opacity: 50%;
+    }
+
+    .datetime {
+        padding-right: 1em;
+        min-width: 30%;
+    }
+
+    .report_text {
+        display: none;
     }
 }
 
 /* No button to open full-width when already full-width */
-.REPORT_FULL_WIDTH .feature-table .open-full-report {
+.REPORT_FULL_WIDTH .feature-table .open-full-width {
     display: none;
 }
 
-/* No button to revert full-width when already narrow-width */
-.feature-table .close-full-report {
+/* No button to close full-width when already narrow-width */
+.feature-table .close-full-width {
     display: none;
 }
+
+/* Show button to close full-width when in full width */
+.REPORT_FULL_WIDTH .feature-table .close-full-width {
+    display: unset;
+}
+
 
 /* No button to link to full-width when already full-width */
-.REPORT_FULL_WIDTH .goto-full-report {
-    display: none;
-}
-
-.datetime {
-    padding-right: 1em;
-    min-width: 30%;
-}
-
-.report_text {
+.REPORT_FULL_WIDTH .row-goto-full-report {
     display: none;
 }

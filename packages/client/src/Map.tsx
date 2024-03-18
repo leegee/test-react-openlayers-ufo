@@ -137,13 +137,13 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
 
-  useEffect(() => {
-    if (!q && zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
-      hideReport();
-    } else if (q) {
-      setReportWidth('narrow');
-    }
-  }, [dispatch, q]);
+  // useEffect(() => {
+  //   if (!q && zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
+  //     hideReport();
+  //   } else if (q) {
+  //     setReportWidth('narrow');
+  //   }
+  // }, [dispatch, q]);
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
@@ -185,7 +185,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
         showPoint(features ? features[0].get('id') : clickedFeature.get('id'));
       }
       didOneFeature = true;
-      setReportWidth('narrow');
+      // setReportWidth('narrow');
     }
   });
 }
