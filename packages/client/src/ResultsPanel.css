@@ -1,22 +1,23 @@
 /* Panel.css */
 
 .panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    background-color: var(--ufo-primary-bg);
     position: fixed;
+    overflow: auto;
+    width: var(--ufo-panel-narrow-width);
     top: var(--ufo-toolbar-height);
     left: 0;
     bottom: unset;
     right: unset;
-    width: var(--ufo-panel-narrow-width);
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    background-color: var(--ufo-primary-bg);
     color: var(--ufo-primary-fg);
     border: 1pt solid var(--ufo-primary-border-clr);
     border-top: none;
     transition: height 0.3s ease;
     transition: width 0.1s;
     transition: margin 0.1s;
-    overflow: auto;
 }
