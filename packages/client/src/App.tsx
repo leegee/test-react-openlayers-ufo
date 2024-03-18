@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { REPORT_FULL_WIDTH, REPORT_NARROW_WIDTH } from './custom-events/report-width';
+import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH } from './custom-events/report-width';
 import FeatureTable from './FeaturesTable';
 import Map from './Map';
 import Panel from './ResultsPanel';
 import Toolbar from './Toolbar';
-import MapWithTooltips from './Map/MapWithTooltips';
 
 import './App.css';
 
@@ -29,7 +28,9 @@ const App: React.FC = () => {
       document.body.classList.remove(REPORT_FULL_WIDTH);
       document.body.classList.add(REPORT_NARROW_WIDTH);
     });
-
+    document.addEventListener(REPORT_HIDE, () => {
+      document.body.classList.remove(REPORT_FULL_WIDTH, REPORT_NARROW_WIDTH);
+    });
     window.addEventListener('resize', setScreenSizeClass);
     setScreenSizeClass();
   }, []);
