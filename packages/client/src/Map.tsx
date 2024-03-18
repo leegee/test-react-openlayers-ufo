@@ -12,7 +12,8 @@ import TileLayer from 'ol/layer/Tile';
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } from './redux/mapSlice';
-import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
+import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
+import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
@@ -101,7 +102,7 @@ const OpenLayersMap: React.FC = () => {
 
       mapRef.current = map;
 
-      setupFeatureHighlighting(map);
+      useFeatureHighlighting(map);
 
       map.on('moveend', () => {
         if (!map) return;
@@ -142,6 +143,7 @@ const OpenLayersMap: React.FC = () => {
 
   return (<section className='map' ref={mapElementRef} >
     <button onClick={handleToggleTheme} className='theme highlightable ol-unselectable ol-control' />
+    (map && <Tooltip map={mapRef.current} />)
   </section>);
 };
 

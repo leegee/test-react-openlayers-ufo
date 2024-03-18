@@ -1,31 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
 import config from '@ufo-monorepo-test/config/src';
-import { MapContext } from './MapWithTooltips';
 
-const Tooltip: React.FC = () => {
-    const { map } = useContext(MapContext);
+interface TooltipComponentProps {
+    map: Map;
+}
+
+const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
     const [overlay, setOverlay] = useState<Overlay | null>(null);
-    const tooltipRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!map) return;
-
-        const newOverlay = new Overlay({
-            element: tooltipRef.current!,
-            offset: [10, 0],
-            positioning: 'bottom-left',
-            stopEvent: false,
-        });
-
-        map.addOverlay(newOverlay);
-        setOverlay(newOverlay);
-
-        return () => {
-            map.removeOverlay(newOverlay);
-        };
-    }, [map]);
+    const tooltipElementRef = useRef<HTMLDivElement>(null);
 
     const handleMapHover = (event: MapBrowserEvent<MouseEvent>) => {
         if (!overlay || !event.map || !event.pixel) return;
@@ -39,7 +25,7 @@ const Tooltip: React.FC = () => {
             ) + ' ' + feature.get('location_text');
 
             if (tooltipContent) {
-                tooltipRef.current!.innerHTML = tooltipContent;
+                tooltipElementRef.current!.innerHTML = tooltipContent;
                 overlay.setPosition(coordinate);
             } else {
                 overlay.setPosition(undefined);
@@ -51,15 +37,33 @@ const Tooltip: React.FC = () => {
 
     useEffect(() => {
         if (!map) return;
+        const newOverlay = new Overlay({
+            element: tooltipElementRef.current!,
+            offset: [10, 0],
+            positioning: 'bottom-left',
+            stopEvent: false,
+        });
+
+        setOverlay(newOverlay);
+        map.addOverlay(newOverlay);
 
         map.on('pointermove', handleMapHover);
 
         return () => {
-            map.un('pointermove', handleMapHover);
+            map.removeOverlay(newOverlay);
         };
     }, [map]);
 
-    return <div ref={tooltipRef} className="tooltip" style={{ display: 'none' }} />;
+    useEffect(() => {
+        if (!map || !overlay) return;
+        map.on('pointermove', handleMapHover);
+        return () => {
+            map.removeOverlay(overlay);
+            map.un('pointermove', handleMapHover);
+        };
+    }, [map, overlay]);
+
+    return <div ref={tooltipElementRef} className="tooltip" />;
 };
 
 export default Tooltip;

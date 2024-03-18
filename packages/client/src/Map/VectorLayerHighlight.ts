@@ -1,6 +1,6 @@
-// VectorlayerHighlight
+// map/VectorlayerHighlight
 
-import { Map } from 'ol';
+import type { Map } from 'ol';
 import Feature from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
@@ -21,7 +21,7 @@ const featureOverlay = new VectorLayer({
 
 let highlight: Feature<Geometry>;
 
-export function setupFeatureHighlighting(map: Map) {
+export function useFeatureHighlighting(map: Map) {
     featureOverlay.setVisible(true);
     map.addLayer(featureOverlay);
 

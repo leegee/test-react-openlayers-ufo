@@ -38,9 +38,7 @@ const App: React.FC = () => {
     <>
       <Toolbar />
       <div className='map-panel-container'>
-        <MapWithTooltips>
-          <Map />
-        </MapWithTooltips>
+        <Map />
         <Panel >
           <FeatureTable />
         </Panel>
