@@ -10,4 +10,13 @@ nav.toolbar {
     height: var(--ufo-toolbar-height);
     padding: 0 var(--ufo-div-padding);
     border: 1pt solid var(--ufo-primary-border-clr);
+
+    .component {
+        height: 20pt;
+        max-height: 20pt;
+        display: flex;
+        align-items: center;
+        justify-content: stretch;
+        background-color: var(--ufo-ctrl-bg);
+    }
 }

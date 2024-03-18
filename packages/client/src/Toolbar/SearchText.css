@@ -1,12 +1,8 @@
 /* DateRange.module.css */
 
 .search-text {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
     width: 24em;
     min-width: 12em;
-    background-color: var(--ufo-ctrl-bg);
 }
 
 .search-text {
