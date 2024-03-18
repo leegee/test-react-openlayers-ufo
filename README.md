@@ -18,13 +18,6 @@ Currently the master branch has server- and client-side clustering, but  the is 
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
-
 ## Todo:
 
 Currently we send everything in the bounding box and cluster on the client.
@@ -33,20 +26,27 @@ Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
 * Apply text search to clusters!
 * Tests.
-* Close report; link report rows to map; icons
 * Logger transports/etc
 * Decide on a default sort of results when no filters set
 * Sort order toggling (2h)
 * Enable switching locale from `no` to `en` and back (1h)
-* On-screen info about points as tooltip? (4h)
 * Store bounds and filter settings in the URI (4h)
 * Share common-type of request/response (1h)
-* Server should infer number of clusters (`cluster_eps`) from zoom level.
+* Server should infer cluster size (`cluster_eps`) from zoom level.
 * Expose more data: shape, colour, direction, etc
 
 ## DB
 
 Using PostGIS, storing data in EPSG:3857 for speed, with the API accepting EPSG:4326/WGS84 for legibility.
+
+## Pics
+
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
+![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
 
 .
 
