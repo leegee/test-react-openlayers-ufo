@@ -2,7 +2,8 @@
     "panel": {
         "results_count": "sightings",
         "cluster_count": "clusters of sightings",
-        "only_clusters_not_points": "Please zoom to for details of sightings."
+        "only_clusters_not_points": "Please zoom to for details of sightings.",
+        "no_results": "No results: try zooming out or changing your terms"
     },
     "report": {
         "date": "Date",

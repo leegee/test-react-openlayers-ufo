@@ -69,6 +69,7 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     const handleShowPointEvent = (e: ShowPointEventType) => {
+      alert('point')
       if (!e.detail.id) return;
       const feature = findFeature(pointsLayer, e.detail.id);
       if (feature) {

@@ -11,12 +11,17 @@ const Panel: React.FC = () => {
     const resultsCount = useSelector((state: RootState) => state.map.resultsCount);
     const clusterCount = useSelector((state: RootState) => state.map.featureCollection ? state.map.featureCollection.clusterCount : 0);
 
+    const nothingToShow = !clusterCount && !resultsCount;
+    const showPoints = !clusterCount && resultsCount && resultsCount > 0;
+
     return (
         <hgroup className='report-ctrl component'>
-            {!clusterCount && resultsCount && resultsCount > 0 ? (
+            {nothingToShow ? (
+                <header>{get('panel.no_results')}</header>
+            ) : showPoints ? (
                 <header>
                     <span>
-                        {new Intl.NumberFormat(config.locale).format(resultsCount || 0)}
+                        {new Intl.NumberFormat(config.locale).format(resultsCount)}
                         {' '}
                         {get('panel.results_count')}
                     </span>

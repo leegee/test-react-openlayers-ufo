@@ -18,6 +18,8 @@ Currently the master branch has server- and client-side clustering, but  the is 
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
+Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window.
+
 ## Todo:
 
 Currently we send everything in the bounding box and cluster on the client.

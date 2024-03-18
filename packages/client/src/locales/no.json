@@ -2,7 +2,8 @@
     "panel": {
         "results_count": "observasjoner",
         "cluster_count": "grupper av observasjoner",
-        "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner."
+        "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner.",
+        "no_results": "Prøv å zoome ut/endre søket."
     },
     "report": {
         "date": "Dato",
