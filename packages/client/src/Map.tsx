@@ -123,6 +123,8 @@ const OpenLayersMap: React.FC = () => {
     dispatch(fetchFeatures() as any);
     if (zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
       hideReport();
+    } else {
+      setReportWidth('narrow');
     }
   }, [dispatch, bounds, zoom]);
 
