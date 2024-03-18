@@ -43,15 +43,17 @@ body.small-screen.REPORT_NARROW_WIDTH .map {
     left: unset;
     right: var(--ufo-div-padding);
     top: var(--ufo-div-padding);
+    background-color: --ufo-ctrl-bg;
 }
 
 .ol-zoom button:hover {
     outline-color: var(--ufo-brand-clr) !important;
     color: var(--ufo-brand-clr) !important;
+    background-color: var(--ufo-ctrl-bg-focus);
 }
 
 
-.map .theme {
+.map .theme-ctrl {
     position: absolute;
     top: 3.5em;
     z-index: 10;
@@ -63,8 +65,13 @@ body.small-screen.REPORT_NARROW_WIDTH .map {
     padding: 0;
     border-radius: 2pt;
     filter: grayscale(100%);
+    background-color: --ufo-ctrl-bg;
 }
 
-.map .theme::after {
+.map .theme-ctrl {
+    background-color: var(--ufo-ctrl-bg-focus);
+}
+
+.map .theme-ctrl::after {
     content: '🗺️';
 }

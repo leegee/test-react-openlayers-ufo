@@ -161,7 +161,7 @@ const OpenLayersMap: React.FC = () => {
   }, [featureCollection]);
 
   return (<section className='map' ref={mapElementRef} >
-    <button onClick={handleToggleTheme} className='theme highlightable ol-unselectable ol-control' />
+    <button onClick={handleToggleTheme} className='theme-ctrl highlightable ol-unselectable ol-control' />
     {mapRef.current && <Tooltip map={mapRef.current as Map} />}
   </section>);
 };
