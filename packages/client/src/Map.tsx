@@ -15,7 +15,7 @@ import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } fr
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
-import { hideReport, setReportWidth } from './custom-events/report-width';
+import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
@@ -108,6 +108,7 @@ const OpenLayersMap: React.FC = () => {
         }),
         layers: [
           ...Object.values(mapBaseLayers),
+          labelsLayer,
           ...Object.values(mapLayers)
         ],
       });

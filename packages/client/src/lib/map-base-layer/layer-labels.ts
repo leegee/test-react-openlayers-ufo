@@ -3,13 +3,16 @@
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 
-const geo = new TileLayer({
+export default new TileLayer({
     source: new XYZ({
-        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',
+        url: 'https://c.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
     }),
 });
 
-export default geo;
 
+// url: 'https://c.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',
 // attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-// subdomains: 'abcd',
+
+
+// url 'https://c.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png'
+// attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
