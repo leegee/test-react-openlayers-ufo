@@ -202,14 +202,13 @@ function centerMapOnFeature(map: Map, feature: any) { // ugh
     const coordinates = geometry.getCoordinates();
     map.getView().animate({
       center: coordinates,
-      zoom: config.zoomLevelForPoints + 2,
+      zoom: config.zoomLevelForPoints + 5,
       duration: 500,
     });
   }
 }
 
 function findFeature(layer: Layer, id: string | number): Feature | null {
-  // set layer to visible.
   const source = layer.getSource() as VectorSource;
   const features = source.getFeatures();
 

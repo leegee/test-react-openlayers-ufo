@@ -5,6 +5,7 @@ import FeatureTable from './FeaturesTable';
 import Map from './Map';
 import Panel from './ResultsPanel';
 import Toolbar from './Toolbar';
+import MapWithTooltips from './Map/MapWithTooltips';
 
 import './App.css';
 
@@ -37,7 +38,9 @@ const App: React.FC = () => {
     <>
       <Toolbar />
       <div className='map-panel-container'>
-        <Map />
+        <MapWithTooltips>
+          <Map />
+        </MapWithTooltips>
         <Panel >
           <FeatureTable />
         </Panel>
