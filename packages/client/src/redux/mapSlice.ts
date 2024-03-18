@@ -154,16 +154,5 @@ export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, vo
   }
 );
 
-
-// export const fetchData: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
-//   'data/fetchData',
-//   async (_, { getState }): Promise<FetchFeaturesResposneType> => {
-//     const { q } = (getState() as RootState);
-//     const response = await fetch(q);
-//     return response;
-//   }
-// );
-
-
 export default mapSlice.reducer;
 
