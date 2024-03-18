@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'react-intl-universal';
 import debounce from 'debounce';
@@ -14,20 +14,29 @@ const DEBOUNCE_INPUT_MS = 500;
 
 const SearchText: React.FC = () => {
     const dispatch = useDispatch();
+    const featureCollection = useSelector((state: any) => state.map.featureCollection);
     const { q } = useSelector((state: RootState) => state.map);
     const [localQ, setLocalQ] = useState<string>(q!);
 
-    const debouncedDispatch = debounce((value: string) => {
-        dispatch(setQ(value));
-        dispatch((fetchFeatures() as any));
-        setReportWidth('narrow');
+    const debouncedFetchRequest = debounce((value: string) => {
+        if (value !== q && value.length > config.minQLength) {
+            dispatch(setQ(value));
+            alert('bug!')
+            // dispatch((fetchFeatures() as any));
+        }
     }, DEBOUNCE_INPUT_MS);
 
     const handleQChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setLocalQ(value);
-        debouncedDispatch(value);
+        debouncedFetchRequest(value);
     };
+
+    // useEffect(() => {
+    //     if (featureCollection && featureCollection.length) {
+    //         setReportWidth('narrow');
+    //     }
+    // }, [featureCollection]);
 
     return (
         <nav className='search-text component highlightable'>
