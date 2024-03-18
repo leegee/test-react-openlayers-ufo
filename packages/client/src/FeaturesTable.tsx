@@ -30,12 +30,12 @@ const highlightText = (q: string | undefined, text: string) => {
 
 const FeatureTable: React.FC = () => {
     const featureCollection = useSelector((state: any) => state.map.featureCollection);
-    const [features, setFeatures] = useState<any[]>([]);
+    const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
 
     useEffect(() => {
         if (featureCollection) {
-            setFeatures(featureCollection.features);
+            setLocalFeatures(featureCollection.features);
         }
     }, [featureCollection]);
 
@@ -76,7 +76,7 @@ const FeatureTable: React.FC = () => {
                 </tr>
             </thead>
             <tbody>
-                {features.map((feature: any, index: number) => (
+                {localFeatures.map((feature: any, index: number) => (
                     <tr key={index} id={getRowId(feature.properties.id)}>
                         <td className='datetime'>{feature.properties.datetime_original}</td>
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>

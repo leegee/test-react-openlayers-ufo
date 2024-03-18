@@ -11,7 +11,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 
-import type { AppThunk } from './store';
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
@@ -96,6 +95,15 @@ const mapSlice = createSlice({
       state.basemapSource = action.payload;
       localStorage.setItem('basemap_source', state.basemapSource);
     },
+    setPreviousQueryString: (state, action) => {
+      state.previousQueryString = action.payload.previousQueryString;
+    },
+    failedRequest: (state, _action) => {
+      state.resultsCount = 0;
+      state.featureCollection = null;
+      state.previousQueryString = '';
+      // action.payload.status etc
+    }
   },
 });
 
@@ -142,13 +150,16 @@ export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, vo
     }
 
     timeoutId = setTimeout(async () => {
+      let response;
       try {
-        const response = await fetch(`${searchEndpoint}?${queryString}`);
+        mapSlice.actions.setPreviousQueryString(queryString);
+        response = await fetch(`${searchEndpoint}?${queryString}`);
         const data = await response.json();
         dispatch(mapSlice.actions.setFeatureCollection(data));
       }
-      catch (error) { // TODO: handle errors
+      catch (error) {
         console.error(error);
+        dispatch(mapSlice.actions.failedRequest(response));
       }
     }, config.api.fetchDebounceMs);
   }

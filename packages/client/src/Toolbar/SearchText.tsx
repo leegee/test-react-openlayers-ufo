@@ -19,7 +19,7 @@ const SearchText: React.FC = () => {
     const [localQ, setLocalQ] = useState<string>(q!);
 
     const debouncedFetchRequest = debounce((value: string) => {
-        if (value !== q && value.length > config.minQLength) {
+        if (value.trim().length === 0 || value.length > config.minQLength) {
             dispatch(setQ(value));
             dispatch((fetchFeatures() as any));
         }
