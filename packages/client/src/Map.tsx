@@ -4,11 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Feature, Map, MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
+import Layer from 'ol/layer/Layer';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import TileLayer from 'ol/layer/Tile';
 
+import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } from './redux/mapSlice';
 import { setupFeatureHighlighting } from './lib/VectorLayerHighlight';
-import config from '@ufo-monorepo-test/config/src';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import { hideReport, setReportWidth } from './custom-events/report-width';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
@@ -20,26 +24,35 @@ import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixe
 
 import 'ol/ol.css';
 import './Map.css';
-import Layer from 'ol/layer/Layer';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
 
+export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
 
-type MapLayersI = {
+type MapBaseLayersType = {
+  [key in MapBaseLayerKeyType]: VectorLayer<VectorSource<any>> | TileLayer<any>;
+}
+
+type MapLayersType = {
   [key in MapLayerKeyType]: VectorLayer<VectorSource<any>>;
 }
 
-const mapLayers: MapLayersI = {
+const mapLayers: MapLayersType = {
   clusterOnly: clusterOnlyLayer,
   mixedSearchResults: mixedSearchResultsLayer,
   points: pointsLayer,
 }
 
+const mapBaseLayers: MapBaseLayersType = {
+  dark: baseLayerDark,
+  light: baseLayerLight,
+  geo: baseLayerGeo,
+};
+
+
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
-  const basemapSource = useSelector(selectBasemapSource);
+  const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
 
@@ -81,9 +94,7 @@ const OpenLayersMap: React.FC = () => {
           zoom,
         }),
         layers: [
-          baseLayerDark,
-          baseLayerLight,
-          baseLayerGeo,
+          ...Object.values(mapBaseLayers),
           ...Object.values(mapLayers)
         ],
       });
@@ -171,30 +182,18 @@ const getNextBasemapSource = (currentBasemapSource: string) => {
   }
 };
 
-const setTheme = (newBasemapSource: string) => {
-  switch (newBasemapSource) {
-    case 'dark':
-      baseLayerDark.setVisible(true);
-      baseLayerLight.setVisible(false);
-      baseLayerGeo.setVisible(false);
-      break;
-    case 'light':
-      baseLayerDark.setVisible(false);
-      baseLayerLight.setVisible(true);
-      baseLayerGeo.setVisible(false);
-      break;
-    case 'geo':
-      baseLayerDark.setVisible(false);
-      baseLayerLight.setVisible(false);
-      baseLayerGeo.setVisible(true);
-      break;
-    default:
-      baseLayerDark.setVisible(false);
-      baseLayerLight.setVisible(false);
-      baseLayerGeo.setVisible(true);
-      break;
+const setTheme = (baseLayerName: MapBaseLayerKeyType) => {
+  for (let l of Object.keys(mapBaseLayers)) {
+    (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
   }
-};
+}
+
+function setVisibleDataLayer(layerName: MapLayerKeyType) {
+  console.info('setVisibleDataLayer', layerName);
+  for (let l of Object.keys(mapLayers)) {
+    (mapLayers as any)[l].setVisible(l === layerName);
+  }
+}
 
 function centerMapOnFeature(map: Map, feature: any) { // ugh
   const geometry = feature.getGeometry();
@@ -220,12 +219,6 @@ function findFeature(layer: Layer, id: string | number): Feature | null {
   return null;
 }
 
-function setVisibleDataLayer(layerName: MapLayerKeyType) {
-  console.info('setVisibleDataLayer', layerName);
-  for (let l of Object.keys(mapLayers)) {
-    (mapLayers as any)[l].setVisible(l === layerName);
-  }
-}
 
 export default OpenLayersMap;
 

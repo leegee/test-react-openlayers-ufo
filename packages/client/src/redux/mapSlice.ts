@@ -13,6 +13,7 @@ import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 
 import type { AppThunk } from './store';
 import type { MapState } from './reducers';
+import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
 export interface GeoJSONFeature {
@@ -88,7 +89,7 @@ const { setMapDataFromResponse } = mapSlice.actions;
 
 export const { setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
 
-export const selectBasemapSource = (state: RootState) => state.map.basemapSource;
+export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
 
 export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
   const { zoom, bounds, from_date, to_date, q } = getState().map;
