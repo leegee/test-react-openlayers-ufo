@@ -21,8 +21,7 @@ const SearchText: React.FC = () => {
     const debouncedFetchRequest = debounce((value: string) => {
         if (value !== q && value.length > config.minQLength) {
             dispatch(setQ(value));
-            alert('bug!')
-            // dispatch((fetchFeatures() as any));
+            dispatch((fetchFeatures() as any));
         }
     }, DEBOUNCE_INPUT_MS);
 
@@ -32,11 +31,12 @@ const SearchText: React.FC = () => {
         debouncedFetchRequest(value);
     };
 
-    // useEffect(() => {
-    //     if (featureCollection && featureCollection.length) {
-    //         setReportWidth('narrow');
-    //     }
-    // }, [featureCollection]);
+    useEffect(() => {
+        if (featureCollection && featureCollection.length) {
+            console.log('search is setting report->narrow');
+            setReportWidth('narrow');
+        }
+    }, [featureCollection]);
 
     return (
         <nav className='search-text component highlightable'>

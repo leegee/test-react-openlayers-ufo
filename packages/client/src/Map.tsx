@@ -120,12 +120,13 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchFeatures() as any);
+    // alert('search upsets this maybe because bounds change when report shown')
     if (zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
-      hideReport();
+      // hideReport();
     } else {
-      setReportWidth('narrow');
+      // setReportWidth('narrow');
     }
+    dispatch((fetchFeatures() as any));
   }, [dispatch, bounds, zoom]);
 
   useEffect(() => {

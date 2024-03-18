@@ -6,13 +6,12 @@
  * Center could be inferred from bounds, but for now is set.
  */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 
 import type { AppThunk } from './store';
-import type { MapState } from './reducers';
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
@@ -33,9 +32,23 @@ export interface UfoFeatureCollection {
   features: GeoJSONFeature[];
 }
 
-export interface FeatureCollectionResponse {
+export interface FetchFeaturesResposneType {
   results: UfoFeatureCollection;
   dictionary: MapDictionary | undefined;
+}
+
+export interface MapState {
+  center: [number, number];
+  zoom: number;
+  bounds: [number, number, number, number] | null;
+  featureCollection: UfoFeatureCollection | null;
+  resultsCount: number | undefined;
+  dictionary: MapDictionary | undefined;
+  from_date?: number;
+  to_date?: number;
+  q?: string;
+  basemapSource: string;
+  previousQueryString: string;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
@@ -53,6 +66,7 @@ const initialState: MapState = {
   resultsCount: undefined,
   q: '',
   basemapSource: localStorage.getItem('basemap_source') || 'dark',
+  previousQueryString: '',
 };
 
 const mapSlice = createSlice({
@@ -64,7 +78,7 @@ const mapSlice = createSlice({
       state.zoom = action.payload.zoom;
       state.bounds = action.payload.bounds;
     },
-    setMapDataFromResponse(state, action: PayloadAction<FeatureCollectionResponse>) {
+    setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
       state.resultsCount = action.payload.results && action.payload.results.features ? action.payload.results.features.length : 0;
       state.featureCollection = action.payload.results as UfoFeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
@@ -85,38 +99,44 @@ const mapSlice = createSlice({
   },
 });
 
-const { setMapDataFromResponse } = mapSlice.actions;
-
 export const { setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
 
-export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) => {
-  const { zoom, bounds, from_date, to_date, q } = getState().map;
-
+export const selectQueryString = (mapState: MapState): string | undefined => {
+  const { zoom, bounds, from_date, to_date, q, previousQueryString } = mapState;
   if (!zoom || !bounds) return;
 
-  try {
-    const queryObject = {
-      zoom: String(zoom),
-      minlng: String(bounds[0]),
-      minlat: String(bounds[1]),
-      maxlng: String(bounds[2]),
-      maxlat: String(bounds[3]),
-      show_undated: String(true),
-      show_invalid_dates: String(true),
-      ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
-      ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
-      ...(q !== '' ? { q: q } : {}),
-    };
+  const queryObject = {
+    zoom: String(zoom),
+    minlng: String(bounds[0]),
+    minlat: String(bounds[1]),
+    maxlng: String(bounds[2]),
+    maxlat: String(bounds[3]),
+    show_undated: String(true),
+    show_invalid_dates: String(true),
+    ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+    ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+    ...(q !== '' ? { q: q } : {}),
+  };
 
-    if (queryObject.q && queryObject.q.length < config.minQLength) {
-      return;
-    }
+  const queryString = new URLSearchParams(queryObject).toString();
 
-    const queryString = new URLSearchParams(queryObject);
+  if (previousQueryString === queryString) {
+    console.log('fetchFeatures - bail, this request query same as last request query');
+    return;
+  }
 
-    const debounceTimeout = config.api.fetchDebounceMs;
+  return queryString;
+};
+
+
+export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
+  'data/fetchData',
+  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+    const queryString: string | undefined = selectQueryString(getState().map);
+    if (!queryString) return;
+
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -125,18 +145,25 @@ export const fetchFeatures = (): AppThunk<void> => async (dispatch, getState) =>
       try {
         const response = await fetch(`${searchEndpoint}?${queryString}`);
         const data = await response.json();
-        dispatch(setMapDataFromResponse(data));
-      } catch (error) {
-        // TODO: handle errors
+        dispatch(mapSlice.actions.setFeatureCollection(data));
+      }
+      catch (error) { // TODO: handle errors
         console.error(error);
       }
-    }, debounceTimeout);
+    }, config.api.fetchDebounceMs);
   }
-  catch (error) {
-    // TODO: Handle errors
-    console.error(error);
-  }
-};
+);
+
+
+// export const fetchData: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
+//   'data/fetchData',
+//   async (_, { getState }): Promise<FetchFeaturesResposneType> => {
+//     const { q } = (getState() as RootState);
+//     const response = await fetch(q);
+//     return response;
+//   }
+// );
+
 
 export default mapSlice.reducer;
 
