@@ -25,6 +25,7 @@ import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixe
 
 import 'ol/ol.css';
 import './Map.css';
+import debounce from 'debounce';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
@@ -119,15 +120,20 @@ const OpenLayersMap: React.FC = () => {
     return () => map?.dispose();
   }, [dispatch]);
 
+  const debouncedMapChanged = debounce(() => {
+    dispatch((fetchFeatures() as any));
+  }, 500);
+
+  useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
+
   useEffect(() => {
     // alert('search upsets this maybe because bounds change when report shown')
-    // if (zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
-    //   hideReport();
-    // } else {
-    //   setReportWidth('narrow');
-    // }
-    dispatch((fetchFeatures() as any));
-  }, [dispatch, bounds, zoom]);
+    if (!q && zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
+      hideReport();
+    } else if (q) {
+      setReportWidth('narrow');
+    }
+  }, [dispatch, q]);
 
   useEffect(() => {
     if (!mapElementRef.current || !featureCollection || featureCollection.features === null) return;
