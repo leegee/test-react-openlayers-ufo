@@ -79,7 +79,7 @@ const mapSlice = createSlice({
     },
     setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
       state.resultsCount = action.payload.results && action.payload.results.features ? action.payload.results.features.length : 0;
-      state.featureCollection = action.payload.results as UfoFeatureCollection;
+      state.featureCollection = (action.payload.results || []) as UfoFeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
     setFromDate(state, action: PayloadAction<number | undefined>) {
@@ -145,7 +145,6 @@ export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, vo
       console.log('fetchFeatures - bail, this request query same as last request query');
       return undefined;
     }
-
     dispatch(setPreviousQueryString(queryString));
 
     let response;
