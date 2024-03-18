@@ -31,6 +31,7 @@ Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 * Sort order toggling (2h)
 * Enable switching locale from `no` to `en` and back (1h)
 * Store bounds and filter settings in the URI (4h)
+* Highlight on map feature chosen in report or click on
 * Share common-type of request/response (1h)
 * Server should infer cluster size (`cluster_eps`) from zoom level.
 * Expose more data: shape, colour, direction, etc
