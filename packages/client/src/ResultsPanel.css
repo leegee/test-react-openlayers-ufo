@@ -18,6 +18,7 @@
     transition: height 0.3s ease;
     transition: width 0.1s;
     transition: margin 0.1s;
+    overflow: auto;
 }
 
 .panel.collapsed {
