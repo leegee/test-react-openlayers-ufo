@@ -6,10 +6,8 @@ table.feature-table {
     margin: 0;
     background-color: var(--ufo-primary-bg);
     padding: 0 var(--ufo-div-padding);
-    margin: 1rem;
     width: 100%;
     border-collapse: collapse;
-    overflow: auto;
 }
 
 table.feature-table {
@@ -94,19 +92,17 @@ table.feature-table {
     }
 }
 
+/* No button to open full-width when already full-width */
 .REPORT_FULL_WIDTH .feature-table .open-full-report {
     display: none;
 }
 
-
+/* No button to revert full-width when already narrow-width */
 .REPORT_NARROW_WIDTH .feature-table .close-full-report {
     display: none;
 }
 
-.REPORT_NARROW_WIDTH table.feature-table {
-    margin: 0.25rem;
-}
-
+/* No button to link to full-width when already full-width */
 .REPORT_FULL_WIDTH .goto-full-report {
     display: none;
 }
