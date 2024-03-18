@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-
+import { get } from 'react-intl-universal';
 import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
-import config from '@ufo-monorepo-test/config/src';
 
+import config from '@ufo-monorepo-test/config/src';
 import './Tooltip.css';
 
 interface TooltipComponentProps {
@@ -22,9 +22,18 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         const coordinate = event.coordinate;
 
         if (feature) {
-            const tooltipContent = new Intl.DateTimeFormat(config.locale).format(
-                feature.get('datetime')
-            ) + ' ' + feature.get('location_text');
+            let tooltipContent;
+            const location_text = feature.get('location_text');
+            if (location_text) {
+                const date = new Date(feature.get('datetime'));
+                if (date) {
+                    tooltipContent = new Intl.DateTimeFormat(config.locale).format(date);
+                }
+                tooltipContent += '<br/>' + feature.get('location_text');
+            }
+            else {
+                tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
+            }
 
             if (tooltipContent) {
                 tooltipElementRef.current!.innerHTML = tooltipContent;
