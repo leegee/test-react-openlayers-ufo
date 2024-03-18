@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH } from './custom-events/report-width';
+// import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH } from './custom-events/report-width';
 import FeatureTable from './FeaturesTable';
 import Map from './Map';
 import Panel from './ResultsPanel';

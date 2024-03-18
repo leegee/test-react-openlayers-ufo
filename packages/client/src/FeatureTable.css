@@ -98,7 +98,7 @@ table.feature-table {
 }
 
 /* No button to revert full-width when already narrow-width */
-.REPORT_NARROW_WIDTH .feature-table .close-full-report {
+.feature-table .close-full-report {
     display: none;
 }
 
@@ -107,11 +107,11 @@ table.feature-table {
     display: none;
 }
 
-.REPORT_NARROW_WIDTH .datetime {
+.datetime {
     padding-right: 1em;
     min-width: 30%;
 }
 
-.REPORT_NARROW_WIDTH .report_text {
+.report_text {
     display: none;
 }

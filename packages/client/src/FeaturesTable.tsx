@@ -4,7 +4,7 @@ import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
 import { RootState } from './redux/store';
-import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
+import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
 import { setReportWidth } from './custom-events/report-width';
 
 import './FeatureTable.css';
@@ -41,6 +41,10 @@ const FeatureTable: React.FC = () => {
 
     useEffect(() => {
         document.addEventListener(EVENT_SHOW_POINT, ((e: ShowPointEventType) => {
+            if (!e.detail.id) {
+                console.log("Heard EVENT_SHOW_POINT but got no e.detail.id")
+                return;
+            }
             const element = document.getElementById(getRowId(e.detail.id));
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
@@ -52,9 +56,9 @@ const FeatureTable: React.FC = () => {
         }) as EventListener);
     }, []);
 
-    function showPointOnMap(id: string) {
+    function showPointOnMap(feature: any /* GeoJSON Feature */) {
         // setReportWidth('narrow');
-        showPoint(id);
+        showPointByCoords(feature.geometry.coordinates);
     }
 
     function gotoFulLReport(id: string) {
@@ -83,7 +87,7 @@ const FeatureTable: React.FC = () => {
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                         <td className='ctrls'>
                             <span className='ctrl goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
-                            <span className='ctrl goto-map' onClick={() => showPointOnMap(feature.properties.id)} />
+                            <span className='ctrl goto-map' onClick={() => showPointOnMap(feature)} />
                         </td>
                     </tr>
                 ))}

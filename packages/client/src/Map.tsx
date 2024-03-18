@@ -69,11 +69,21 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     const handleShowPointEvent = (e: ShowPointEventType) => {
-      alert('point')
-      if (!e.detail.id) return;
-      const feature = findFeature(pointsLayer, e.detail.id);
+      console.log('handleShowPointEvent', e.detail)
+      let feature;
+      if (e.detail.id) {
+        feature = findFeatureById(pointsLayer, e.detail.id);
+      }
       if (feature) {
         centerMapOnFeature(mapRef.current!, feature);
+      }
+      else if (e.detail.coords && mapRef.current) {
+        mapRef.current.getView().animate({
+          center: e.detail.coords,
+          zoom: config.zoomLevelForPoints,
+          duration: 500,
+          easing: easeOut
+        });
       }
     };
 
@@ -218,7 +228,7 @@ function centerMapOnFeature(map: Map, feature: any) { // ugh
   }
 }
 
-function findFeature(layer: Layer, id: string | number): Feature | null {
+function findFeatureById(layer: Layer, id: string | number): Feature | null {
   const source = layer.getSource() as VectorSource;
   const features = source.getFeatures();
 
