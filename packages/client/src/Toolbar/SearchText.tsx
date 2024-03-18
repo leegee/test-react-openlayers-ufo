@@ -31,12 +31,11 @@ const SearchText: React.FC = () => {
         debouncedFetchRequest(value);
     };
 
-    useEffect(() => {
-        if (featureCollection && featureCollection.length) {
-            console.log('search is setting report->narrow');
-            setReportWidth('narrow');
-        }
-    }, [featureCollection]);
+    // useEffect(() => {
+    //     if (featureCollection && featureCollection.length) {
+    //         setReportWidth('narrow');
+    //     }
+    // }, [featureCollection]);
 
     return (
         <nav className='search-text component highlightable'>

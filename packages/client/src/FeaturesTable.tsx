@@ -53,13 +53,13 @@ const FeatureTable: React.FC = () => {
     }, []);
 
     function showPointOnMap(id: string) {
-        setReportWidth('narrow');
+        // setReportWidth('narrow');
         showPoint(id);
     }
 
     function gotoFulLReport(id: string) {
-        setReportWidth('full-width');
-        // todo highlgiht row?
+        // setReportWidth('full-width');
+        // todo highlgiht row with EVENT_SHOW_POINT or directly
     }
 
     return (

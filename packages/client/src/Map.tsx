@@ -136,9 +136,9 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch, q]);
 
   useEffect(() => {
-    if (!mapElementRef.current || !featureCollection || featureCollection.features === null) return;
+    if (!mapElementRef.current || featureCollection === null) return;
     if (q && q.length >= config.minQLength) {
-      setReportWidth('narrow');
+      // setReportWidth('narrow');
       updateMixedSearchResultsLayer(featureCollection);
       setVisibleDataLayer('mixedSearchResults');
     } else if (zoom < config.zoomLevelForPoints) {
