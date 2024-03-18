@@ -96,7 +96,7 @@ const mapSlice = createSlice({
       localStorage.setItem('basemap_source', state.basemapSource);
     },
     setPreviousQueryString: (state, action) => {
-      state.previousQueryString = action.payload.previousQueryString;
+      state.previousQueryString = action.payload;
     },
     failedRequest: (state, _action) => {
       state.resultsCount = 0;
@@ -107,12 +107,12 @@ const mapSlice = createSlice({
   },
 });
 
-export const { setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
+export const { setPreviousQueryString, setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
 
 export const selectQueryString = (mapState: MapState): string | undefined => {
-  const { zoom, bounds, from_date, to_date, q, previousQueryString } = mapState;
+  const { zoom, bounds, from_date, to_date, q } = mapState;
   if (!zoom || !bounds) return;
 
   const queryObject = {
@@ -128,40 +128,36 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
     ...(q !== '' ? { q: q } : {}),
   };
 
-  const queryString = new URLSearchParams(queryObject).toString();
-
-  if (previousQueryString === queryString) {
-    console.log('fetchFeatures - bail, this request query same as last request query');
-    return;
-  }
-
-  return queryString;
+  return new URLSearchParams(queryObject).toString();
 };
 
 
 export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
-    const queryString: string | undefined = selectQueryString(getState().map);
+    const mapState = getState().map;
+    const queryString: string | undefined = selectQueryString(mapState);
+    const { previousQueryString } = mapState;
+
     if (!queryString) return;
 
-    if (timeoutId) {
-      clearTimeout(timeoutId);
+    if (previousQueryString === queryString) {
+      console.log('fetchFeatures - bail, this request query same as last request query');
+      return undefined;
     }
 
-    timeoutId = setTimeout(async () => {
-      let response;
-      try {
-        mapSlice.actions.setPreviousQueryString(queryString);
-        response = await fetch(`${searchEndpoint}?${queryString}`);
-        const data = await response.json();
-        dispatch(mapSlice.actions.setFeatureCollection(data));
-      }
-      catch (error) {
-        console.error(error);
-        dispatch(mapSlice.actions.failedRequest(response));
-      }
-    }, config.api.fetchDebounceMs);
+    dispatch(setPreviousQueryString(queryString));
+
+    let response;
+    try {
+      response = await fetch(`${searchEndpoint}?${queryString}`);
+      const data = await response.json();
+      dispatch(mapSlice.actions.setFeatureCollection(data));
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(mapSlice.actions.failedRequest(response));
+    }
   }
 );
 
