@@ -28,7 +28,9 @@ const DateRange: React.FC = () => {
     }, [dispatch, dictionary]);
 
     useEffect(() => {
-        dispatch(fetchFeatures() as any)
+        if (initialised) {
+            dispatch(fetchFeatures() as any)
+        }
     }, [dispatch, from_date, to_date]);
 
     const handleMinYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
