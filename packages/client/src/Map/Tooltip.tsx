@@ -5,6 +5,8 @@ import { MapBrowserEvent } from 'ol';
 import Overlay from 'ol/Overlay';
 import config from '@ufo-monorepo-test/config/src';
 
+import './Tooltip.css';
+
 interface TooltipComponentProps {
     map: Map;
 }
@@ -63,7 +65,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         };
     }, [map, overlay]);
 
-    return <div ref={tooltipElementRef} className="tooltip" />;
+    return <aside ref={tooltipElementRef} className="tooltip" />;
 };
 
 export default Tooltip;
