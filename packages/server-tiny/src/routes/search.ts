@@ -7,9 +7,9 @@ import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from 'middleware/errors';
 
 type SqlBitsType = {
-    whereClause: string,
+    whereColumns: string[],
     selectColumns: string[] | String[],
-    orderBy?: string,
+    orderByClause?: string,
     whereParams: any[] | undefined,
 };
 
@@ -43,11 +43,7 @@ export async function search(ctx: Context) {
 
     try {
         let sql: string;
-        let sqlBits: SqlBitsType = {
-            whereClause: '',
-            whereParams: [],
-            selectColumns: [],
-        };
+        let sqlBits = constructSqlBits(userArgs);
 
         // console.debug({
         //     supplieZoom: userArgs.zoom,
@@ -56,45 +52,10 @@ export async function search(ctx: Context) {
 
         // Return points for queries, or when zoomed in
         if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
-            sqlBits = constructSqlBits(userArgs);
-            sql = geoJsonForPoints(
-                `SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings`,
-                sqlBits.whereClause,
-                sqlBits.orderBy
-            );
+            sql = geoJsonForPoints(sqlBits);
         }
         else {
-            sql = `
-                    SELECT jsonb_build_object(
-                        'type', 'FeatureCollection',
-                        'features', jsonb_agg(feature),
-                        'clusterCount', COUNT(*)  
-                    ) 
-                    FROM (
-                        SELECT jsonb_build_object(
-                            'type', 'Feature',
-                            'geometry', ST_AsGeoJSON(s.cluster_geom, 3857)::jsonb,
-                            'properties', jsonb_build_object(
-                                'cluster_id', s.cluster_id,
-                                'num_points', s.num_points
-                            )
-                        ) AS feature
-                        FROM (
-                            SELECT 
-                                cluster_id,
-                                ST_Centroid(ST_Collect(point)) AS cluster_geom,
-                                COUNT(*) AS num_points
-                            FROM (
-                                SELECT 
-                                    ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
-                                    point
-                                FROM sightings
-                                WHERE (point && ST_Transform(ST_MakeEnvelope($1, $2, $3, $4, 4326), 3857))
-                            ) AS clustered_points
-                            GROUP BY cluster_id
-                        ) AS s
-                    ) AS fc `,
-                sqlBits.whereParams = [userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat];
+            sql = geoJsonForClusters(sqlBits);
         }
 
         const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
@@ -122,35 +83,16 @@ export async function search(ctx: Context) {
     ctx.body = JSON.stringify(body);
 }
 
-function geoJsonForPoints(selectStr: string, whereStr: string, orderBy = '') {
-    return `SELECT jsonb_build_object(
-        'type', 'FeatureCollection',
-        'features', jsonb_agg(feature)
-    ) 
-    FROM (
-        SELECT jsonb_build_object(
-            'type', 'Feature',
-            'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
-            'properties', to_jsonb(s) - 'point'
-        ) AS feature
-        FROM (
-            ${selectStr}
-            ${whereStr}
-            ${orderBy}
-        ) AS s
-    ) AS fc`;
-}
-
-function constructSqlBits(userArgs: QueryParams) {
-    const whereClauses: String[] = [];
-    const selectColumns: String[] = [
+function constructSqlBits(userArgs: QueryParams): SqlBitsType {
+    const whereColumns: string[] = [];
+    const selectColumns = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
     ];
     const whereParams = [];
-    const orderBy = [];
+    const orderByClause = [];
 
     if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
-        whereClauses.push(
+        whereColumns.push(
             `(datetime BETWEEN $${whereParams.length + 1} AND $${whereParams.length + 2})`
         );
         whereParams.push(
@@ -159,59 +101,59 @@ function constructSqlBits(userArgs: QueryParams) {
         );
     }
     else if (userArgs.from_date !== undefined) {
-        whereClauses.push(`(datetime >= ${whereParams.length + 1})`);
+        whereColumns.push(`(datetime >= ${whereParams.length + 1})`);
         whereParams.push(userArgs.from_date + " 01-01 00:00:00");
     }
     else if (userArgs.to_date !== undefined) {
-        whereClauses.push(`(datetime <= $${whereParams.length + 1})`);
+        whereColumns.push(`(datetime <= $${whereParams.length + 1})`);
         whereParams.push(userArgs.to_date + " 12-31 23:59:59");
     }
     else if (!userArgs.show_undated) {
-        whereClauses.push("(datetime IS NOT NULL)");
+        whereColumns.push("(datetime IS NOT NULL)");
     }
 
     // if (!userArgs.show_invalid_dates) {
-    //     whereClauses.push("datetime_invalid IS NOT true");
+    //     whereColumns.push("datetime_invalid IS NOT true");
     // }
 
     if (userArgs.q !== undefined && userArgs.q !== '') {
         const orWhere = [];
         const orSelect = [];
-        const orOrderBy = [];
+        const ororderByClause = [];
         if (!userArgs.q_subject || userArgs.q_subject.includes('location_text')) {
             orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
             orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
-            orOrderBy.push('location_text_score DESC');
+            ororderByClause.push('location_text_score DESC');
         }
         if (!userArgs.q_subject || userArgs.q_subject.includes('report_text')) {
             orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
             orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
-            orOrderBy.push('report_text_score DESC');
+            ororderByClause.push('report_text_score DESC');
         }
-        whereClauses.push('(' + orWhere.join(' OR ') + ')');
+        whereColumns.push('(' + orWhere.join(' OR ') + ')');
 
-        // whereClauses.push(`( location_text ILIKE $${whereParams.length + 1} OR report_text ILIKE $${whereParams.length + 1} )`);
+        // whereColumns.push(`( location_text ILIKE $${whereParams.length + 1} OR report_text ILIKE $${whereParams.length + 1} )`);
         // selectColumns.push( `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`, `similarity(report_text, $${whereParams.length + 1}) AS report_text_score` );
         // whereParams.push(userArgs.q + '%');
-        // orderBy.push('location_text_score DESC, report_text_score DESC');
+        // orderByClause.push('location_text_score DESC, report_text_score DESC');
 
         selectColumns.push(orSelect.join(', '));
         whereParams.push(userArgs.q + '%');
-        orderBy.push(orOrderBy.join(', '));
+        orderByClause.push(ororderByClause.join(', '));
     }
 
-    whereClauses.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+    whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
     whereParams.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
 
     const rv: SqlBitsType = {
-        whereClause: '',
+        whereColumns: [],
         whereParams: undefined,
         selectColumns: [],
-        orderBy: '',
+        orderByClause: '',
     };
 
-    if (whereClauses.length) {
-        rv.whereClause = ' WHERE ' + whereClauses.join(' AND ');
+    if (whereColumns.length) {
+        rv.whereColumns = whereColumns;
         rv.whereParams = whereParams;
     }
 
@@ -219,8 +161,8 @@ function constructSqlBits(userArgs: QueryParams) {
         rv.selectColumns = selectColumns;
     }
 
-    if (orderBy.length) {
-        rv.orderBy = ' ORDER BY ' + orderBy.join(',');
+    if (orderByClause.length) {
+        rv.orderByClause = ' ORDER BY ' + orderByClause.join(',');
     }
 
     return rv;
@@ -301,12 +243,57 @@ function getCleanArgs(args: ParsedUrlQuery) {
 }
 
 
+function geoJsonForPoints(sqlBits: SqlBitsType) {
+    return `SELECT jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(feature),
+        'pointsCount', COUNT(*),
+        'clusterCount', 0
+    ) 
+    FROM (
+        SELECT jsonb_build_object(
+            'type', 'Feature',
+            'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
+            'properties', to_jsonb(s) - 'point'
+        ) AS feature
+        FROM (
+            SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
+            WHERE ${sqlBits.whereColumns.join(' AND ')}
+            ${sqlBits.orderByClause}
+        ) AS s
+    ) AS fc`;
+}
 
-/*
-
-SELECT ST_ClusterDBSCAN(geom, eps := 0.1, minpoints := 2) OVER() AS cluster_id,
-       ST_Centroid(ST_Collect(geom)) AS cluster_geom,
-       COUNT(*) AS num_points
-FROM your_points_table
-GROUP BY cluster_id;
-*/
+function geoJsonForClusters(sqlBits: SqlBitsType) {
+    return `
+    SELECT jsonb_build_object(
+        'type', 'FeatureCollection',
+        'features', jsonb_agg(feature),
+        'pointsCount', 0,
+        'clusterCount', COUNT(*)  
+    ) 
+    FROM (
+        SELECT jsonb_build_object(
+            'type', 'Feature',
+            'geometry', ST_AsGeoJSON(s.cluster_geom, 3857)::jsonb,
+            'properties', jsonb_build_object(
+                'cluster_id', s.cluster_id,
+                'num_points', s.num_points
+            )
+        ) AS feature
+        FROM (
+            SELECT 
+                cluster_id,
+                ST_Centroid(ST_Collect(point)) AS cluster_geom,
+                COUNT(*) AS num_points
+            FROM (
+                SELECT 
+                    ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                    point
+                FROM sightings
+                WHERE ${sqlBits.whereColumns.join(' AND ')}
+            ) AS clustered_points
+            GROUP BY cluster_id
+        ) AS s
+    ) AS fc `;
+}

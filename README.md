@@ -26,8 +26,6 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
-* New bug: SearchText
-* Apply text search to clusters!
 * Tests.
 * Logger transports/etc
 * Decide on a default sort of results when no filters set
