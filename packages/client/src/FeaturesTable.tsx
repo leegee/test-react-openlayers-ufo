@@ -80,17 +80,26 @@ const FeatureTable: React.FC = () => {
                 </tr>
             </thead>
             <tbody>
-                {localFeatures.map((feature: any, index: number) => (
-                    <tr key={index} id={getRowId(feature.properties.id)} title={feature.properties.search_score ? feature.properties.search_score : ''}>
-                        <td className='datetime'>{feature.properties.datetime_original}</td>
-                        <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
-                        <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
-                        <td className='ctrls'>
-                            <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
-                            <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
-                        </td>
-                    </tr>
-                ))}
+                {localFeatures
+                    .slice() // Create a copy of the array to avoid mutating the original array
+                    .sort((a, b) => {
+                        if (a.search_score) {
+                            if (a.search_score < b.search_score) return -1; // Sort a before b
+                            if (a.search_score > b.search_score) return 1;
+                        }
+                        return 0; // Leave them unchanged in order
+                    })
+                    .map((feature: any, index: number) => (
+                        <tr key={index} id={getRowId(feature.properties.id)} title={feature.properties.search_score ? feature.properties.search_score : 'unscored'}>
+                            <td className='datetime'>{feature.properties.datetime_original}</td>
+                            <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
+                            <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
+                            <td className='ctrls'>
+                                <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
+                                <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
+                            </td>
+                        </tr>
+                    ))}
             </tbody>
         </table>
     );
