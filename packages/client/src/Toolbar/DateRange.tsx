@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-import { fetchFeatures, setFromDate, setToDate } from '../redux/mapSlice';
+import { fetchFeatures, setFromDate, setToDate, selectPointsCount } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 
 import './DateRange.css';
@@ -19,6 +19,7 @@ const DateRange: React.FC = () => {
     const dispatch = useDispatch();
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
     const { from_date, to_date } = useSelector((state: RootState) => state.map);
+    const pointsCount = useSelector(selectPointsCount);
 
     useEffect(() => {
         if (dictionary && dictionary.datetime) {
@@ -53,9 +54,13 @@ const DateRange: React.FC = () => {
 
     return (
         <nav className='date-range component highlightable'>
-            <Link to="/histogram/dates">
+            {pointsCount ? (
+                <Link to="/histogram/dates">
+                    <span className='grey calendar-icon' title={get('date_range.title')} />
+                </Link>
+            ) : (
                 <span className='grey calendar-icon' title={get('date_range.title')} />
-            </Link>
+            )}
             <input
                 title={get('date_range.min')}
                 type='text'

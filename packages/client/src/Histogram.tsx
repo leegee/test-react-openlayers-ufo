@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
-import { useSelector } from 'react-redux';
+import { selectPointsCount } from './redux/mapSlice';
+import { dispatchCloseModalEvent } from './Modal';
 
 ChartJS.register(
     CategoryScale,
@@ -15,41 +17,43 @@ ChartJS.register(
 
 const Histogram: React.FC = () => {
     const featureCollection = useSelector((state: any) => state.map.featureCollection);
+    const pointsCount = useSelector(selectPointsCount);
     const [data, setData] = useState<any>(null);
     const [options, setOptions] = useState<any>(null);
+
+    if (!pointsCount) {
+        dispatchCloseModalEvent();
+    }
 
     useEffect(() => {
         if (!featureCollection || !featureCollection.features) return;
 
-        const yearValues = featureCollection.features.map((feature: any /*todo*/) => new Date(feature.properties.datetime).getFullYear());
+        const yearValues: number[] = featureCollection.features.
+            map((feature: any /*todo*/) => new Date(feature.properties.datetime).getFullYear());
 
-        // Finding the lowest and highest values
-        const lowestValue = Math.min(...yearValues);
-        const highestValue = Math.max(...yearValues);
+        const lowestYear = Math.min(...yearValues);
+        const highestYear = Math.max(...yearValues);
 
-        console.log({ lowestValue, highestValue });
+        const yearCount: { [year: number]: number } = {};
 
-        const newOptions = {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top' as const,
-                },
-                title: {
-                    display: true,
-                    text: 'Chart.js Bar Chart',
-                },
-            },
-        };
+        yearValues.forEach(year => {
+            yearCount[year] = (yearCount[year] || 0) + 1;
+        });
 
-        const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+        // Include the years without reports
+        for (let year = lowestYear; year <= highestYear; year++) {
+            if (!yearCount[year]) {
+                yearCount[year] = 0;
+            }
+        }
+
+        const newOptions = { responsive: true, };
 
         const newData = {
-            labels,
+            labels: Object.keys(yearCount),
             datasets: [
                 {
-                    label: 'Dataset 2',
-                    data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    data: Object.values(yearCount),
                     backgroundColor: 'orange',
                 },
             ],
@@ -60,12 +64,12 @@ const Histogram: React.FC = () => {
     }, [featureCollection]);
 
 
-    return (
+    return pointsCount ? (
         <div>
             <h2>Histogram</h2>
             {data && <Bar data={data} options={options} />}
         </div>
-    );
+    ) : '';
 };
 
 export default Histogram;
