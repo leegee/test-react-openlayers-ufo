@@ -6,10 +6,16 @@ import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 const saturation = 100;
 const lightness = 50;
 
-function mapNumberToColor(feature: FeatureLike): string {
+function mapPointToColor(feature: FeatureLike): string {
     const value = Math.min(Math.max(parseFloat(feature.get('search_score')), 0), 1);
     const hue = (1 - value) * 120; // Red at 0, Green at 1
+    console.log(value, hue, feature.get('search_score'));
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+function mapLocalClusterToColor(feature: FeatureLike): string {
+    console.log(feature)
+    return 'blue';
 }
 
 export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number): Style => {
@@ -33,10 +39,11 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     }
 
     else if (clusterSizeMadeLocally) {
+        const background = mapLocalClusterToColor(feature);
         style = new Style({
             image: new Circle({
                 radius: 10,
-                fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
+                fill: new Fill({ color: background }),
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
             text: new Text({
@@ -47,7 +54,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     }
 
     else {
-        const background = mapNumberToColor(feature);
+        const background = mapPointToColor(feature);
 
         style = new Style({
             image: new Circle({

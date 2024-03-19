@@ -53,7 +53,7 @@ const mapBaseLayers: MapBaseLayersType = {
 
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
-  const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
+  const { center, zoom, bounds, featureCollection, q, resultsCount } = useSelector((state: RootState) => state.map);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -140,7 +140,7 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
-    if (q && q.length >= config.minQLength) {
+    if (q && q.length >= config.minQLength && resultsCount < 1000) {
       // updateMixedSearchResultsLayer(featureCollection);
       // setVisibleDataLayer('mixedSearchResults');
       updatePointsLayer(featureCollection);

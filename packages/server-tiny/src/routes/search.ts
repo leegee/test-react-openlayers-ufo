@@ -45,11 +45,6 @@ export async function search(ctx: Context) {
         let sql: string;
         let sqlBits = constructSqlBits(userArgs);
 
-        // console.debug({
-        //     supplieZoom: userArgs.zoom,
-        //     configZoom: config.zoomLevelForPoints
-        // })
-
         // Return points for queries, or when zoomed in
         if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
@@ -68,9 +63,7 @@ export async function search(ctx: Context) {
         const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
 
         if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-            if (config.api.debug) {
-                console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
-            }
+            console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
         }
 
         body.results = rows[0].jsonb_build_object as FeatureCollection;
