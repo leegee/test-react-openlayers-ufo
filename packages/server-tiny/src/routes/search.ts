@@ -94,33 +94,35 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     );
 
     if (userArgs.q !== undefined && userArgs.q !== '') {
-        const orWhere = [];
-        const orSelect = [];
-        const orOrderByClause = [];
+        // const orWhere = [];
+        // const orSelect = [];
+        // const orOrderByClause = [];
+        // orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
+        // orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
+        // orSelect.push(`(similarity(location_text, $${whereParams.length + 1}) + similarity(report_text, $${whereParams.length + 1})) / 2 AS search_score`);
+        // // Always sort best-match first
+        // orOrderByClause.push('search_score DESC');
+        // whereColumns.push('(' + orWhere.join(' OR ') + ')');
+        // selectColumns.push(orSelect.join(', '));
+        // whereParams.push(userArgs.q + '%');
+        // orderByClause.push(orOrderByClause.join(', '));
 
-        if (!userArgs.q_subject) {
-            orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
-            orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
-            orSelect.push(`(similarity(location_text, $${whereParams.length + 1}) + similarity(report_text, $${whereParams.length + 1})) / 2 AS search_score`);
-            // Always sort best-match first
-            orOrderByClause.push('search_score DESC');
-        }
-        else {
-            if (userArgs.q_subject.includes('location_text')) {
-                orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
-                orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS search_score`,);
-                orOrderByClause.push('search_score ' + userArgs.sort_order);
-            }
-            else { // if (userArgs.q_subject.includes('report_text')) {
-                orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
-                orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS search_score`);
-                orOrderByClause.push('search_score ' + userArgs.sort_order);
-            }
-        }
-        whereColumns.push('(' + orWhere.join(' OR ') + ')');
-        selectColumns.push(orSelect.join(', '));
-        whereParams.push(userArgs.q + '%');
-        orderByClause.push(orOrderByClause.join(', '));
+        // Split the search parameter into individual words
+        const searchWords = userArgs.q.split(' ');
+
+        const searchConditions = searchWords.map(
+            (_word, index) => `(location_text ILIKE $${whereParams.length + index + 1} OR report_text ILIKE $${whereParams.length + index + 1})`
+        ).join(' AND ');
+
+        // Push the search conditions and parameters
+        searchWords.forEach(word => whereParams.push(`%${word}%`));
+        whereColumns.push(`(${searchConditions})`);
+
+        // Construct the SELECT clause to calculate search score for each word
+        selectColumns.push(`(similarity(location_text, $${whereParams.length}) + similarity(report_text, $${whereParams.length})) / 2 AS search_score`);
+
+        // Always sort best-match first
+        orderByClause.push('search_score DESC')
     }
 
     if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
@@ -217,6 +219,7 @@ function getCleanArgs(args: ParsedUrlQuery) {
         q: args.q ? String(args.q).trim() : undefined,
 
         // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchableTextColumnNames
+        // Not yet implemented.
         q_subject: args.q_subject && [config.api.searchableTextColumnNames].includes(
             args.q_subject instanceof Array ? args.q_subject : [args.q_subject]
         ) ? String(args.q_subject) : undefined,
