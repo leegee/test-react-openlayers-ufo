@@ -56,7 +56,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
 
     else {
         const score = parseFloat(feature.get('search_score'));
-        const hue = mapScoreToHue(score);
+        const hue = score ? mapScoreToHue(score) : '180';
         (feature as Feature).set('zIndex', score * 100);
         style = new Style({
             image: new Circle({
