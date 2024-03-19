@@ -8,13 +8,13 @@ const lightness = 50;
 
 function mapPointToColor(feature: FeatureLike): string {
     const value = Math.min(Math.max(parseFloat(feature.get('search_score')), 0), 1);
-    const hue = (1 - value) * 120; // Red at 0, Green at 1
-    console.log(value, hue, feature.get('search_score'));
+    const hue = (1 - value) * 200; // Red at 0, Green at 1
+    // console.log(value, hue, feature.get('search_score'));
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
 function mapLocalClusterToColor(feature: FeatureLike): string {
-    console.log(feature)
+    // console.log(feature)
     return 'blue';
 }
 
