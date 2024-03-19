@@ -48,7 +48,18 @@ const Histogram: React.FC = () => {
             }
         }
 
-        const newOptions = { responsive: true, };
+        const newOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: false,
+                    text: '',
+                },
+            }
+        };
 
         const newData = {
             labels: Object.keys(yearCount),
