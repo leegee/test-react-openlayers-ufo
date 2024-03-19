@@ -4,12 +4,16 @@
   --ufo-primary-bg: #242424;
   --ufo-primary-bg-odd: #223;
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.15);
-  --ufo-modal-fg: rgba(255, 255, 255, 0.9);
-  --ufo-modal-bg: #141414;
+  --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+
   --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
   --ufo-ctrl-bg: #333;
   --ufo-ctrl-bg-focus: #040404;
-  --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
+
+  --ufo-modal-fg: rgba(255, 255, 255, 0.9);
+  --ufo-modal-bg: #141414;
+  --ufo-modal-border-clr: rgba(255, 255, 255, 0.25);
+
   --ufo-div-padding: 0.75rem;
   --ufo-toolbar-height: 3rem;
   --ufo-panel-narrow-width: 30vw;
