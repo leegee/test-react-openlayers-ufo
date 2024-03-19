@@ -55,6 +55,15 @@ Using PostGIS, storing data in EPSG:3857 for speed, with the API accepting EPSG:
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
 
+After making a search query, points are displayed.
+
+Whenever points are displayed, the date range input is populated with the minimum and maximum values of the visible points:
+
+![Date range input screenshot](date-range.png)
+
+Clicking the date range when viewing points shows a histogram:
+![Histogram](./docs/images/histogram.png)
+
 .
 
 .
