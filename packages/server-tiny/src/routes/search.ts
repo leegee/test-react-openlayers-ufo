@@ -104,23 +104,28 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         const orWhere = [];
         const orSelect = [];
         const orOrderByClause = [];
-        if (!userArgs.q_subject || userArgs.q_subject.includes('location_text')) {
+
+        if (!userArgs.q_subject) {
             orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
-            orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
-            orOrderByClause.push('location_text_score ' + userArgs.sort_order);
-        }
-        if (!userArgs.q_subject || userArgs.q_subject.includes('report_text')) {
             orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
-            orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
-            orOrderByClause.push('report_text_score ' + userArgs.sort_order);
+            orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`);
+            orSelect.push(`(similarity(location_text, $${whereParams.length + 1}) + similarity(report_text, $${whereParams.length + 1})) / 2 AS search_score`);
+            // Always sort best-match first
+            orOrderByClause.push('search_score DESC');
+        }
+        else {
+            if (userArgs.q_subject.includes('location_text')) {
+                orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
+                orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
+                orOrderByClause.push('location_text_score ' + userArgs.sort_order);
+            }
+            else { // if (userArgs.q_subject.includes('report_text')) {
+                orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
+                orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
+                orOrderByClause.push('report_text_score ' + userArgs.sort_order);
+            }
         }
         whereColumns.push('(' + orWhere.join(' OR ') + ')');
-
-        // whereColumns.push(`( location_text ILIKE $${whereParams.length + 1} OR report_text ILIKE $${whereParams.length + 1} )`);
-        // selectColumns.push( `similarity(location_text, $${whereParams.length + 1}) AS location_text_score`, `similarity(report_text, $${whereParams.length + 1}) AS report_text_score` );
-        // whereParams.push(userArgs.q + '%');
-        // orderByClause.push('location_text_score DESC, report_text_score DESC');
-
         selectColumns.push(orSelect.join(', '));
         whereParams.push(userArgs.q + '%');
         orderByClause.push(orOrderByClause.join(', '));
