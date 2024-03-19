@@ -59,7 +59,7 @@ After making a search query, points are displayed.
 
 Whenever points are displayed, the date range input is populated with the minimum and maximum values of the visible points:
 
-![Date range input screenshot](date-range.png)
+![Date range input screenshot](./docs/images/date-range.png)
 
 Clicking the date range when viewing points shows a histogram:
 ![Histogram](./docs/images/histogram.png)
