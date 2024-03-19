@@ -26,10 +26,12 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
+* Sort order toggling (2h) - may as well be local
+* Colour points by search rank
+* Link to full details
 * Tests.
 * Logger transports/etc
 * Decide on a default sort of results when no filters set
-* Sort order toggling (2h)
 * Enable switching locale from `no` to `en` and back (1h)
 * Store bounds and filter settings in the URI (4h)
 * Highlight on map feature chosen in report or click on

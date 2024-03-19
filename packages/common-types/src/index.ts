@@ -12,6 +12,7 @@ export interface QueryParams {
   show_invalid_dates?: boolean;
   q?: string;
   q_subject?: string;
+  sort_order?: 'ASC' | 'DESC'
 }
 
 export interface DateTimeMinMax {

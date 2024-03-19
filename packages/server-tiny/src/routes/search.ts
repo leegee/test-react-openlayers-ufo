@@ -7,10 +7,10 @@ import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from 'middleware/errors';
 
 type SqlBitsType = {
+    selectColumns: string[],
     whereColumns: string[],
-    selectColumns: string[] | String[],
-    orderByClause?: string,
-    whereParams: any[] | undefined,
+    whereParams: string[],
+    orderByClause?: string[],
 };
 
 export async function search(ctx: Context) {
@@ -58,12 +58,12 @@ export async function search(ctx: Context) {
             sql = geoJsonForClusters(sqlBits);
         }
 
-        const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_, index) => {
+        const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_: string, index: number) => {
             const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
-            return typeof param === 'string' ? `'${param}'` : param;
+            return typeof param === 'string' ? `'${param}'` : '';
         });
 
-        forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging };
+        forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
 
@@ -77,7 +77,11 @@ export async function search(ctx: Context) {
         body.dictionary = await getDictionary(body.results);
     }
     catch (e) {
-        throw new CustomError({ action: 'query', details: forErrorReporting, error: e as Error });
+        throw new CustomError({
+            action: 'query',
+            details: JSON.stringify(forErrorReporting, null, 2),
+            error: e as Error
+        });
     }
 
     ctx.body = JSON.stringify(body);
@@ -88,47 +92,27 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const selectColumns = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
     ];
-    const whereParams = [];
-    const orderByClause = [];
+    const whereParams: string[] = [];
+    const orderByClause: string[] = [];
 
-    if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
-        whereColumns.push(
-            `(datetime BETWEEN $${whereParams.length + 1} AND $${whereParams.length + 2})`
-        );
-        whereParams.push(
-            userArgs.from_date + " 01-01 00:00:00",
-            userArgs.to_date + " 12-31 23:59:59"
-        );
-    }
-    else if (userArgs.from_date !== undefined) {
-        whereColumns.push(`(datetime >= ${whereParams.length + 1})`);
-        whereParams.push(userArgs.from_date + " 01-01 00:00:00");
-    }
-    else if (userArgs.to_date !== undefined) {
-        whereColumns.push(`(datetime <= $${whereParams.length + 1})`);
-        whereParams.push(userArgs.to_date + " 12-31 23:59:59");
-    }
-    else if (!userArgs.show_undated) {
-        whereColumns.push("(datetime IS NOT NULL)");
-    }
-
-    // if (!userArgs.show_invalid_dates) {
-    //     whereColumns.push("datetime_invalid IS NOT true");
-    // }
+    whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+    whereParams.push(
+        String(userArgs.minlng), String(userArgs.minlat), String(userArgs.maxlng), String(userArgs.maxlat)
+    );
 
     if (userArgs.q !== undefined && userArgs.q !== '') {
         const orWhere = [];
         const orSelect = [];
-        const ororderByClause = [];
+        const orOrderByClause = [];
         if (!userArgs.q_subject || userArgs.q_subject.includes('location_text')) {
             orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
             orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
-            ororderByClause.push('location_text_score DESC');
+            orOrderByClause.push('location_text_score ' + userArgs.sort_order);
         }
         if (!userArgs.q_subject || userArgs.q_subject.includes('report_text')) {
             orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
             orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
-            ororderByClause.push('report_text_score DESC');
+            orOrderByClause.push('report_text_score ' + userArgs.sort_order);
         }
         whereColumns.push('(' + orWhere.join(' OR ') + ')');
 
@@ -139,31 +123,44 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
 
         selectColumns.push(orSelect.join(', '));
         whereParams.push(userArgs.q + '%');
-        orderByClause.push(ororderByClause.join(', '));
+        orderByClause.push(orOrderByClause.join(', '));
     }
 
-    whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
-    whereParams.push(userArgs.minlng, userArgs.minlat, userArgs.maxlng, userArgs.maxlat);
+    if (userArgs.from_date !== undefined && userArgs.to_date !== undefined) {
+        whereColumns.push(
+            `(datetime BETWEEN $${whereParams.length + 1} AND $${whereParams.length + 2})`
+        );
+        whereParams.push(
+            userArgs.from_date,
+            userArgs.to_date
+        );
+        orderByClause.push('datetime ' + userArgs.sort_order);
+    }
+    else if (userArgs.from_date !== undefined) {
+        whereColumns.push(`(datetime >= $${whereParams.length + 1})`);
+        whereParams.push(userArgs.from_date);
+        orderByClause.push('datetime ' + userArgs.sort_order);
+    }
+    else if (userArgs.to_date !== undefined) {
+        whereColumns.push(`(datetime <= $${whereParams.length + 1})`);
+        whereParams.push(userArgs.to_date);
+        orderByClause.push('datetime ' + userArgs.sort_order);
+    }
+    else if (!userArgs.show_undated) {
+        whereColumns.push("(datetime IS NOT NULL)");
+        orderByClause.push('datetime ' + userArgs.sort_order);
+    }
+
+    // if (!userArgs.show_invalid_dates) {
+    //     whereColumns.push("datetime_invalid IS NOT true");
+    // }
 
     const rv: SqlBitsType = {
-        whereColumns: [],
-        whereParams: undefined,
-        selectColumns: [],
-        orderByClause: '',
+        selectColumns: selectColumns,
+        whereColumns: whereColumns,
+        whereParams: whereParams,
+        orderByClause: orderByClause.length ? orderByClause : undefined,
     };
-
-    if (whereColumns.length) {
-        rv.whereColumns = whereColumns;
-        rv.whereParams = whereParams;
-    }
-
-    if (selectColumns.length) {
-        rv.selectColumns = selectColumns;
-    }
-
-    if (orderByClause.length) {
-        rv.orderByClause = ' ORDER BY ' + orderByClause.join(',');
-    }
 
     return rv;
 }
@@ -226,6 +223,8 @@ function getCleanArgs(args: ParsedUrlQuery) {
         q_subject: args.q_subject && [config.api.searchableTextColumnNames].includes(
             args.q_subject instanceof Array ? args.q_subject : [args.q_subject]
         ) ? String(args.q_subject) : undefined,
+
+        sort_order: String(args.sort_order) === 'ASC' || String(args.sort_order) === 'DESC' ? String(args.sort_order) as 'ASC' | 'DESC' : undefined,
     };
 
     if (userArgs.from_date && Number(userArgs.from_date) === 1) {
@@ -233,6 +232,17 @@ function getCleanArgs(args: ParsedUrlQuery) {
     }
     if (userArgs.to_date && Number(userArgs.to_date) === 1) {
         delete userArgs.to_date;
+    }
+
+    if (userArgs.from_date) {
+        userArgs.from_date = new Date(userArgs.from_date + " 01-01 00:00:00").toISOString();
+    }
+    if (userArgs.to_date) {
+        userArgs.to_date = new Date(userArgs.to_date + " 12-31 23:59:59").toISOString();
+    }
+
+    if (!userArgs.sort_order) {
+        userArgs.sort_order = 'DESC';
     }
 
     return (
@@ -259,7 +269,7 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
         FROM (
             SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
             WHERE ${sqlBits.whereColumns.join(' AND ')}
-            ${sqlBits.orderByClause}
+            ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
         ) AS s
     ) AS fc`;
 }
