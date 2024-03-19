@@ -81,7 +81,7 @@ const FeatureTable: React.FC = () => {
             </thead>
             <tbody>
                 {localFeatures.map((feature: any, index: number) => (
-                    <tr key={index} id={getRowId(feature.properties.id)}>
+                    <tr key={index} id={getRowId(feature.properties.id)} title={feature.properties.search_score ? feature.properties.search_score : ''}>
                         <td className='datetime'>{feature.properties.datetime_original}</td>
                         <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                         <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
