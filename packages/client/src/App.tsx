@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react';
 
-import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH } from './custom-events/report-width';
+import { addReportEvents, removeReportEvents } from './custom-events/report-width';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import FeatureTable from './FeaturesTable';
 import Map from './Map';
 import Panel from './ResultsPanel';
 import Toolbar from './Toolbar';
+import Modal from './Modal';
+import About from './Modal/About';
+import Contact from './Modal/Contact';
 
 import './App.css';
 
@@ -20,30 +25,36 @@ function setScreenSizeClass() {
 
 const App: React.FC = () => {
   useEffect(() => {
-    document.addEventListener(REPORT_FULL_WIDTH, () => {
-      document.body.classList.add(REPORT_FULL_WIDTH);
-      document.body.classList.remove(REPORT_NARROW_WIDTH);
-    });
-    document.addEventListener(REPORT_NARROW_WIDTH, () => {
-      document.body.classList.remove(REPORT_FULL_WIDTH);
-      document.body.classList.add(REPORT_NARROW_WIDTH);
-    });
-    document.addEventListener(REPORT_HIDE, () => {
-      document.body.classList.remove(REPORT_FULL_WIDTH, REPORT_NARROW_WIDTH);
-    });
-    window.addEventListener('resize', setScreenSizeClass);
+    addReportEvents();
     setScreenSizeClass();
+
+    return () => {
+      removeReportEvents();
+      window.removeEventListener('resize', setScreenSizeClass);
+    };
   }, []);
 
   return (
     <>
-      <Toolbar />
-      <div className='map-panel-container'>
-        <Map />
-        <Panel>
-          <FeatureTable />
-        </Panel>
-      </div>
+      <BrowserRouter>
+        <>
+          <Modal>
+            <Routes>
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              {/* <Route path="/histogram/dates" element={<Histogram />} /> */}
+            </Routes>
+          </Modal>
+
+          <Toolbar />
+          <div className='map-panel-container'>
+            <Map />
+            <Panel>
+              <FeatureTable />
+            </Panel>
+          </div>
+        </>
+      </BrowserRouter>
     </>
   );
 }

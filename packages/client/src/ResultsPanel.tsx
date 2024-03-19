@@ -5,7 +5,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { hideReport } from './custom-events/report-width';
+import { dispatchHideReportEvent } from './custom-events/report-width';
 
 import './ResultsPanel.css';
 import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
@@ -25,7 +25,7 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
             </section>
         );
     } else {
-        hideReport();
+        dispatchHideReportEvent();
     }
 
     return '';

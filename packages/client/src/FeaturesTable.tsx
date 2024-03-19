@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from './redux/store';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
-import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, setReportWidth } from './custom-events/report-width';
+import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, dispatchSetReportWidthEvent } from './custom-events/report-width';
 
 import './FeatureTable.css';
 
@@ -18,7 +18,7 @@ const removeEscListener = () => document.removeEventListener('keyup', onEscClose
 
 function onEscCloseFullReport(e: KeyboardEvent) {
     if (e.key === 'Escape') {
-        setReportWidth('narrow');
+        dispatchSetReportWidthEvent('narrow');
     }
 }
 
@@ -78,12 +78,12 @@ const FeatureTable: React.FC = () => {
     }, []);
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
-        setReportWidth('narrow');
+        dispatchSetReportWidthEvent('narrow');
         showPointByCoords(feature.geometry.coordinates);
     }
 
     function gotoFulLReport(_id: string) {
-        setReportWidth('full-width');
+        dispatchSetReportWidthEvent('full-width');
         // todo highlgiht row with EVENT_SHOW_POINT or directly
     }
 
@@ -95,8 +95,8 @@ const FeatureTable: React.FC = () => {
                     <th className='location_text'>{get('report.location')}</th>
                     <th className='report_text'>{get('report.report')}</th>
                     <th className='ctrls'>
-                        <span className='close-full-width' onClick={() => setReportWidth('narrow')} />
-                        <span className='open-full-width' onClick={() => setReportWidth('full-width')} />
+                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} />
+                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} />
                     </th>
                 </tr>
             </thead>
