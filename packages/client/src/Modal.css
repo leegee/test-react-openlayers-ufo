@@ -17,3 +17,23 @@
     color: var(--ufo-modal-fg);
 
 }
+
+.modal .modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.modal .modal-close:after {
+    content: 'X';
+    border: 1pt solid var(--ufo-ctrl-fg);
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    display: block;
+    line-height: 1em;
+    display: flex;
+    justify-content: center;
+    padding: 10%;
+    cursor: pointer;
+}
