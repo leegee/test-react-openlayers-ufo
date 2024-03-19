@@ -21,7 +21,7 @@ import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixedSearchResultsLayer } from './lib/ClusterVectorLayer';
+import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -138,20 +138,13 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
 
-  // useEffect(() => {
-  //   if (!q && zoom < config.zoomLevelForPoints) {  // clusters - set in store based on reponse
-  //     hideReport();
-  //   } else if (q) {
-  //     setReportWidth('narrow');
-  //   }
-  // }, [dispatch, q]);
-
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
     if (q && q.length >= config.minQLength) {
-      // setReportWidth('narrow');
-      updateMixedSearchResultsLayer(featureCollection);
-      setVisibleDataLayer('mixedSearchResults');
+      // updateMixedSearchResultsLayer(featureCollection);
+      // setVisibleDataLayer('mixedSearchResults');
+      updatePointsLayer(featureCollection);
+      setVisibleDataLayer('points');
     } else if (zoom < config.zoomLevelForPoints) {
       updateClusterOnlyLayer(featureCollection);
       setVisibleDataLayer('clusterOnly');
@@ -186,7 +179,6 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
         showPoint(features ? features[0].get('id') : clickedFeature.get('id'));
       }
       didOneFeature = true;
-      // setReportWidth('narrow');
     }
   });
 }
