@@ -6,6 +6,7 @@ import config from '@ufo-monorepo-test/config/src';
 import { type RootState } from '../redux/store';
 
 import './ReportCount.css';
+import { mapScoreToHue } from '../lib/sightings-styles';
 
 const Panel: React.FC = () => {
     const resultsCount = useSelector((state: RootState) => state.map.resultsCount);
@@ -13,27 +14,35 @@ const Panel: React.FC = () => {
 
     const nothingToShow = !clusterCount && !resultsCount;
     const showPoints = !clusterCount && resultsCount && resultsCount > 0;
+    let gradientBorder;
+
+    if (showPoints) {
+        gradientBorder = {
+            borderImage: `linear-gradient(to right, hsl(${mapScoreToHue(0)}, 100%, 50%), hsl(${mapScoreToHue(1)}, 100%, 50%)) 1`,
+            borderStyle: 'solid',
+            borderWidth: '1pt',
+        };
+    }
 
     return (
-        <hgroup className='report-ctrl component'>
+        <header className='report-ctrl component' style={gradientBorder}>
             {nothingToShow ? (
-                <header>{get('panel.no_results')}</header>
+                <>{get('panel.no_results')}</>
             ) : showPoints ? (
-                <header>
-                    <span>
-                        {new Intl.NumberFormat(config.locale).format(resultsCount)}
-                        {' '}
-                        {get('panel.results_count')}
-                    </span>
-                </header>
+                <>
+                    &nbsp;
+                    {new Intl.NumberFormat(config.locale).format(resultsCount)}
+                    {' '}
+                    {get('panel.results_count')}
+                </>
             ) : (
-                <header>
+                <>
                     {new Intl.NumberFormat(config.locale).format(clusterCount)}
                     {' '}
                     {get('panel.cluster_count')}
-                </header>
+                </>
             )}
-        </hgroup>
+        </header>
     );
 };
 

@@ -1,16 +1,17 @@
 // lib/sightings-styles.ts.ts
 
-import { FeatureLike } from "ol/Feature";
+import Feature, { FeatureLike } from "ol/Feature";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 
-const saturation = 100;
-const lightness = 50;
+const bgSaturation = 100;
+const bgLightness = 50;
+const borderSaturation = 80;
+const borderLightness = 20;
 
-function mapPointToColor(feature: FeatureLike): string {
-    const value = Math.min(Math.max(parseFloat(feature.get('search_score')), 0), 1);
-    const hue = (1 - value) * 200; // Red at 0, Green at 1
-    // console.log(value, hue, feature.get('search_score'));
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+export function mapScoreToHue(score: number): number {
+    const value = Math.min(Math.max(score, 0), 1);
+    const hue = (1 + value) * 180; // red -> cyanish
+    return hue;
 }
 
 function mapLocalClusterToColor(feature: FeatureLike): string {
@@ -54,13 +55,17 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     }
 
     else {
-        const background = mapPointToColor(feature);
-
+        const score = parseFloat(feature.get('search_score'));
+        const hue = mapScoreToHue(score);
+        (feature as Feature).set('zIndex', score * 100);
         style = new Style({
             image: new Circle({
                 radius: 10,
-                fill: new Fill({ color: background }),
-                stroke: new Stroke({ color: '#3399CC', width: 2 })
+                fill: new Fill({ color: `hsl(${hue}, ${bgSaturation}%, ${bgLightness}%)` }),
+                stroke: new Stroke({
+                    color: `hsl(${hue}, ${borderSaturation}%, ${borderLightness}%)`,
+                    width: 2
+                })
             }),
         });
     }
