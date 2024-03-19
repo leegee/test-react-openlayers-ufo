@@ -77,12 +77,10 @@ const Histogram: React.FC = () => {
 
 
     return pointsCount ? (
-        <div>
-            <h2>
-                {from_date} - {to_date} <q>{q}</q>
-            </h2>
-            {data && <Bar data={data} options={options} />}
-        </div>
+        <section>
+            <h2> {from_date} - {to_date} <q>{q}</q> </h2>
+            {data && <Bar data={data} options={options} height={200} />}
+        </section>
     ) : '';
 };
 
