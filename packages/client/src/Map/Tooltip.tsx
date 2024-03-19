@@ -22,14 +22,14 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         const coordinate = event.coordinate;
 
         if (feature) {
-            let tooltipContent;
+            let tooltipContent = '';
             const location_text = feature.get('location_text');
             if (location_text) {
                 const date = new Date(feature.get('datetime'));
                 if (date) {
-                    tooltipContent = new Intl.DateTimeFormat(config.locale).format(date);
+                    tooltipContent = new Intl.DateTimeFormat(config.locale).format(date) + '<br/>';
                 }
-                tooltipContent += '<br/>' + feature.get('location_text');
+                tooltipContent += feature.get('location_text');
             }
             else {
                 tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
