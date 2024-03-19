@@ -108,7 +108,7 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         if (!userArgs.q_subject) {
             orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
             orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
-            orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`);
+            orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS search_score`);
             orSelect.push(`(similarity(location_text, $${whereParams.length + 1}) + similarity(report_text, $${whereParams.length + 1})) / 2 AS search_score`);
             // Always sort best-match first
             orOrderByClause.push('search_score DESC');
@@ -116,13 +116,13 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         else {
             if (userArgs.q_subject.includes('location_text')) {
                 orWhere.push(`location_text ILIKE $${whereParams.length + 1}`);
-                orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS location_text_score`,);
-                orOrderByClause.push('location_text_score ' + userArgs.sort_order);
+                orSelect.push(`similarity(location_text, $${whereParams.length + 1}) AS search_score`,);
+                orOrderByClause.push('search_score ' + userArgs.sort_order);
             }
             else { // if (userArgs.q_subject.includes('report_text')) {
                 orWhere.push(`report_text ILIKE $${whereParams.length + 1}`);
-                orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS report_text_score`);
-                orOrderByClause.push('report_text_score ' + userArgs.sort_order);
+                orSelect.push(`similarity(report_text, $${whereParams.length + 1}) AS search_score`);
+                orOrderByClause.push('search_score ' + userArgs.sort_order);
             }
         }
         whereColumns.push('(' + orWhere.join(' OR ') + ')');
