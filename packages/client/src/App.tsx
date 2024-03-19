@@ -10,6 +10,7 @@ import Toolbar from './Toolbar';
 import Modal from './Modal';
 import About from './Modal/About';
 import Contact from './Modal/Contact';
+import Histogram from './Histogram';
 
 import './App.css';
 
@@ -42,7 +43,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              {/* <Route path="/histogram/dates" element={<Histogram />} /> */}
+              <Route path="/histogram/dates" element={<Histogram />} />
             </Routes>
           </Modal>
 

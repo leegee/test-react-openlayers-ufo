@@ -1,0 +1,19 @@
+.modal {
+    background: var(--ufo-modal-bg);
+    color: var(--ufo-modal-fg);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 80%;
+    z-index: 100;
+    padding: 10%;
+    margin: 10%;
+    background: rgba(10, 10, 10, .6);
+}
+
+.modal .modal-content {
+    background: var(--ufo-modal-bg);
+    color: var(--ufo-modal-fg);
+
+}
