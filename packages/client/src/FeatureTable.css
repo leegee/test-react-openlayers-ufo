@@ -101,6 +101,11 @@ table.feature-table {
     }
 }
 
+/* Show the report text in full-width */
+.REPORT_FULL_WIDTH .feature-table .report_text {
+    display: table-cell;
+}
+
 /* No button to open full-width when already full-width */
 .REPORT_FULL_WIDTH .feature-table .open-full-width {
     display: none;
