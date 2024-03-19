@@ -5,12 +5,21 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from './redux/store';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
-import { setReportWidth } from './custom-events/report-width';
+import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, setReportWidth } from './custom-events/report-width';
 
 import './FeatureTable.css';
 
 function getRowId(id: number | string) {
     return 'fid_' + id;
+}
+
+const addEscListener = () => document.addEventListener('keyup', onEscCloseFullReport);
+const removeEscListener = () => document.removeEventListener('keyup', onEscCloseFullReport);
+
+function onEscCloseFullReport(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+        setReportWidth('narrow');
+    }
 }
 
 const highlightText = (q: string | undefined, text: string) => {
@@ -33,6 +42,21 @@ const FeatureTable: React.FC = () => {
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
 
+    function handleShowPoint(e: ShowPointEventType) {
+        if (!e.detail.id) {
+            console.log("Heard EVENT_SHOW_POINT but got no e.detail.id")
+            return;
+        }
+        const element = document.getElementById(getRowId(e.detail.id));
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+            setTimeout(() => {
+                element.classList.add('flash', 'selected');
+                element.addEventListener('animationend', () => element.classList.remove('flash'));
+            }, 500);
+        }
+    };
+
     useEffect(() => {
         if (featureCollection) {
             setLocalFeatures(featureCollection.features);
@@ -40,20 +64,17 @@ const FeatureTable: React.FC = () => {
     }, [featureCollection]);
 
     useEffect(() => {
-        document.addEventListener(EVENT_SHOW_POINT, ((e: ShowPointEventType) => {
-            if (!e.detail.id) {
-                console.log("Heard EVENT_SHOW_POINT but got no e.detail.id")
-                return;
-            }
-            const element = document.getElementById(getRowId(e.detail.id));
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
-                setTimeout(() => {
-                    element.classList.add('flash', 'selected');
-                    element.addEventListener('animationend', () => element.classList.remove('flash'));
-                }, 500);
-            }
-        }) as EventListener);
+        document.addEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
+        document.addEventListener(REPORT_FULL_WIDTH, addEscListener as EventListener);
+        document.addEventListener(REPORT_NARROW_WIDTH, removeEscListener as EventListener);
+        document.addEventListener(REPORT_HIDE, removeEscListener as EventListener);
+
+        return () => {
+            document.removeEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
+            document.removeEventListener(REPORT_FULL_WIDTH, addEscListener as EventListener);
+            document.removeEventListener(REPORT_NARROW_WIDTH, removeEscListener as EventListener);
+            document.removeEventListener(REPORT_HIDE, removeEscListener as EventListener);
+        }
     }, []);
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
@@ -108,3 +129,4 @@ const FeatureTable: React.FC = () => {
 };
 
 export default FeatureTable;
+
