@@ -93,6 +93,12 @@ input:focus-visible {
   background-color: var(--ufo-ctrl-bg-focus);
 }
 
+mark {
+  background-color: unset;
+  color: unset;
+  border-bottom: 1pt solid var(--ufo-brand-clr);
+}
+
 .grey {
   filter: grayscale(100%);
 }
@@ -115,6 +121,7 @@ input:focus-visible {
   filter: none;
   opacity: 1;
 }
+
 
 @keyframes flash {
   0% {
