@@ -21,7 +21,7 @@ import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
+import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 
 import 'ol/ol.css';
 import './Map.css';

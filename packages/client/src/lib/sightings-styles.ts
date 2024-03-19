@@ -14,7 +14,7 @@ export function mapScoreToHue(score: number): number {
     return hue;
 }
 
-function mapLocalClusterToColor(feature: FeatureLike): string {
+function mapLocalClusterToColor(): string {
     // console.log(feature)
     return 'blue';
 }
@@ -40,7 +40,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     }
 
     else if (clusterSizeMadeLocally) {
-        const background = mapLocalClusterToColor(feature);
+        const background = mapLocalClusterToColor();
         style = new Style({
             image: new Circle({
                 radius: 10,
