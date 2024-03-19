@@ -26,6 +26,10 @@ table.feature-table {
         outline: 1px solid var(--ufo-brand-clr);
     }
 
+    tr.selected {
+        outline: 1px solid var(--ufo-brand-clr);
+    }
+
     th {
         border-bottom: 1pt solid var(--ufo-primary-border-clr);
         text-align: left;

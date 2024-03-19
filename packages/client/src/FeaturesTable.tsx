@@ -49,7 +49,7 @@ const FeatureTable: React.FC = () => {
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
                 setTimeout(() => {
-                    element.classList.add('flash');
+                    element.classList.add('flash', 'selected');
                     element.addEventListener('animationend', () => element.classList.remove('flash'));
                 }, 500);
             }
