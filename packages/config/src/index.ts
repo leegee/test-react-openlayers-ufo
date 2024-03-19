@@ -24,6 +24,7 @@ const config = {
     }
   },
   zoomLevelForPoints: 8,
+  zoomLevelForPointDetails: 12,
   minQLength: 3,
 };
 

@@ -80,7 +80,7 @@ const OpenLayersMap: React.FC = () => {
       else if (e.detail.coords && mapRef.current) {
         mapRef.current.getView().animate({
           center: e.detail.coords,
-          zoom: config.zoomLevelForPoints,
+          zoom: config.zoomLevelForPointDetails,
           duration: 500,
           easing: easeOut
         });
@@ -166,12 +166,20 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   let didOneFeature = false;
   map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
     if (clickedFeature && !didOneFeature) {
-      map!.getView().animate({
-        center: e.coordinate,
-        zoom: config.zoomLevelForPoints,
-        duration: 500,
-        easing: easeOut
-      });
+      if (clickedFeature.get('cluster_id')) { // clsuter
+        map!.getView().animate({
+          center: e.coordinate,
+          zoom: config.zoomLevelForPoints,
+          duration: 500,
+          easing: easeOut
+        });
+      }
+      else { // point
+        console.log('click', clickedFeature);
+        document.dispatchEvent(new CustomEvent(EVENT_SHOW_POINT, {
+          detail: { id: clickedFeature.get('id') }
+        }));
+      }
       didOneFeature = true;
     }
   });
@@ -209,7 +217,7 @@ function centerMapOnFeature(map: Map, feature: any) { // ugh
     const coordinates = geometry.getCoordinates();
     map.getView().animate({
       center: coordinates,
-      zoom: config.zoomLevelForPoints + 5,
+      zoom: config.zoomLevelForPointDetails,
       duration: 500,
     });
   }
