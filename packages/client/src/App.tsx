@@ -40,7 +40,7 @@ const App: React.FC = () => {
       <Toolbar />
       <div className='map-panel-container'>
         <Map />
-        <Panel >
+        <Panel>
           <FeatureTable />
         </Panel>
       </div>
