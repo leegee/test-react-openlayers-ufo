@@ -48,11 +48,22 @@ Using PostGIS, storing data in EPSG:3857 for speed, with the API accepting EPSG:
 
 ## Pics
 
+Points are clustered when zoomed out:
+
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
+
+One can toggle between three different base maps:
+
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
+
+Zoom in to clusters to view individual reports:
+
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
+
+Search the visible area of the map:
+
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
 
 After making a search query, points are displayed.
