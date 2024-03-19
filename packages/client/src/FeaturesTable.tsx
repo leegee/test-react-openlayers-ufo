@@ -87,6 +87,8 @@ const FeatureTable: React.FC = () => {
                             if (a.search_score < b.search_score) return -1; // Sort a before b
                             if (a.search_score > b.search_score) return 1;
                         }
+                        if (a.datetime < b.datetime) return -1;
+                        if (a.datetime > b.datetime) return 1;
                         return 0; // Leave them unchanged in order
                     })
                     .map((feature: any, index: number) => (
