@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 import { selectPointsCount } from './redux/mapSlice';
 import { dispatchCloseModalEvent } from './Modal';
+import { RootState } from 'redux/store';
 
 ChartJS.register(
     CategoryScale,
@@ -16,8 +17,8 @@ ChartJS.register(
 
 
 const Histogram: React.FC = () => {
-    const featureCollection = useSelector((state: any) => state.map.featureCollection);
     const pointsCount = useSelector(selectPointsCount);
+    const { from_date, to_date, q, featureCollection } = useSelector((state: RootState) => state.map);
     const [data, setData] = useState<any>(null);
     const [options, setOptions] = useState<any>(null);
 
@@ -66,7 +67,9 @@ const Histogram: React.FC = () => {
 
     return pointsCount ? (
         <div>
-            <h2>Histogram</h2>
+            <h2>
+                {from_date} - {to_date} <q>{q}</q>
+            </h2>
             {data && <Bar data={data} options={options} />}
         </div>
     ) : '';
