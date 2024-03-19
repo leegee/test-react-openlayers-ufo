@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { hideReport } from './custom-events/report-width';
 
 import './ResultsPanel.css';
-import { selectClusterCount, selectPointsCount } from 'redux/mapSlice';
+import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
 
 interface PanelProps {
     children: React.ReactNode;
