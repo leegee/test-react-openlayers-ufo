@@ -36,6 +36,7 @@ export interface FetchFeaturesResposneType {
   dictionary: MapDictionary | undefined;
 }
 
+// Extend QueryParams 
 export interface MapState {
   center: [number, number];
   zoom: number;
@@ -51,8 +52,6 @@ export interface MapState {
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
-
-let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
 const initialState: MapState = {
   featureCollection: null,

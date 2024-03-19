@@ -61,7 +61,7 @@ const FeatureTable: React.FC = () => {
         showPointByCoords(feature.geometry.coordinates);
     }
 
-    function gotoFulLReport(id: string) {
+    function gotoFulLReport(_id: string) {
         setReportWidth('full-width');
         // todo highlgiht row with EVENT_SHOW_POINT or directly
     }
