@@ -20,8 +20,7 @@ const DateRange: React.FC = () => {
     const { from_date, to_date } = useSelector((state: RootState) => state.map);
 
     useEffect(() => {
-        if (!initialised && dictionary && dictionary.datetime) {
-            initialised = true;
+        if (dictionary && dictionary.datetime) {
             dispatch(setFromDate(dictionary.datetime.min));
             dispatch(setToDate(dictionary.datetime.max));
         }
