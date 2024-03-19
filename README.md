@@ -55,14 +55,14 @@ Points are clustered when zoomed out:
 One can toggle between three different base maps:
 
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
+
+Zoom in to clusters to view individual sightings, with a list of their reported dates and locations:
+
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
 
-Zoom in to clusters to view individual reports:
-
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
 
-Search the visible area of the map:
+Search the visible area of the map for text that appears in the report (location, report text, more later):
 
 ![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
 
@@ -71,6 +71,10 @@ After making a search query, points are displayed.
 Whenever points are displayed, the date range input is populated with the minimum and maximum values of the visible points:
 
 ![Date range input screenshot](./docs/images/date-range.png)
+
+The table on the left links to the full report, which will in time link to all the available data:
+
+![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
 
 Clicking the date range when viewing points shows a histogram:
 ![Histogram](./docs/images/histogram.png)
