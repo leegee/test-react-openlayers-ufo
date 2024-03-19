@@ -7,10 +7,10 @@
  */
 
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
@@ -138,7 +138,7 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
 };
 
 
-export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
+const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
     const mapState = getState().map;
@@ -165,6 +165,14 @@ export const fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, vo
     }
   }
 );
+
+
+export const fetchFeatures = debounce(
+  _fetchFeatures,
+  config.gui.apiRequests.debounceMs,
+  { immediate: true }
+);
+
 
 export default mapSlice.reducer;
 

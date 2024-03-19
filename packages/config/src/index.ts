@@ -15,11 +15,14 @@ const config = {
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
-    fetchDebounceMs: 500,
   },
   gui: {
+    debounce: 500,
+    apiRequests: {
+      debounceMs: 1000,
+    },
     map: {
-      centre: [18, 64] as [number, number],
+      centre: [18, 64] as [number, number], // Should use extent
       cluster_eps_metres: 50000, // The distance between clusters
     }
   },

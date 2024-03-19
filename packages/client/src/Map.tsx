@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
+import debounce from 'debounce';
 import { Feature, Map, MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
@@ -25,7 +25,6 @@ import { updateVectorLayer as updateMixedSearchResultsLayer, vectorLayer as mixe
 
 import 'ol/ol.css';
 import './Map.css';
-import debounce from 'debounce';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
@@ -66,6 +65,15 @@ const OpenLayersMap: React.FC = () => {
     console.debug(`Map theme was ${basemapSource} now ${newBasemapSource}`);
     dispatch(setBasemapSource(newBasemapSource));
     setTheme(newBasemapSource);
+  };
+
+  const handleMoveEnd = () => {
+    if (!mapRef.current) return;
+    const center = mapRef.current.getView().getCenter() as [number, number];
+    const zoom = mapRef.current.getView().getZoom() as number;
+    const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
+    const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
+    dispatch(setMapParams({ center, zoom, bounds }));
   };
 
   useEffect(() => {
@@ -118,16 +126,9 @@ const OpenLayersMap: React.FC = () => {
 
       useFeatureHighlighting(map);
 
-      map.on('moveend', () => {
-        if (!map) return;
-        const center = map!.getView().getCenter() as [number, number];
-        const zoom = map!.getView().getZoom() as number;
-        const extent = map.getView().calculateExtent(map.getSize());
-        const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
-        dispatch(setMapParams({ center, zoom, bounds }));
-      });
+      map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
 
-      map.on('click', (e) => clickMap(e, map));
+      map.on('click', debounce((e) => clickMap(e, map), config.gui.debounce, { immediate: true }));
     }
 
     return () => map?.dispose();
