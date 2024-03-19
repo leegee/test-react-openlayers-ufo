@@ -107,9 +107,9 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
 
         // Construct the SELECT clause to calculate search score for each word
         selectColumns.push(`(
-            COALESCE(similarity(location_text, $${whereParams.length}), 0) 
+            COALESCE(similarity(location_text, $${whereParams.length}), 0.001) 
             +
-            COALESCE(similarity(report_text, $${whereParams.length}), 0)
+            COALESCE(similarity(report_text, $${whereParams.length}), 0.001)
         ) / 2 AS search_score`);
 
         // Always sort best-match first
