@@ -11,7 +11,7 @@ import TileLayer from 'ol/layer/Tile';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource } from './redux/mapSlice';
+import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource, selectPointsCount } from './redux/mapSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
@@ -53,7 +53,8 @@ const mapBaseLayers: MapBaseLayersType = {
 
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
-  const { center, zoom, bounds, featureCollection, q, resultsCount } = useSelector((state: RootState) => state.map);
+  const pointsCount = useSelector(selectPointsCount);
+  const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -140,12 +141,12 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
-    if (q && q.length >= config.minQLength && (!resultsCount || resultsCount < 1000)) {
+    if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       // updateMixedSearchResultsLayer(featureCollection);
       // setVisibleDataLayer('mixedSearchResults');
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
-    } else if (!resultsCount && zoom < config.zoomLevelForPoints) {
+    } else if (!pointsCount && zoom < config.zoomLevelForPoints) {
       updateClusterOnlyLayer(featureCollection);
       setVisibleDataLayer('clusterOnly');
     } else {
@@ -164,7 +165,7 @@ const OpenLayersMap: React.FC = () => {
 // Zoom to the cluster or point on click
 function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   let didOneFeature = false;
-  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
+  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
     if (clickedFeature && !didOneFeature) {
       if (clickedFeature.get('cluster_id')) { // clsuter
         map!.getView().animate({
@@ -176,9 +177,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
       }
       else { // point
         console.log('click', clickedFeature);
-        document.dispatchEvent(new CustomEvent(EVENT_SHOW_POINT, {
-          detail: { id: clickedFeature.get('id') }
-        }));
+        showPoint(clickedFeature.get('id'));
       }
       didOneFeature = true;
     }

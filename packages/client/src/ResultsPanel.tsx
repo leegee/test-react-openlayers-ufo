@@ -1,20 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RootState } from './redux/store';
 import { hideReport } from './custom-events/report-width';
 
 import './ResultsPanel.css';
+import { selectClusterCount, selectPointsCount } from 'redux/mapSlice';
 
 interface PanelProps {
     children: React.ReactNode;
 }
 
 const Panel: React.FC<PanelProps> = ({ children }) => {
-    const resultsCount = useSelector((state: RootState) => state.map.resultsCount);
-    const clusterCount = useSelector((state: RootState) => state.map.featureCollection ? state.map.featureCollection.clusterCount : 0);
+    const pointsCount = useSelector(selectPointsCount);
+    const clusterCount = useSelector(selectClusterCount);
 
-    if (resultsCount && !clusterCount) {
+    if (pointsCount && !clusterCount) {
         return (
             <section className='panel'>
                 {children}

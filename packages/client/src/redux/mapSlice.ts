@@ -6,7 +6,7 @@
  * Center could be inferred from bounds, but for now is set.
  */
 
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
@@ -28,6 +28,7 @@ export interface GeoJSONFeature {
 export interface UfoFeatureCollection {
   type: "FeatureCollection";
   clusterCount: number;
+  pointsCount: number;
   features: GeoJSONFeature[];
 }
 
@@ -42,7 +43,6 @@ export interface MapState {
   zoom: number;
   bounds: [number, number, number, number] | null;
   featureCollection: UfoFeatureCollection | null;
-  resultsCount: number | undefined;
   dictionary: MapDictionary | undefined;
   from_date?: number;
   to_date?: number;
@@ -61,7 +61,6 @@ const initialState: MapState = {
   dictionary: undefined,
   from_date: undefined,
   to_date: undefined,
-  resultsCount: undefined,
   q: '',
   basemapSource: localStorage.getItem('basemap_source') || 'dark',
   previousQueryString: '',
@@ -77,7 +76,6 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
-      state.resultsCount = action.payload.results && action.payload.results.features ? action.payload.results.features.length : 0;
       state.featureCollection = (action.payload.results || []) as UfoFeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
@@ -98,7 +96,6 @@ const mapSlice = createSlice({
       state.previousQueryString = action.payload;
     },
     failedRequest: (state, _action) => {
-      state.resultsCount = 0;
       state.featureCollection = null;
       state.previousQueryString = '';
       // action.payload.status etc
@@ -109,6 +106,16 @@ const mapSlice = createSlice({
 export const { setPreviousQueryString, setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
+
+export const selectPointsCount = createSelector(
+  (state: RootState) => state.map.featureCollection,
+  (featureCollection) => featureCollection?.pointsCount ?? 0
+);
+
+export const selectClusterCount = createSelector(
+  (state: RootState) => state.map.featureCollection,
+  (featureCollection) => featureCollection?.clusterCount ?? 0
+);
 
 export const selectQueryString = (mapState: MapState): string | undefined => {
   const { zoom, bounds, from_date, to_date, q } = mapState;
