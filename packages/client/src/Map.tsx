@@ -140,7 +140,7 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
-    if (q && q.length >= config.minQLength && resultsCount < 1000) {
+    if (q && q.length >= config.minQLength && (!resultsCount || resultsCount < 1000)) {
       // updateMixedSearchResultsLayer(featureCollection);
       // setVisibleDataLayer('mixedSearchResults');
       updatePointsLayer(featureCollection);
