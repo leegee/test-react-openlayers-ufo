@@ -27,7 +27,7 @@ Currently we send everything in the bounding box and cluster on the client.
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
 * Sort order toggling (2h) - may as well be local
-* Colour points by search rank
+* Add to dateitme `Obs  startet kl (32)` (eg `19.45`)
 * Link to full details
 * Tests.
 * Logger transports/etc
@@ -37,7 +37,9 @@ Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 * Highlight on map feature chosen in report or click on
 * Share common-type of request/response (1h)
 * Server should infer cluster size (`cluster_eps`) from zoom level.
-* Expose more data: shape, colour, direction, etc
+* Expose more data: 
+  * shape, colour, direction, etc from lin columns
+  * Include `Hvor lenge iakttok?(35)`
 
 ## DB
 
