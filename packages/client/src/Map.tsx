@@ -145,7 +145,7 @@ const OpenLayersMap: React.FC = () => {
       // setVisibleDataLayer('mixedSearchResults');
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
-    } else if (zoom < config.zoomLevelForPoints) {
+    } else if (!resultsCount && zoom < config.zoomLevelForPoints) {
       updateClusterOnlyLayer(featureCollection);
       setVisibleDataLayer('clusterOnly');
     } else {
@@ -166,18 +166,12 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   let didOneFeature = false;
   map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature, layer): void {
     if (clickedFeature && !didOneFeature) {
-      const features = clickedFeature.get('features');
-      if (layer.get('name') == clusterOnlyLayer.get('name')) {
-        map!.getView().animate({
-          center: e.coordinate,
-          zoom: config.zoomLevelForPoints,
-          duration: 500,
-          easing: easeOut
-        });
-      }
-      else {
-        showPoint(features ? features[0].get('id') : clickedFeature.get('id'));
-      }
+      map!.getView().animate({
+        center: e.coordinate,
+        zoom: config.zoomLevelForPoints,
+        duration: 500,
+        easing: easeOut
+      });
       didOneFeature = true;
     }
   });
