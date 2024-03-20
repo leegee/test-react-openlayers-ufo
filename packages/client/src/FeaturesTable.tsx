@@ -45,7 +45,8 @@ const FeatureTable: React.FC = () => {
 
     function handleShowPoint(e: ShowPointEventType) {
         if (!e.detail.id) {
-            console.log("Heard EVENT_SHOW_POINT but got no e.detail.id")
+            console.log("Heard EVENT_SHOW_POINT but got no e.detail.id", e.detail);
+            console.trace();
             return;
         }
         const element = document.getElementById(getRowId(e.detail.id));
