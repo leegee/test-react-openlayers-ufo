@@ -1,17 +1,19 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-// import '@testing-library/jest-dom/extend-expect';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-
 // import type { RootState } from 'redux/store';
 
+import { useLocale } from '../LocaleManager';
 import FeaturesTable from '../FeaturesTable';
 
 const mockStore = configureStore([]);
 
 describe('FeaturesTable', () => {
+    beforeAll(async () => {
+        await useLocale('en');
+    });
     let store: any;  // RootState;
     beforeEach(() => {
         store = mockStore({
@@ -29,14 +31,13 @@ describe('FeaturesTable', () => {
                                 datetime: '2023-01-01T00:00:00Z',
                                 location_text: 'Test Location',
                                 report_text: 'Test Report',
-                                search_score: 0.5 // Mocked search score
+                                search_score: 0.5,
                             },
                             geometry: {
-                                coordinates: [0, 0] // Mocked coordinates
+                                coordinates: [0, 0],
                             }
                         }
                     ],
-                    // Mocked search query
                     q: 'test'
                 }
             }
@@ -50,10 +51,10 @@ describe('FeaturesTable', () => {
             </Provider>
         );
 
-        // Verify if table headers are rendered
-        expect(screen.getByText('report.date')).toBeInTheDocument();
-        expect(screen.getByText('report.location')).toBeInTheDocument();
-        expect(screen.getByText('report.report')).toBeInTheDocument();
+        // Should use the i18n file
+        expect(screen.getByText('Date')).toBeInTheDocument();
+        expect(screen.getByText('Location')).toBeInTheDocument();
+        expect(screen.getByText('Report')).toBeInTheDocument();
 
         // Verify if feature data is rendered correctly
         expect(screen.getByText('2023-01-01')).toBeInTheDocument(); // Check datetime_original
@@ -61,5 +62,4 @@ describe('FeaturesTable', () => {
         expect(screen.getByText('Test Report')).toBeInTheDocument(); // Check report_text
     });
 
-    // Add more test cases to cover additional functionality if needed
 });
