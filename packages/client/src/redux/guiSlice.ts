@@ -3,10 +3,8 @@ import config from '@ufo-monorepo-test/config/src';
 
 const initialState: {
     locale: string,
-    translations: Record<string, any>,
 } = {
     locale: config.locale,
-    translations: {},
 };
 
 const localeSlice = createSlice({

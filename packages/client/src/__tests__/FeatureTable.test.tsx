@@ -53,6 +53,7 @@ describe('FeaturesTable', () => {
 
         // Should use the i18n file
         expect(screen.getByText('Date')).toBeInTheDocument();
+
         expect(screen.getByText('Location')).toBeInTheDocument();
         expect(screen.getByText('Report')).toBeInTheDocument();
 
