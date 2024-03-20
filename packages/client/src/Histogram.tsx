@@ -18,7 +18,7 @@ ChartJS.register(
 
 const Histogram: React.FC = () => {
     const pointsCount = useSelector(selectPointsCount);
-    const { from_date, to_date, q, featureCollection } = useSelector((state: RootState) => state.map);
+    const { featureCollection } = useSelector((state: RootState) => state.map);
     const [data, setData] = useState<any>(null);
     const [yearOneCount, setYearOneCount] = useState(0);
     const [options, setOptions] = useState<any>(null);
@@ -86,13 +86,13 @@ const Histogram: React.FC = () => {
 
     return pointsCount ? (
         <section>
-            <h2> {from_date} - {to_date}
-                {q && <q>{q}</q>}
+            <h2>
+                {yearOneCount && (<small>
+                    &nbsp;(Excludes {yearOneCount} sightings without parsable dates.)
+                </small>)}
             </h2>
             {data && <Bar data={data} options={options} />}
-            {yearOneCount && (<p>
-                Excludes {yearOneCount} sightings without parsable dates.
-            </p>)}
+
         </section>
     ) : '';
 };
