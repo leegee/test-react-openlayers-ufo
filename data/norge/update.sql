@@ -36,13 +36,7 @@ SET client_encoding = 'UTF8';
 
 UPDATE sightings
 SET
-    datetime_original = CONCAT(
-        COALESCE(LPAD("obs år", 2, '0'), '01'),
-         '-', 
-        COALESCE(LPAD("Obs måned", 2, '0'), '01'),
-         '-', 
-         COALESCE(LPAD("observasjonsdato", 2, '0'), '01')
-    ),
+    datetime_original = CONCAT( "obs år", '-', "Obs måned", '-', "observasjonsdato" ),
     datetime = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(
