@@ -12,7 +12,7 @@ import TileLayer from 'ol/layer/Tile';
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount } from './redux/mapSlice';
-import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
+// import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import labelsLayer from './lib/map-base-layer/layer-labels';
@@ -177,7 +177,7 @@ const OpenLayersMap: React.FC = () => {
 
       mapRef.current = map;
 
-      useFeatureHighlighting(map);
+      // useFeatureHighlighting(map);
 
       map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
 

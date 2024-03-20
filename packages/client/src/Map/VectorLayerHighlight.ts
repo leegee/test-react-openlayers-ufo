@@ -7,13 +7,15 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Style, Stroke } from 'ol/style';
 
+const featureSource = new VectorSource();
+
 const featureOverlay = new VectorLayer({
-    source: new VectorSource(),
+    source: featureSource,
     style: (_feature) => {
         return new Style({
             stroke: new Stroke({
                 color: 'yellow',
-                width: 4,
+                width: 14,
             }),
         });
     },
@@ -23,6 +25,7 @@ let highlight: Feature<Geometry>;
 
 export function useFeatureHighlighting(map: Map) {
     featureOverlay.setVisible(true);
+    featureOverlay.setZIndex(100);
     map.addLayer(featureOverlay);
 
     map.on('pointermove', function (evt) {
@@ -39,10 +42,11 @@ function highlightFeature(map: Map, pixel: number[]) {
 
     if (feature !== highlight) {
         if (highlight) {
-            featureOverlay!.getSource()!.removeFeature(highlight);
+            featureSource.removeFeature(highlight);
         }
         if (feature) {
-            featureOverlay!.getSource()!.addFeature(feature as Feature<Geometry>);
+            console.log('highlight', feature);
+            featureSource.addFeature(feature as Feature<Geometry>);
         }
         highlight = feature as Feature<Geometry>;
     }
