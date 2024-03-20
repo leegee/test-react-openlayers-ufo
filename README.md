@@ -26,7 +26,8 @@ Currently we send everything in the bounding box and cluster on the client.
 
 Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
-* Sort order toggling (2h) - may as well be local
+* Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
+* Fix all dates
 * Add to dateitme `Obs  startet kl (32)` (eg `19.45`)
 * Link to full details
 * Tests.
