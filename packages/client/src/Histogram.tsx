@@ -20,6 +20,7 @@ const Histogram: React.FC = () => {
     const pointsCount = useSelector(selectPointsCount);
     const { from_date, to_date, q, featureCollection } = useSelector((state: RootState) => state.map);
     const [data, setData] = useState<any>(null);
+    const [yearOneCount, setYearOneCount] = useState(0);
     const [options, setOptions] = useState<any>(null);
 
     if (!pointsCount) {
@@ -29,8 +30,15 @@ const Histogram: React.FC = () => {
     useEffect(() => {
         if (!featureCollection || !featureCollection.features) return;
 
-        const yearValues: number[] = featureCollection.features.
-            map((feature: any /*todo*/) => new Date(feature.properties.datetime).getFullYear());
+        const yearValues: number[] = featureCollection.features
+            .map((feature: any) => new Date(feature.properties.datetime).getFullYear())
+            .filter(year => {
+                // Filter out year 1, which currently represents bad dates
+                if (year === 1) {
+                    setYearOneCount(yearOneCount + 1);
+                }
+                return year !== 1;
+            });
 
         const lowestYear = Math.min(...yearValues);
         const highestYear = Math.max(...yearValues);
@@ -78,8 +86,13 @@ const Histogram: React.FC = () => {
 
     return pointsCount ? (
         <section>
-            <h2> {from_date} - {to_date} <q>{q}</q> </h2>
+            <h2> {from_date} - {to_date}
+                {q && <q>{q}</q>}
+            </h2>
             {data && <Bar data={data} options={options} height={200} />}
+            {yearOneCount && (<p>
+                Excludes {yearOneCount} sightings without parsable dates.
+            </p>)}
         </section>
     ) : '';
 };
