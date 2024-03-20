@@ -19,6 +19,7 @@
         "title": "Datoperiode",
         "min": "Minimum",
         "max": "Maksimum",
+        "submit": "Søk med disse datoene",
         "error": {
             "min_range": "Minimum år må være mindre enn eller lik maksimum år",
             "max_range": "Maksimum år må være større enn eller lik minimum år"

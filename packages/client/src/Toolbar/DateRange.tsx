@@ -74,7 +74,7 @@ const DateRange: React.FC = () => {
                 onChange={handleToDateChange}
             />
 
-            <button onClick={handleSubmit}>▶</button>
+            <span className='submit' onClick={handleSubmit} title={get('date_range.submit')}>▶</span>
         </nav>
     );
 }
