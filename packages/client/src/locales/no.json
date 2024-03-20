@@ -17,6 +17,8 @@
     },
     "date_range": {
         "title": "Datoperiode",
+        "histogram-button": "Se datodiagram",
+        "histogram": "Datodiagram",
         "min": "Minimum",
         "max": "Maksimum",
         "submit": "Søk med disse datoene",

@@ -51,13 +51,14 @@ const DateRange: React.FC = () => {
         <nav className='date-range component highlightable'>
             {pointsCount ? (
                 <Link to="/histogram/dates">
-                    <span className='grey calendar-icon' title={get('date_range.title')} />
+                    <span className='grey calendar-icon' title={get('date_range.histogram-button')} aria-label={get('date_range.histogram-button')} />
                 </Link>
             ) : (
-                <span className='grey calendar-icon' title={get('date_range.title')} />
+                <span className='grey calendar-icon' title={get('date_range.title')} aria-label={get('date_range.title')} />
             )}
             <input
                 title={get('date_range.min')}
+                aria-label={get('date_range.min')}
                 type='text'
                 id='minYear'
                 name='minYear'
@@ -67,6 +68,7 @@ const DateRange: React.FC = () => {
             -
             <input
                 title={get('date_range.max')}
+                aria-label={get('date_range.max')}
                 type='text'
                 id='maxYear'
                 name='maxYear'
@@ -74,7 +76,7 @@ const DateRange: React.FC = () => {
                 onChange={handleToDateChange}
             />
 
-            <span className='submit' onClick={handleSubmit} title={get('date_range.submit')}>▶</span>
+            <span className='submit' onClick={handleSubmit} title={get('date_range.submit')} aria-label={get('date_range.submit')}>▶</span>
         </nav>
     );
 }

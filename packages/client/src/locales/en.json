@@ -17,6 +17,8 @@
     },
     "date_range": {
         "title": "Date range",
+        "histogram-button": "View date histogram",
+        "histogram": "Date histogram",
         "min": "Minimum",
         "max": "Maximum",
         "submit": "Search with these dates",
