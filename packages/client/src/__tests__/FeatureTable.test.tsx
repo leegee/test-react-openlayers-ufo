@@ -15,6 +15,9 @@ describe('FeaturesTable', () => {
     let store: any;  // RootState;
     beforeEach(() => {
         store = mockStore({
+            gui: {
+                locale: 'en',
+            },
             map: {
                 featureCollection: {
                     features: [
