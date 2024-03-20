@@ -62,7 +62,7 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   q: '',
-  basemapSource: localStorage.getItem('basemap_source') || 'dark',
+  basemapSource: localStorage.getItem('basemap_source') || 'geo',
   previousQueryString: '',
 };
 
