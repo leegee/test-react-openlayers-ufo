@@ -43,6 +43,7 @@ const FeatureTable: React.FC = () => {
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
 
+    // Might be easier or better to re-render reactively
     function handleShowPoint(e: ShowPointEventType) {
         if (!e.detail.id) {
             console.log("Heard EVENT_SHOW_POINT but got no e.detail.id", e.detail);
