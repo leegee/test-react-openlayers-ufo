@@ -7,8 +7,7 @@ CREATE TABLE sightings AS SELECT * FROM hovedtabell;
 
 ALTER TABLE sightings 
     ADD COLUMN datetime_original VARCHAR(20),  
-    ADD COLUMN datetime TIMESTAMP,
-    ADD COLUMN datetime_invalid BOOLEAN
+    ADD COLUMN datetime TIMESTAMP
 ;
 
 -- Create a auto-incrementing primary key from 'datarapp nr':
@@ -30,9 +29,16 @@ CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_tr
 -- CREATE INDEX full_text_index_report_text_norwegian ON sightings USING GIN (to_tsvector('norwegian', report_text));
 
 -- Observation date to datetime:
+
+UPDATE sightings SET 
+
+UPDATE sightings SET "Obs måned" = '01' WHERE "Obs måned" IS NULL OR "Obs måned" = '1';
+UPDATE sightings SET "observasjonsdato" = '01' WHERE "observasjonsdato" IS NULL OR "observasjonsdato" = '13';
+UPDATE sightings SET "obs år" = REPLACE("obs år", '?', '0');
+
 UPDATE sightings
 SET
-    datetime_original = CONCAT( "obs år", '-', "Obs måned", '-', "observasjonsdato" ),
+    datetime_original = "obs år" || '-' || "Obs måned" || '-' || "observasjonsdato",
     datetime = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(
@@ -52,7 +58,8 @@ SET
             true
         ELSE
             false
-    END;
+        END;
+
 
 UPDATE sightings
 SET datetime = 

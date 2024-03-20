@@ -115,7 +115,10 @@ const FeatureTable: React.FC = () => {
                         return 0; // Leave them unchanged in order
                     })
                     .map((feature: any, index: number) => (
-                        <tr key={index} id={getRowId(feature.properties.id)} title={feature.properties.search_score ? feature.properties.search_score : 'unscored'}>
+                        <tr key={index} id={getRowId(feature.properties.id)} title={
+                            (feature.properties.search_score ? feature.properties.search_score : 'unscored')
+                            + ' ' + feature.properties.datetime
+                        }>
                             <td className='datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{
