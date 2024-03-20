@@ -33,7 +33,7 @@ export const loadLocale = async (locale: LocaleKey) => {
     });
 }
 
-const LocaleSelector = () => {
+const LocaleManager = () => {
     const dispatch = useDispatch();
     const { locale } = useSelector((state: RootState) => state.gui);
 
@@ -62,4 +62,4 @@ const LocaleSelector = () => {
     );
 };
 
-export default LocaleSelector;
+export default LocaleManager;

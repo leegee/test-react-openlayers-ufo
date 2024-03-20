@@ -23,8 +23,7 @@ import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnly
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
-import LocalManager from './LocaleManager';
-import LocaleSelectorButton from './LocaleManager';
+import LocaleManager from './LocaleManager';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -214,9 +213,8 @@ const OpenLayersMap: React.FC = () => {
     <section className='map' ref={mapElementRef} >
       <div className='map-ctrls'>
         <ThemeToggleButton />
-        <LocalManager />
+        <LocaleManager />
       </div>
-      <LocaleSelectorButton />
       {mapRef.current && <Tooltip map={mapRef.current as Map} />}
     </section>
   );
