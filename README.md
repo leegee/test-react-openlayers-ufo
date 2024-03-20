@@ -5,6 +5,7 @@ WIP, just testing.
 ## Synopsis
 
 ```bash
+  # After installing the DB and editing the config:
   npm i
   npm run dev:api &
   npm run dev:client
@@ -21,6 +22,12 @@ Currently the master branch has server- and client-side clustering, but  the is 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
 Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window.
+
+## Installing and Accessing the DB
+
+There is a PostGIS database dump in [./data/norge/pg-dump//](./data/norge/pg-dump/): install the usual way with `psql`.
+
+Look around [./data/norge/](./data/norge/) for scripts that were used to create this database from a Microsoft Access Dump: they name the database `norge`. Other configuration access options are set in [the global config](./packages/config/). Of course this should be upgraded to use `.env` files.
 
 ## Todo:
 
