@@ -11,7 +11,7 @@ import TileLayer from 'ol/layer/Tile';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { setMapParams, fetchFeatures, selectBasemapSource, setBasemapSource, selectPointsCount } from './redux/mapSlice';
+import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount } from './redux/mapSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
@@ -22,14 +22,14 @@ import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
+import ThemeToggleButton from './Map/ThemeToggleButton';
 
 import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
-
-type MapBaseLayersType = {
+export type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
+export type MapBaseLayersType = {
   [key in MapBaseLayerKeyType]: VectorLayer<VectorSource<any>> | TileLayer<any>;
 }
 
@@ -49,6 +49,42 @@ const mapBaseLayers: MapBaseLayersType = {
   geo: baseLayerGeo,
 };
 
+const setTheme = (baseLayerName: MapBaseLayerKeyType) => {
+  for (let l of Object.keys(mapBaseLayers)) {
+    (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
+  }
+}
+
+function setVisibleDataLayer(layerName: MapLayerKeyType) {
+  console.info('setVisibleDataLayer', layerName);
+  for (let l of Object.keys(mapLayers)) {
+    (mapLayers as any)[l].setVisible(l === layerName);
+  }
+}
+
+function centerMapOnFeature(map: Map, feature: any) { // ugh
+  const geometry = feature.getGeometry();
+  if (geometry) {
+    const coordinates = geometry.getCoordinates();
+    map.getView().animate({
+      center: coordinates,
+      zoom: config.zoomLevelForPointDetails,
+      duration: 500,
+    });
+  }
+}
+
+function findFeatureById(layer: Layer, id: string | number): Feature | null {
+  const source = layer.getSource() as VectorSource;
+  const features = source.getFeatures();
+
+  for (const feature of features) {
+    if (feature.get('id') == id) {
+      return feature;
+    }
+  }
+  return null;
+}
 
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
@@ -57,15 +93,6 @@ const OpenLayersMap: React.FC = () => {
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
-
-  setTheme(basemapSource);
-
-  const handleToggleTheme = () => {
-    const newBasemapSource = getNextBasemapSource(basemapSource);
-    console.debug(`Map theme was ${basemapSource} now ${newBasemapSource}`);
-    dispatch(setBasemapSource(newBasemapSource));
-    setTheme(newBasemapSource);
-  };
 
   const handleMoveEnd = () => {
     if (!mapRef.current) return;
@@ -77,8 +104,11 @@ const OpenLayersMap: React.FC = () => {
   };
 
   useEffect(() => {
+    setTheme(basemapSource);
+  }, [basemapSource]);
+
+  useEffect(() => {
     const handleShowPointEvent = (e: ShowPointEventType) => {
-      console.log('handleShowPointEvent', e.detail)
       let feature;
       if (e.detail.id) {
         feature = findFeatureById(pointsLayer, e.detail.id);
@@ -156,10 +186,12 @@ const OpenLayersMap: React.FC = () => {
     }
   }, [featureCollection]);
 
-  return (<section className='map' ref={mapElementRef} >
-    <button onClick={handleToggleTheme} className='theme-ctrl highlightable ol-unselectable ol-control' />
-    {mapRef.current && <Tooltip map={mapRef.current as Map} />}
-  </section>);
+  return (
+    <section className='map' ref={mapElementRef} >
+      <ThemeToggleButton />
+      {mapRef.current && <Tooltip map={mapRef.current as Map} />}
+    </section>
+  );
 };
 
 
@@ -184,57 +216,6 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
     }
   });
 }
-
-
-const getNextBasemapSource = (currentBasemapSource: string) => {
-  switch (currentBasemapSource) {
-    case 'dark':
-      return 'light';
-    case 'light':
-      return 'geo';
-    case 'geo':
-    default:
-      return 'dark';
-  }
-};
-
-const setTheme = (baseLayerName: MapBaseLayerKeyType) => {
-  for (let l of Object.keys(mapBaseLayers)) {
-    (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
-  }
-}
-
-function setVisibleDataLayer(layerName: MapLayerKeyType) {
-  console.info('setVisibleDataLayer', layerName);
-  for (let l of Object.keys(mapLayers)) {
-    (mapLayers as any)[l].setVisible(l === layerName);
-  }
-}
-
-function centerMapOnFeature(map: Map, feature: any) { // ugh
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    const coordinates = geometry.getCoordinates();
-    map.getView().animate({
-      center: coordinates,
-      zoom: config.zoomLevelForPointDetails,
-      duration: 500,
-    });
-  }
-}
-
-function findFeatureById(layer: Layer, id: string | number): Feature | null {
-  const source = layer.getSource() as VectorSource;
-  const features = source.getFeatures();
-
-  for (const feature of features) {
-    if (feature.get('id') == id) {
-      return feature;
-    }
-  }
-  return null;
-}
-
 
 export default OpenLayersMap;
 
