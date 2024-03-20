@@ -6,6 +6,7 @@ export PGPORT=5432
 export PGUSER=postgres
 
 psql -c "DROP DATABASE IF EXISTS norge"
+# psql -c "CREATE DATABASE norge"
 psql -c "CREATE DATABASE norge WITH ENCODING = 'UTF8'"
 
 for file in mdb-export/*.sql; do
