@@ -54,7 +54,7 @@ table.feature-table {
         text-align: center;
     }
 
-    .ctrls {
+    td.ctrls {
         white-space: nowrap;
         display: flex;
         justify-content: space-between;
@@ -93,6 +93,11 @@ table.feature-table {
     .open-full-width::after {
         content: '▶';
         opacity: 50%;
+    }
+
+    .open-full-width:hover,
+    .close-full-width:hover {
+        color: var(--ufo-brand-clr);
     }
 
     .datetime {
