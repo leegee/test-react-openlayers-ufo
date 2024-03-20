@@ -32,6 +32,8 @@ CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_tr
 
 -- Observation date:
 
+SET client_encoding = 'UTF8';
+
 UPDATE sightings
 SET
     datetime_original = CONCAT(
@@ -39,13 +41,13 @@ SET
          '-', 
         COALESCE(LPAD("Obs måned", 2, '0'), '01'),
          '-', 
-         COALESCE(LPAD("observasjonsdato", 2, '0'), '01'),
+         COALESCE(LPAD("observasjonsdato", 2, '0'), '01')
     ),
     datetime = CASE 
         WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
             TO_DATE(
                 CONCAT(
-                    COALESCE("obs år", ''),
+                    COALESCE("obs år", '0000'),
                     '-',
                     CASE WHEN "Obs måned"::integer > 12 THEN '01' ELSE COALESCE(NULLIF("Obs måned", '?'), '01') END,
                     '-',
@@ -56,11 +58,12 @@ SET
         ELSE NULL
     END,
     datetime_invalid = CASE 
-        WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL AND "Obs måned"::integer > 12 THEN
+        WHEN datetime IS NULL OR "obs år" IS NULL OR "Obs måned" IS NULL OR observasjonsdato IS NULL THEN
             true
         ELSE
             false
     END;
+
 
 
 ALTER TABLE sightings
