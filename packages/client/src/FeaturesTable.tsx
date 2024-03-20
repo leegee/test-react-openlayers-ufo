@@ -93,12 +93,12 @@ const FeatureTable: React.FC = () => {
         <table className='feature-table'>
             <thead>
                 <tr>
-                    <th className='datetime'>{get('report.date')}</th>
-                    <th className='location_text'>{get('report.location')}</th>
-                    <th className='report_text'>{get('report.report')}</th>
+                    <th className='datetime'>{get('feature_table.date')}</th>
+                    <th className='location_text'>{get('feature_table.location')}</th>
+                    <th className='report_text'>{get('feature_table.report')}</th>
                     <th className='ctrls'>
-                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} title={get('report.close')} aria-label={get('report.close')} />
-                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} title={get('report.open')} aria-label={get('report.open')} />
+                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
+                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
                     </th>
                 </tr>
             </thead>
