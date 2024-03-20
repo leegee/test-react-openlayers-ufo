@@ -32,6 +32,7 @@ CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_tr
 
 UPDATE sightings SET 
 
+-- todo: also set a flag for inaccurate date
 UPDATE sightings SET "Obs måned" = '01' WHERE "Obs måned" IS NULL OR "Obs måned" = '1';
 UPDATE sightings SET "observasjonsdato" = '01' WHERE "observasjonsdato" IS NULL OR "observasjonsdato" = '13';
 UPDATE sightings SET "obs år" = REPLACE("obs år", '?', '0');
