@@ -97,8 +97,8 @@ const FeatureTable: React.FC = () => {
                     <th className='location_text'>{get('report.location')}</th>
                     <th className='report_text'>{get('report.report')}</th>
                     <th className='ctrls'>
-                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} />
-                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} />
+                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} title={get('report.close')} aria-label={get('report.close')} />
+                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} title={get('report.open')} aria-label={get('report.open')} />
                     </th>
                 </tr>
             </thead>

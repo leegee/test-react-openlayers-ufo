@@ -9,7 +9,9 @@
         "date": "Date",
         "location": "Location",
         "report": "Report",
-        "no_data": "No data for the visible area"
+        "no_data": "No data for the visible area",
+        "open": "Open",
+        "close": "Close"
     },
     "search_text": {
         "title": "Search",

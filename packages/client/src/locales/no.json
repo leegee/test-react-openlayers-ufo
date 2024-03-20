@@ -9,7 +9,9 @@
         "date": "Dato",
         "location": "Sted",
         "report": "Rapport",
-        "no_data": "Ingen data for det synlige området"
+        "no_data": "Ingen data for det synlige området",
+        "open": "Åpne",
+        "close": "Lukke"
     },
     "search_text": {
         "title": "Søk",
