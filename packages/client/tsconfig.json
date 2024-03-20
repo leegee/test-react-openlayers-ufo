@@ -26,7 +26,8 @@
   },
   "include": [
     "src",
-    "src/locales/*.json"
+    "src/locales/*.json",
+    "jest.config.js"
   ],
   "references": [
     {

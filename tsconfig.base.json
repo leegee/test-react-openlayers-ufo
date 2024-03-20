@@ -1,9 +1,21 @@
 {
+    "include": [
+        "src",
+        "node_modules/@types" // not sure we need this
+    ],
     "compilerOptions": {
+        "typeRoots": [
+            "node_modules/@types",
+            "types"
+        ],
+        "types": [
+            "node",
+            "jest"
+        ],
         "target": "ES2020",
         "module": "ESNext",
         "moduleResolution": "node",
-        "declaration": true,
+        "declaration": false,
         "strict": true,
         "incremental": true,
         "esModuleInterop": true,
