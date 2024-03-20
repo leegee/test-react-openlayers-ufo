@@ -89,7 +89,7 @@ const Histogram: React.FC = () => {
             <h2> {from_date} - {to_date}
                 {q && <q>{q}</q>}
             </h2>
-            {data && <Bar data={data} options={options} height={200} />}
+            {data && <Bar data={data} options={options} />}
             {yearOneCount && (<p>
                 Excludes {yearOneCount} sightings without parsable dates.
             </p>)}

@@ -10,18 +10,22 @@
     height: 100%;
     background: rgba(10, 10, 10, .6);
     z-index: 100;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal .modal-content {
     position: relative;
     background: var(--ufo-modal-bg);
     color: var(--ufo-modal-fg);
-    width: 80%;
-    height: 80%;
-    padding: 10%;
-    margin: 5% 10% 10% 10%;
+    width: (100% - 4em);
+    height: (100% - 4em);
+    padding: 2em;
     border: 1pt solid var(--ufo-modal-border-clr);
     border-radius: 4pt;
+    overflow: auto;
 }
 
 .modal .modal-close {
