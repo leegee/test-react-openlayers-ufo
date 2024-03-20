@@ -130,3 +130,12 @@ table.feature-table {
 .REPORT_FULL_WIDTH .row-goto-full-report {
     display: none;
 }
+
+/* No our-datetime in narrow width only in full-width */
+.feature-table .our-datetime {
+    display: none;
+}
+
+.REPORT_FULL_WIDTH .feature-table .our-datetime {
+    display: block;
+}

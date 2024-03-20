@@ -8,6 +8,7 @@ import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custo
 import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, dispatchSetReportWidthEvent } from './custom-events/report-width';
 
 import './FeatureTable.css';
+import config from '@ufo-monorepo-test/config/src';
 
 function getRowId(id: number | string) {
     return 'fid_' + id;
@@ -114,7 +115,12 @@ const FeatureTable: React.FC = () => {
                     })
                     .map((feature: any, index: number) => (
                         <tr key={index} id={getRowId(feature.properties.id)} title={feature.properties.search_score ? feature.properties.search_score : 'unscored'}>
-                            <td className='datetime'>{feature.properties.datetime_original}</td>
+                            <td className='datetime'>
+                                {feature.properties.datetime_original}
+                                <span className='our-datetime'>{
+                                    new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime).getFullYear())
+                                }</span>
+                            </td>
                             <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
                             <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                             <td className='ctrls'>
