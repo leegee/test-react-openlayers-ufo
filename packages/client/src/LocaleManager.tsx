@@ -1,0 +1,65 @@
+import React, { useEffect } from 'react';
+import { init } from 'react-intl-universal';
+import { useDispatch, useSelector } from 'react-redux';
+
+import config from '@ufo-monorepo-test/config/src';
+import { RootState } from './redux/store';
+import { setLocale } from './redux/guiSlice';
+
+import './LocaleManager.css';
+
+export const translations: { [key: string]: Promise<any> } = {
+    'en': import('./locales/en.json'),
+    'no': import('./locales/no.json'),
+};
+
+type LocaleKey = keyof typeof translations;
+
+export const useLocale = async (locale?: LocaleKey) => {
+    locale = locale || config.locale;
+    await loadLocale(locale);
+}
+
+export const getTranslation = async (locale: LocaleKey) => {
+    const translation = await translations[locale];
+    return translation;
+}
+
+export const loadLocale = async (locale: LocaleKey) => {
+    const translation = await getTranslation(locale);
+    init({
+        currentLocale: locale as string,
+        locales: { [locale]: translation },
+    });
+}
+
+const LocaleSelector = () => {
+    const dispatch = useDispatch();
+    const { locale } = useSelector((state: RootState) => state.gui);
+
+    useEffect(() => {
+        loadLocale(locale);
+    }, [locale]);
+
+    const handleClick = (locale: LocaleKey) => {
+        dispatch(setLocale(locale));
+    };
+
+    return (
+        <nav>
+            {locale ? (
+                <>
+                    {locale === 'no' ? (
+                        <button className='map-ctrl locale-ctrl' onClick={() => handleClick('en')}>🇬🇧</button>
+                    ) : (
+                        <button className='map-ctrl locale-ctrl' onClick={() => handleClick('no')}>🇳🇴</button>
+                    )}
+                </>
+            ) : (
+                <span>Loading...</span>
+            )}
+        </nav>
+    );
+};
+
+export default LocaleSelector;

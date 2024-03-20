@@ -23,6 +23,8 @@ import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnly
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
+import LocalManager from './LocaleManager';
+import LocaleSelectorButton from './LocaleManager';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -49,10 +51,32 @@ const mapBaseLayers: MapBaseLayersType = {
   geo: baseLayerGeo,
 };
 
-const setTheme = (baseLayerName: MapBaseLayerKeyType) => {
+function setTheme(baseLayerName: MapBaseLayerKeyType) {
   for (let l of Object.keys(mapBaseLayers)) {
     (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
   }
+}
+
+// Zoom to the cluster or point on click
+function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
+  let didOneFeature = false;
+  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
+    if (clickedFeature && !didOneFeature) {
+      if (clickedFeature.get('cluster_id')) { // clsuter
+        map!.getView().animate({
+          center: e.coordinate,
+          zoom: config.zoomLevelForPoints,
+          duration: 500,
+          easing: easeOut
+        });
+      }
+      else { // point
+        console.log('click', clickedFeature);
+        showPoint(clickedFeature.get('id'));
+      }
+      didOneFeature = true;
+    }
+  });
 }
 
 function setVisibleDataLayer(layerName: MapLayerKeyType) {
@@ -188,34 +212,17 @@ const OpenLayersMap: React.FC = () => {
 
   return (
     <section className='map' ref={mapElementRef} >
-      <ThemeToggleButton />
+      <div className='map-ctrls'>
+        <ThemeToggleButton />
+        <LocalManager />
+      </div>
+      <LocaleSelectorButton />
       {mapRef.current && <Tooltip map={mapRef.current as Map} />}
     </section>
   );
 };
 
 
-// Zoom to the cluster or point on click
-function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
-  let didOneFeature = false;
-  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-    if (clickedFeature && !didOneFeature) {
-      if (clickedFeature.get('cluster_id')) { // clsuter
-        map!.getView().animate({
-          center: e.coordinate,
-          zoom: config.zoomLevelForPoints,
-          duration: 500,
-          easing: easeOut
-        });
-      }
-      else { // point
-        console.log('click', clickedFeature);
-        showPoint(clickedFeature.get('id'));
-      }
-      didOneFeature = true;
-    }
-  });
-}
 
 export default OpenLayersMap;
 

@@ -53,9 +53,9 @@ body.small-screen.REPORT_NARROW_WIDTH .map {
 }
 
 
-.map .theme-ctrl {
+.map-ctrls {
     position: absolute;
-    top: 3.5em;
+    top: 5em;
     z-index: 10;
     right: 0;
     float: right;
@@ -63,15 +63,25 @@ body.small-screen.REPORT_NARROW_WIDTH .map {
     margin-right: var(--ufo-div-padding);
     margin-bottom: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: space-between;
+    height: auto;
+    max-width: 2em;
+}
+
+.map-ctrls .map-ctrl {
+    position: relative;
     border-radius: 2pt;
     filter: grayscale(100%);
     background-color: --ufo-ctrl-bg;
+    display: block;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 4pt;
 }
 
-.map .theme-ctrl {
-    background-color: var(--ufo-ctrl-bg-focus);
-}
-
-.map .theme-ctrl::after {
+.theme-ctrl::after {
     content: '🗺️';
 }

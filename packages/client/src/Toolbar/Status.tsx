@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
@@ -7,10 +7,11 @@ import { type RootState } from '../redux/store';
 import { mapScoreToHue } from '../lib/sightings-styles';
 import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
 
-import './ReportCount.css';
+import './Status.css';
 
 const Panel: React.FC = () => {
     const { q } = useSelector((state: RootState) => state.map);
+    const { locale } = useSelector((state: RootState) => state.gui);
     const pointsCount = useSelector(selectPointsCount);
     const clusterCount = useSelector(selectClusterCount);
     const nothingToShow = !clusterCount && !pointsCount;
@@ -24,6 +25,8 @@ const Panel: React.FC = () => {
             borderWidth: '1pt',
         };
     }
+
+    useEffect(() => void (0), [locale]);
 
     return (
         <header className='report-ctrl component' style={gradientBorder}><span className='inner'>

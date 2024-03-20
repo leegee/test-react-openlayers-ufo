@@ -3,6 +3,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectBasemapSource, setBasemapSource } from '../redux/mapSlice';
 
+import './ThemeToggleButton.css';
+
 const ThemeToggleButton: React.FC = () => {
     const dispatch = useDispatch();
     const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
@@ -14,7 +16,7 @@ const ThemeToggleButton: React.FC = () => {
     }
 
     return (
-        <button onClick={handleClick} className='theme-ctrl highlightable ol-unselectable ol-control' />
+        <button onClick={handleClick} className='map-ctrl theme-ctrl highlightable ol-unselectable ol-control' />
     );
 };
 
