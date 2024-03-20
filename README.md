@@ -4,9 +4,11 @@ WIP, just testing.
 
 ## Synopsis
 
+```bash
   npm i
   npm run dev:api &
   npm run dev:client
+```
 
 ## Description
 
