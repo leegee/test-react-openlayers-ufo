@@ -19,7 +19,6 @@ ALTER TABLE sightings ADD PRIMARY KEY (id);
 CREATE SEQUENCE sightings_id_seq OWNED BY sightings.id;
 ALTER TABLE sightings ALTER COLUMN id SET DEFAULT nextval('sightings_id_seq');
 
-
 ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
 ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 
@@ -30,10 +29,7 @@ CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_tr
 -- CREATE INDEX full_text_index_report_text ON sightings USING GIN (to_tsvector('english', report_text));
 -- CREATE INDEX full_text_index_report_text_norwegian ON sightings USING GIN (to_tsvector('norwegian', report_text));
 
--- Observation date:
-
-SET client_encoding = 'UTF8';
-
+-- Observation date to datetime:
 UPDATE sightings
 SET
     datetime_original = CONCAT( "obs år", '-', "Obs måned", '-', "observasjonsdato" ),
@@ -52,24 +48,25 @@ SET
         ELSE NULL
     END,
     datetime_invalid = CASE 
-        WHEN datetime IS NULL OR "obs år" IS NULL OR "Obs måned" IS NULL OR observasjonsdato IS NULL THEN
+        WHEN datetime IS NULL THEN
             true
         ELSE
             false
     END;
 
-
-
-ALTER TABLE sightings
-    DROP COLUMN observasjonsdato,
-    DROP COLUMN "Obs måned",
-    DROP COLUMN "obs år";
+UPDATE sightings
+SET datetime = 
+    CASE 
+        WHEN datetime = '0001-01-01 00:00:00' THEN NULL
+        WHEN datetime = '0960-06-30 00:00:00' THEN '1960-06-30 00:00:00'
+        ELSE datetime
+    END;
 
 -- County of sighting: Key (fylke)=(20) is not present in table "fylke". Vest-Agder, Troms, and others are absent.
 -- So, skip for now.
 -- ALTER TABLE fylke ADD CONSTRAINT pk_fylke PRIMARY KEY (id);
 -- ALTER TABLE sightings ADD CONSTRAINT fk_fylke FOREIGN KEY (Fylke) REFERENCES fylke(id);
 
-ALTER TABLE sightings DROP COLUMN "Annet (4,1)"; -- it is empty
-ALTER TABLE sightings RENAME COLUMN annet61 TO weather_other;
+-- ALTER TABLE sightings DROP COLUMN "Annet (4,1)"; -- it is empty
+-- ALTER TABLE sightings RENAME COLUMN annet61 TO weather_other;
 
