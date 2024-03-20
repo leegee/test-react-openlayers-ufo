@@ -64,7 +64,7 @@ const Histogram: React.FC = () => {
                 },
                 title: {
                     display: false,
-                    text: '',
+                    text: `Sightings by Year ${yearOneCount && ` (Excludes ${yearOneCount} sightings without parsable dates.)`}`,
                 },
             }
         };
@@ -86,11 +86,11 @@ const Histogram: React.FC = () => {
 
     return pointsCount ? (
         <section>
-            <h2>
+            {/* <h2>
                 {yearOneCount && (<small>
                     &nbsp;(Excludes {yearOneCount} sightings without parsable dates.)
                 </small>)}
-            </h2>
+            </h2> */}
             {data && <Bar data={data} options={options} />}
 
         </section>
