@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -9,17 +9,13 @@ import { RootState } from '../redux/store';
 import './DateRange.css';
 import { get } from 'react-intl-universal';
 
-function setError(msg: string) {
-    console.warn(msg); // TODO
-}
-
-let initialised = false;
-
 const DateRange: React.FC = () => {
     const dispatch = useDispatch();
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
-    const { from_date, to_date } = useSelector((state: RootState) => state.map);
     const pointsCount = useSelector(selectPointsCount);
+    const { from_date, to_date } = useSelector((state: RootState) => state.map);
+    const [localFromDate, setLocalFromDate] = useState<any>(from_date!);
+    const [localToDate, setLocalToDate] = useState<any>(to_date!);
 
     useEffect(() => {
         if (dictionary && dictionary.datetime) {
@@ -28,29 +24,28 @@ const DateRange: React.FC = () => {
         }
     }, [dispatch, dictionary]);
 
-    useEffect(() => {
-        if (initialised) {
-            dispatch(fetchFeatures() as any)
-        }
-    }, [dispatch, from_date, to_date]);
+    function handleSubmit() {
+        // TODO restore the checks from history
+        dispatch(setFromDate(localFromDate));
+        dispatch(setToDate(localToDate));
+        dispatch(fetchFeatures() as any)
+    }
 
-    const handleMinYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(event.target.value);
-        if (!isNaN(value) && (to_date === undefined || value <= to_date)) {
-            dispatch(setFromDate(value));
-        } else {
-            setError(get('date_range.error.min_range'));
+    function handleFromDateChange(e: React.ChangeEvent<HTMLInputElement>) {
+        let value: string | number = parseInt(e.target.value);
+        if (isNaN(value)) {
+            value = '';
         }
-    };
+        setLocalFromDate(value);
+    }
 
-    const handleMaxYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(event.target.value);
-        if (!isNaN(value) && (from_date === undefined || value >= from_date)) {
-            dispatch(setToDate(value));
-        } else {
-            setError(get('date_range.error.max_range'));
+    function handleToDateChange(e: React.ChangeEvent<HTMLInputElement>) {
+        let value: string | number = parseInt(e.target.value);
+        if (isNaN(value)) {
+            value = '';
         }
-    };
+        setLocalToDate(value);
+    }
 
     return (
         <nav className='date-range component highlightable'>
@@ -66,8 +61,8 @@ const DateRange: React.FC = () => {
                 type='text'
                 id='minYear'
                 name='minYear'
-                value={from_date === undefined ? '' : from_date}
-                onChange={handleMinYearChange}
+                value={localFromDate === undefined ? '' : localFromDate}
+                onChange={handleFromDateChange}
             />
             -
             <input
@@ -75,9 +70,11 @@ const DateRange: React.FC = () => {
                 type='text'
                 id='maxYear'
                 name='maxYear'
-                value={to_date === undefined ? '' : to_date}
-                onChange={handleMaxYearChange}
+                value={localToDate === undefined ? '' : localToDate}
+                onChange={handleToDateChange}
             />
+
+            <button onClick={handleSubmit}>▶</button>
         </nav>
     );
 }
