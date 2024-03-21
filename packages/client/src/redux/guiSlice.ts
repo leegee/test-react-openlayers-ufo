@@ -1,10 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import config from '@ufo-monorepo-test/config/src';
 
+export type PanelStateTypes = 'hidden' | 'narrow' | 'full';
+
 const initialState: {
     locale: string,
+    panel: PanelStateTypes,
 } = {
     locale: config.locale,
+    panel: 'hidden',
 };
 
 const localeSlice = createSlice({
@@ -14,9 +18,13 @@ const localeSlice = createSlice({
         setLocale: (state, action) => {
             state.locale = action.payload;
         },
+        setPanel: (state, action) => {
+            state.panel = action.payload;
+            console.debug('Panel', state.panel);
+        }
     },
 });
 
-export const { setLocale } = localeSlice.actions;
+export const { setLocale, setPanel } = localeSlice.actions;
 
 export default localeSlice.reducer;

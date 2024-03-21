@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { addReportEvents, removeReportEvents } from './custom-events/report-width';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import FeatureTable from './FeaturesTable';
@@ -14,30 +13,41 @@ import Histogram from './Histogram';
 import SightingDetails from './SightingDetails';
 
 import './App.css';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 function setScreenSizeClass() {
   if (window.innerWidth < 768) {
-    document.body.classList.add('small-screen');
-    document.body.classList.remove('larger-screen');
+    document.body.classList.add('SMALL-SCREEN');
+    document.body.classList.remove('LARGER-SCREEN');
   } else {
-    document.body.classList.remove('small-screen');
-    document.body.classList.add('larger-screen');
+    document.body.classList.remove('SMALL-SCREEN');
+    document.body.classList.add('LARGER-SCREEN');
   }
 }
 
 const App: React.FC = () => {
-  useEffect(() => {
-    addReportEvents();
-    setScreenSizeClass();
+  const appElementRef = useRef<HTMLDivElement>(null);
+  const [appClasses, setAppClasses] = useState('');
+  const { panel } = useSelector((state: RootState) => state.gui);
 
-    return () => {
-      removeReportEvents();
-      window.removeEventListener('resize', setScreenSizeClass);
-    };
+  useEffect(() => {
+    window.addEventListener('resize', setScreenSizeClass);
+    return () => window.removeEventListener('resize', setScreenSizeClass);
   }, []);
 
+  useEffect(() => {
+    if (panel === 'full') {
+      setAppClasses('REPORT_FULL_WIDTH');
+    } else if (panel === 'narrow') {
+      setAppClasses('REPORT_NARROW_WIDTH');
+    } else {
+      setAppClasses('');
+    }
+  }, [panel])
+
   return (
-    <>
+    <main ref={appElementRef} className={appClasses}>
       <BrowserRouter>
         <>
           <Modal allowedRoutes={['about', 'contact', 'histogram', 'sighting']}>
@@ -58,7 +68,7 @@ const App: React.FC = () => {
           </div>
         </>
       </BrowserRouter>
-    </>
+    </main>
   );
 }
 

@@ -5,27 +5,18 @@
  */
 import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
+import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
-import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, dispatchSetReportWidthEvent } from './custom-events/report-width';
-import config from '@ufo-monorepo-test/config/src';
-import { Link } from 'react-router-dom';
+import { setPanel } from './redux/guiSlice';
 
 import './FeatureTable.css';
 
 function getRowId(id: number | string) {
     return 'fid_' + id;
-}
-
-const addEscListener = () => document.addEventListener('keyup', onEscCloseFullReport);
-const removeEscListener = () => document.removeEventListener('keyup', onEscCloseFullReport);
-
-function onEscCloseFullReport(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-        dispatchSetReportWidthEvent('narrow');
-    }
 }
 
 const highlightText = (q: string | undefined, text: string) => {
@@ -44,9 +35,20 @@ const highlightText = (q: string | undefined, text: string) => {
 };
 
 const FeatureTable: React.FC = () => {
+    const dispatch = useDispatch();
     const featureCollection = useSelector((state: any) => state.map.featureCollection);
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
+    const { panel } = useSelector((state: RootState) => state.gui);
+
+    const addEscListener = () => document.addEventListener('keyup', onEscCloseFullReport);
+    const removeEscListener = () => document.removeEventListener('keyup', onEscCloseFullReport);
+
+    function onEscCloseFullReport(e: KeyboardEvent) {
+        if (e.key === 'Escape') {
+            dispatch(setPanel(''));
+        }
+    }
 
     // Might be easier or better to re-render reactively
     function handleShowPoint(e: ShowPointEventType) {
@@ -73,25 +75,19 @@ const FeatureTable: React.FC = () => {
 
     useEffect(() => {
         document.addEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
-        document.addEventListener(REPORT_FULL_WIDTH, addEscListener as EventListener);
-        document.addEventListener(REPORT_NARROW_WIDTH, removeEscListener as EventListener);
-        document.addEventListener(REPORT_HIDE, removeEscListener as EventListener);
 
         return () => {
             document.removeEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
-            document.removeEventListener(REPORT_FULL_WIDTH, addEscListener as EventListener);
-            document.removeEventListener(REPORT_NARROW_WIDTH, removeEscListener as EventListener);
-            document.removeEventListener(REPORT_HIDE, removeEscListener as EventListener);
         }
     }, []);
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
-        dispatchSetReportWidthEvent('narrow');
+        dispatch(setPanel('narrow'));
         showPointByCoords(feature.geometry.coordinates);
     }
 
     function gotoFulLReport(_id: string) {
-        dispatchSetReportWidthEvent('full-width');
+        dispatch(setPanel('full'));
         // todo highlgiht row with EVENT_SHOW_POINT or directly
     }
 
@@ -103,8 +99,8 @@ const FeatureTable: React.FC = () => {
                     <th className='location_text'>{get('feature_table.location')}</th>
                     <th className='report_text'>{get('feature_table.report')}</th>
                     <th className='ctrls'>
-                        <span className='close-full-width' onClick={() => dispatchSetReportWidthEvent('narrow')} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
-                        <span className='open-full-width' onClick={() => dispatchSetReportWidthEvent('full-width')} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
+                        <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
+                        <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
                     </th>
                 </tr>
             </thead>

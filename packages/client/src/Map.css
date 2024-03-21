@@ -23,19 +23,19 @@
     width: 100%;
 }
 
-body.REPORT_FULL_WIDTH .map {
+.REPORT_FULL_WIDTH .map {
     width: 0;
     max-width: 0;
 }
 
-body.larger-screen.REPORT_NARROW_WIDTH .map {
+.LARGER-SCREEN.REPORT_NARROW_WIDTH .map {
     width: calc(100% - var(--ufo-panel-narrow-width));
     max-width: calc(100% - var(--ufo-panel-narrow-width));
 }
 
-body.small-screen.REPORT_NARROW_WIDTH .map {
-    height: calc(100% - var(--ufo-panel-small-screen-height));
-    max-height: calc(100% - var(--ufo-panel-small-screen-height));
+.SMALL-SCREEN.REPORT_NARROW_WIDTH .map {
+    height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
+    max-height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
 }
 
 .ol-zoom {

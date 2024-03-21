@@ -2,13 +2,14 @@
  * This chap handles the positioning of the results table, which is always set to fill avialable space
  */
 
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
+import { setPanel } from './redux/guiSlice';
 
-import { dispatchHideReportEvent } from './custom-events/report-width';
+// import { dispatchHideReportEvent } from './custom-events/report-width';
 
 import './ResultsPanel.css';
-import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
 
 interface PanelProps {
     children: React.ReactNode;
@@ -16,19 +17,19 @@ interface PanelProps {
 
 const Panel: React.FC<PanelProps> = ({ children }) => {
     const pointsCount = useSelector(selectPointsCount);
-    const clusterCount = useSelector(selectClusterCount);
+    const dispatch = useDispatch();
 
-    if (pointsCount && !clusterCount) {
-        return (
-            <section className='panel'>
-                {children}
-            </section>
-        );
-    } else {
-        dispatchHideReportEvent();
-    }
+    useEffect(() => {
+        if (!pointsCount) {
+            dispatch(setPanel(''));
+        }
+    }, [pointsCount, dispatch]);
 
-    return '';
+    return !pointsCount ? '' : (
+        <section className='panel'>
+            {children}
+        </section>
+    );
 };
 
 export default Panel;
