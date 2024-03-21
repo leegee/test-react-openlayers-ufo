@@ -5,19 +5,35 @@ import Feature from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import { Style, Stroke } from 'ol/style';
+import { Circle, Style, Stroke, Fill } from 'ol/style';
 
 const featureSource = new VectorSource();
 
 const featureOverlay = new VectorLayer({
     source: featureSource,
     style: (_feature) => {
-        return new Style({
-            stroke: new Stroke({
-                color: 'yellow',
-                width: 14,
+        return [
+            new Style({
+                image: new Circle({
+                    radius: 10,
+                    fill: new Fill({ color: 'transparent' }),
+                    stroke: new Stroke({
+                        color: 'orange',
+                        width: 3
+                    })
+                }),
             }),
-        });
+            new Style({
+                image: new Circle({
+                    radius: 13,
+                    fill: new Fill({ color: 'transparent' }),
+                    stroke: new Stroke({
+                        color: 'white',
+                        width: 1
+                    })
+                }),
+            })
+        ];
     },
 });
 
