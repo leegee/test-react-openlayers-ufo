@@ -20,8 +20,6 @@ export async function details(ctx: Context) {
         })
     }
 
-    console.log(id);
-
     try {
         let sql = 'SELECT * FROM sightings WHERE id=$1';
 
