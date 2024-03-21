@@ -3,23 +3,24 @@
 table.feature-table {
     position: relative;
     display: table;
-    margin: 0;
-    background-color: var(--ufo-primary-bg);
-    padding: 0 var(--ufo-div-padding);
-    width: 100%;
     border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+    background-color: var(--ufo-primary-bg);
 }
 
 table.feature-table {
     thead {
         position: sticky;
         top: 0;
-        background-color: var(--ufo-primary-bg-odd);
+        background-color: var(--ufo-primary-bg-highlight);
         z-index: 1;
     }
 
     tr:nth-child(even) {
-        background-color: var(--ufo-primary-bg-odd);
+        background-color: var(--ufo-primary-bg-highlight);
     }
 
     tr:hover {
@@ -38,15 +39,24 @@ table.feature-table {
 
     th,
     td {
-        padding: 0.5em;
+        padding: 0.125em;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     td {
         vertical-align: top;
     }
 
-    .datetime {
+    th.datetime,
+    td.datetime {
         white-space: nowrap;
+        text-overflow: unset;
+    }
+
+    th.location_text,
+    td.location_text {
+        padding-left: 1em;
     }
 
     .no_data {
@@ -100,24 +110,36 @@ table.feature-table {
         color: var(--ufo-brand-clr);
     }
 
-    .datetime {
-        padding-right: 1em;
-        min-width: 30%;
-    }
-
     .report_text {
         display: none;
     }
 }
 
 /* Show the report text in full-width */
-.REPORT_FULL_WIDTH .feature-table .report_text {
-    display: table-cell;
-}
+.REPORT_FULL_WIDTH {
+    .feature-table .report_text {
+        display: table-cell;
+    }
 
-/* No button to open full-width when already full-width */
-.REPORT_FULL_WIDTH .feature-table .open-full-width {
-    display: none;
+    /* No button to open full-width when already full-width */
+    .feature-table .open-full-width {
+        display: none;
+    }
+
+    /* Show button to close full-width when in full width */
+    .feature-table .close-full-width {
+        display: unset;
+    }
+
+
+    /* No button to link to full-width when already full-width */
+    .row-goto-full-report {
+        display: none;
+    }
+
+    .feature-table .our-datetime {
+        display: block;
+    }
 }
 
 /* No button to close full-width when already narrow-width */
@@ -125,22 +147,7 @@ table.feature-table {
     display: none;
 }
 
-/* Show button to close full-width when in full width */
-.REPORT_FULL_WIDTH .feature-table .close-full-width {
-    display: unset;
-}
-
-
-/* No button to link to full-width when already full-width */
-.REPORT_FULL_WIDTH .row-goto-full-report {
-    display: none;
-}
-
 /* No our-datetime in narrow width only in full-width */
 .feature-table .our-datetime {
     display: none;
-}
-
-.REPORT_FULL_WIDTH .feature-table .our-datetime {
-    display: block;
 }

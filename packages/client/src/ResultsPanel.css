@@ -9,6 +9,7 @@
     position: fixed;
     overflow: auto;
     width: var(--ufo-panel-narrow-width);
+    max-width: var(--ufo-panel-narrow-width);
     top: var(--ufo-toolbar-height);
     left: 0;
     bottom: unset;
@@ -23,12 +24,14 @@
 }
 
 body.REPORT_FULL_WIDTH .panel {
+    max-width: 100%;
     width: 100%;
     height: 100%;
 }
 
 body.small-screen .panel {
     width: 100%;
+    max-width: 100%;
     top: calc(100vh - var(--ufo-panel-small-screen-height));
     left: 0;
     right: 0;

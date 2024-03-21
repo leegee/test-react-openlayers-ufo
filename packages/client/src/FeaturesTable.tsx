@@ -123,7 +123,7 @@ const FeatureTable: React.FC = () => {
                             <td className='datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{
-                                    new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime).getFullYear())
+                                    new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime))
                                 }</span>
                             </td>
                             <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
