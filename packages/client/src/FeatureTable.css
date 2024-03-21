@@ -4,10 +4,9 @@ table.feature-table {
     position: relative;
     display: table;
     border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    max-width: 100%;
-    width: 100%;
+    margin: 1em;
+    max-width: calc(100%-2em);
+    width: calc(100%-2em);
     background-color: var(--ufo-primary-bg);
 }
 
