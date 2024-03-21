@@ -61,7 +61,6 @@ function highlightFeature(map: Map, pixel: number[]) {
             featureSource.removeFeature(highlight);
         }
         if (feature) {
-            console.log('highlight', feature);
             featureSource.addFeature(feature as Feature<Geometry>);
         }
         highlight = feature as Feature<Geometry>;
