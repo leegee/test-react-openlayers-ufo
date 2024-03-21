@@ -21,9 +21,20 @@ const Modal: React.FC<ModalProps> = ({ children, allowedRoutes }) => {
     }
 
     useEffect(() => {
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
+                handleClose();
+            }
+        }
+
         if (shouldRenderContent) {
             setIsOpen(true);
+            document.addEventListener('keydown', handleKeyDown);
         }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, [shouldRenderContent]);
 
     return isOpen ? (
