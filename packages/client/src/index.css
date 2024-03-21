@@ -66,24 +66,12 @@ h1 {
 }
 
 button {
-  border-radius: 8pt;
   border: 1pt solid transparent;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
   outline: none;
 }
 
-button:focus,
-button:focus-visible,
-button:hover {
-  opacity: 1;
-  outline: none;
-}
-
+button,
 input {
   border: 0;
   border-bottom: 0.5pt dotted var(--ufo-primary-border-clr);
