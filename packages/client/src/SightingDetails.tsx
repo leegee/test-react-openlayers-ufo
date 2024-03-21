@@ -27,12 +27,14 @@ const SightingDetails: React.FC = () => {
         <section>
             <h2>{get('sighting_details.title')} {id}</h2>
             <table>
-                {Object.keys(details).map((column: string, index: number) => (
-                    <tr key={index}>
-                        <td>{column}</td>
-                        <td>{details[column]}</td>
-                    </tr>
-                ))}
+                {Object.keys(details)
+                    .filter((column: string) => column !== 'point' && details[column] !== null)
+                    .map((column: string, index: number) => (
+                        <tr key={index}>
+                            <td>{column}</td>
+                            <td>{details[column]?.toString()}</td>
+                        </tr>
+                    ))}
             </table>
         </section>
     );
