@@ -1,35 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { FetchSightingDetailsResponse, SightingRecordType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 
-interface SightingDetailsState {
+export interface SightingDetailsState {
     id: string | undefined;
     loading: boolean;
     error: string | null;
+    details: SightingRecordType
     // Add other fields as needed
 }
+
+const detailsEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.details;
 
 const initialState: SightingDetailsState = {
     id: undefined,
     loading: false,
     error: null,
+    details: {}
 };
 
-
-interface FetchSightingDetailsResponse {
-    detail: {
-        [key: string]: string | number | undefined | null
-    }
-}
-
-export const fetchSightingDetails = createAsyncThunk<
+export const fetchSightingDetails: any = createAsyncThunk<
     FetchSightingDetailsResponse,
     string, // Type of the id param
-    { rejectValue: string }
+    { rejectValue: string | Error }
 >(
     'sightingDetails/fetchSightingDetails',
     async (id: string, thunkAPI) => {
         try {
-            const response = await fetch(`${config.api.endopoints.details}/${id}`);
+            const response = await fetch(`${detailsEndpoint}/${id}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -58,7 +56,7 @@ const sightingDetailsSlice = createSlice({
             })
             .addCase(fetchSightingDetails.fulfilled, (state, action) => {
                 state.loading = false;
-                // state.details = action.payload;
+                state.details = action.payload.details;
             })
             .addCase(fetchSightingDetails.rejected, (state, action) => {
                 state.loading = false;

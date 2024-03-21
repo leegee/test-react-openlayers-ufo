@@ -11,8 +11,8 @@ const config = {
     port: parseInt(process.env.HTTP_PORT || '8080'),
     host: 'http://localhost',
     endopoints: {
-      search: '/',
-      details: '/details/'
+      search: '/search',
+      details: '/details'
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,

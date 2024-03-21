@@ -30,3 +30,13 @@ export type QueryResponseType = {
   dictionary: MapDictionary;
   results: FeatureCollection | undefined;
 };
+
+export interface FetchSightingDetailsResponse {
+  msg?: string;
+  status: number;
+  details: SightingRecordType
+}
+
+export type SightingRecordType = {
+  [key: string]: string | number | undefined | null
+}

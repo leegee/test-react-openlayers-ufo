@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 
 import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
-import { CustomError } from 'middleware/errors';
+import { CustomError } from '../middleware/errors';
 
 type SqlBitsType = {
     selectColumns: string[],
