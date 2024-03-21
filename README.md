@@ -1,6 +1,17 @@
-# npm Monorepo + React + Redux Toolkit + TypeScript + Vite + OpenLayers + PostGIS + UFOs.
+# Norwegian UFO Database
 
-WIP, just testing.
+Work in progress.
+
+* npm Monorepo
+* Typescript 
+* Koa
+* React (hooks)
+* Redux Toolkit 
+* Jest
+* Vite 
+* OpenLayers 9
+* PostGIS 
+* UFOs
 
 ## Synopsis
 
@@ -21,19 +32,25 @@ Currently the master branch has server- and client-side clustering, but  the is 
 
 See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
 
-Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window.
+Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. If zoomed out
+by a configurable amount, the server clusters the points.
 
 ## Installing and Accessing the DB
 
 There is a PostGIS database dump in [./data/norge/pg-dump//](./data/norge/pg-dump/): install the usual way with `psql`.
 
-Look around [./data/norge/](./data/norge/) for scripts that were used to create this database from a Microsoft Access Dump: they name the database `norge`. Other configuration access options are set in [the global config](./packages/config/). Of course this should be upgraded to use `.env` files.
+Configuration access options are hard-coded  in [the global config](./packages/config/). Of course this should (and will) be upgraded to use `.env` files.
+
+## State of the data
+
+Look around [./data/norge/](./data/norge/) for scripts that were used to create this database from a Microsoft Access Dump: they name the database `norge`. 
+
+Some effort has been put into massaging dates into usable state (`197?-13-31` was no use), as well as to geocode the sighting locations to gain latitude and longitude to plot.
+
+Joining the old Access tables is a work in progress, as the dump contained no actual joins in its scheme.
 
 ## Todo:
 
-Currently we send everything in the bounding box and cluster on the client.
-
-Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Fix all dates
@@ -41,12 +58,9 @@ Probably want to cluster on the server, so as not to overwhelm mobiles/etc.
 * Link to full details
 * Tests.
 * Logger transports/etc
-* Decide on a default sort of results when no filters set
-* Enable switching locale from `no` to `en` and back (1h)
 * Store bounds and filter settings in the URI (4h)
 * Highlight on map feature chosen in report or click on
 * Initialise with map extent rather than center
-* Share common-type of request/response (1h)
 * Server should infer cluster size (`cluster_eps`) from zoom level.
 * Expose more data: 
   * shape, colour, direction, etc from lin columns
