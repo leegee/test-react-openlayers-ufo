@@ -24,7 +24,7 @@ const SightingDetails: React.FC = () => {
     }
 
     return (
-        <section>
+        <section id='sighting-details'>
             <h2>{get('sighting_details.title')} {id}</h2>
             <table>
                 {Object.keys(details)
