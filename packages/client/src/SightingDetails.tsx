@@ -9,7 +9,7 @@ import { fetchSightingDetails } from './redux/sightingDetailsSlice';
 const SightingDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state: RootState) => state.details);
+    const { loading, error, details } = useSelector((state: RootState) => state.details);
 
     useEffect(() => {
         dispatch(fetchSightingDetails(id!));
@@ -27,7 +27,12 @@ const SightingDetails: React.FC = () => {
         <section>
             <h2>{get('sighting_details.title')} {id}</h2>
             <table>
-
+                {Object.keys(details).map((column: string, index: number) => (
+                    <tr key={index}>
+                        <td>{column}</td>
+                        <td>{details[column]}</td>
+                    </tr>
+                ))}
             </table>
         </section>
     );
