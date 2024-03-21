@@ -96,8 +96,7 @@ ALTER TABLE sightings ADD CONSTRAINT fk_observed_via_id FOREIGN KEY ("observed_v
 
 -- 112 "Fysiske pÕvirkninger(112)" --> physical_effects -> yes_no_dontknow.id
 -- todo: associated free-text col
-ALTER TABLE sightings ADD COLUMN physical_effects VARCHAR(50);
-UPDATE sightings SET physical_effects = "Fysiske pÕvirkninger(112)";
+ALTER TABLE sightings RENAME COLUMN "Fysiske pÕvirkninger(112)" TO physical_effects;
 ALTER TABLE sightings ALTER COLUMN physical_effects TYPE INTEGER USING physical_effects::INTEGER;
 ALTER TABLE "112" RENAME TO yes_no_dontknow;
 ALTER TABLE yes_no_dontknow ADD CONSTRAINT yes_no_dontknow_id_unique UNIQUE (id);
@@ -113,10 +112,21 @@ ALTER TABLE sightings RENAME COLUMN "Hvis ja, nÕr(132)" TO "prior_sightings_dat
 -- utf8 ALTER TABLE sightings RENAME COLUMN "Hvis ja, når(132)" TO "prior_sightings_date";
 ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvem rapporterte de til(132)" TO "prior_sightings_reported_to";
 
+-- Table 96, 97, 98 are also the same as 112, a ja/nei/ikke vet dictionary
+ALTER TABLE sightings RENAME COLUMN "Kursendring(96)" TO course_changed;
+ALTER TABLE sightings ALTER COLUMN course_changed TYPE INTEGER;
+
+-- ALTER TABLE sightings RENAME COLUMN "Høydeendring(97)" TO altitude_changed;
+ALTER TABLE sightings RENAME COLUMN "H°ydeendring(97)" TO altitude_changed;
+ALTER TABLE sightings ALTER COLUMN altitude_changed TYPE INTEGER;
+
+ALTER TABLE sightings RENAME COLUMN "Hastighetsendring(98)" TO speed_changed;
+ALTER TABLE sightings ALTER COLUMN speed_changed TYPE INTEGER;
+
+ALTER TABLE sightings RENAME COLUMN "AnslÕtt hastighet(98)" TO speed_estimate;
+
 ALTER TABLE sightings RENAME COLUMN "Har de tidligere observert/rapportert UFO(132)" TO prior_sightings;
 ALTER TABLE sightings ADD CONSTRAINT fk_prior_sightings_id FOREIGN KEY ("prior_sightings") REFERENCES "yes_no_dontknow" (id);
-
-
 
 
 -- 121 "Himmelen var ved observasjonen(121)" --> sky_condition
@@ -155,3 +165,4 @@ UPDATE sun_position SET id=9 WHERE sun_position='Vet ikke';
 ALTER TABLE sightings ADD CONSTRAINT fk_sun_position_id FOREIGN KEY (sun_position_id) REFERENCES "sun_position" (id);
 -- SELECT sightings.sun_position_id, sun_position.* FROM sightings JOIN sun_position ON sightings.sun_position_id = sun_position.id;
 
+-- SELECT sightings.Fylke, fylke.* FROM sightings JOIN fylke ON sightings.Fylke = fylke.id;
