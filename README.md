@@ -35,6 +35,8 @@ See the `README`s in the sub-directories of `data/` for details of the MUFON and
 Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. If zoomed out
 by a configurable amount, the server clusters the points.
 
+Everything is controll by the Redux 'slices' - `gui` contains stuff just relating to the interface, `details` just the details of a single report, and `map` contains everything needed to query and render results.
+
 ## Installing and Accessing the DB
 
 There is a PostGIS database dump in [./data/norge/pg-dump//](./data/norge/pg-dump/): install the usual way with `psql`.

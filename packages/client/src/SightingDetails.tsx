@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { RootState } from './redux/store';
-import { fetchSightingDetails } from './redux/sightingDetailsSlice';
+import { fetchSightingDetails } from './redux/details';
 
 const SightingDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();

@@ -40,7 +40,7 @@ export const fetchSightingDetails: any = createAsyncThunk<
     }
 );
 
-const sightingDetailsSlice = createSlice({
+const detailsSlice = createSlice({
     name: 'sightingDetails',
     initialState,
     reducers: {
@@ -65,6 +65,6 @@ const sightingDetailsSlice = createSlice({
     },
 });
 
-export const { setId } = sightingDetailsSlice.actions;
+export const { setId } = detailsSlice.actions;
 
-export default sightingDetailsSlice.reducer;
+export default detailsSlice.reducer;
