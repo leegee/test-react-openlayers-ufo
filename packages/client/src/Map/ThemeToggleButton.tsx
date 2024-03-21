@@ -12,7 +12,6 @@ const ThemeToggleButton: React.FC = () => {
     const handleClick = () => {
         const newBasemapSource = getNextBasemapSource(basemapSource);
         dispatch(setBasemapSource(newBasemapSource));
-        console.debug(`Map theme was ${basemapSource} now ${newBasemapSource}`);
     }
 
     return (
@@ -20,6 +19,7 @@ const ThemeToggleButton: React.FC = () => {
     );
 };
 
+// Use a linked list!
 const getNextBasemapSource = (currentBasemapSource: string) => {
     switch (currentBasemapSource) {
         case 'dark':
