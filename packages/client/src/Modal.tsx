@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import './Modal.css';
@@ -8,28 +8,25 @@ interface ModalProps {
     allowedRoutes: string[];
 }
 
-export const CLOSE_MODAL = 'ufo-close-modal';
-
-export const dispatchCloseModalEvent = () => document.dispatchEvent(
-    new CustomEvent(CLOSE_MODAL) as CustomEvent
-);
-
 const Modal: React.FC<ModalProps> = ({ children, allowedRoutes }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const shouldRenderContent = allowedRoutes.some(path => location.pathname.includes(path));
 
     function handleClose() {
+        setIsOpen(false);
         navigate(-1);
     }
 
     useEffect(() => {
-        document.addEventListener(CLOSE_MODAL, handleClose);
-        return () => document.removeEventListener(CLOSE_MODAL, handleClose);
-    }, []);
+        if (shouldRenderContent) {
+            setIsOpen(true);
+        }
+    }, [shouldRenderContent]);
 
-    return shouldRenderContent ? (
+    return isOpen ? (
         <section className="modal">
             <div className='modal-content'>
                 <nav className='modal-close' onClick={handleClose}></nav>
