@@ -79,7 +79,6 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
 }
 
 function setVisibleDataLayer(layerName: MapLayerKeyType) {
-  console.info('setVisibleDataLayer', layerName);
   for (let l of Object.keys(mapLayers)) {
     (mapLayers as any)[l].setVisible(l === layerName);
   }
