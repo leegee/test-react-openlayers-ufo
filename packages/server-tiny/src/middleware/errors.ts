@@ -33,7 +33,10 @@ export async function errorHandler(ctx: Koa.Context, next: Koa.Next) {
     }
     catch (error) {
         console.error(error);
-        ctx.body = error;
+        ctx.body = {
+            ...error,
+            error: error.error.toString()
+        };
     }
 }
 
