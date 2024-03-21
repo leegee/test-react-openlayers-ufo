@@ -26,16 +26,25 @@ const DateRange: React.FC = () => {
 
     function handleSubmit() {
         // TODO restore the checks from history
-        dispatch(setFromDate(localFromDate));
-        dispatch(setToDate(localToDate));
-        dispatch(fetchFeatures() as any)
+        if (isNaN(localFromDate)) {
+            setLocalFromDate(undefined);
+        }
+        if (isNaN(localToDate)) {
+            setLocalToDate(undefined);
+        }
+
+        if (!localFromDate || !localToDate || localFromDate < localToDate) {
+            dispatch(setFromDate(localFromDate));
+            dispatch(setToDate(localToDate));
+            dispatch(fetchFeatures() as any)
+        }
     }
 
     function handleFromDateChange(e: React.ChangeEvent<HTMLInputElement>) {
         let value: string | number = parseInt(e.target.value);
-        if (isNaN(value)) {
-            value = '';
-        }
+        // if (isNaN(value)) {
+        //     value = '';
+        // }
         setLocalFromDate(value);
     }
 
@@ -59,7 +68,7 @@ const DateRange: React.FC = () => {
             <input
                 title={get('date_range.min')}
                 aria-label={get('date_range.min')}
-                type='text'
+                type='number'
                 id='minYear'
                 name='minYear'
                 value={localFromDate === undefined ? '' : localFromDate}
@@ -69,7 +78,7 @@ const DateRange: React.FC = () => {
             <input
                 title={get('date_range.max')}
                 aria-label={get('date_range.max')}
-                type='text'
+                type='number'
                 id='maxYear'
                 name='maxYear'
                 value={localToDate === undefined ? '' : localToDate}
