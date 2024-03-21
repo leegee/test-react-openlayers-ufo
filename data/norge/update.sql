@@ -166,3 +166,40 @@ ALTER TABLE sightings ADD CONSTRAINT fk_sun_position_id FOREIGN KEY (sun_positio
 -- SELECT sightings.sun_position_id, sun_position.* FROM sightings JOIN sun_position ON sightings.sun_position_id = sun_position.id;
 
 -- SELECT sightings.Fylke, fylke.* FROM sightings JOIN fylke ON sightings.Fylke = fylke.id;
+
+
+ALTER TABLE sightings RENAME COLUMN "saksbehandler" to case_handler;
+
+-- empty columns for duration fo sighting, presumably hours, minutes, seconds
+ALTER TABLE sightings DROP COLUMN "Hvor lenge iakttok(3,5,1)";
+ALTER TABLE sightings DROP COLUMN "Hvor lenge iakttok(3,5,2)";
+ALTER TABLE sightings DROP COLUMN "Hvor lenge iakttok(3,5,3)";
+
+ALTER TABLE sightings RENAME COLUMN "annet62" TO "colour";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(63)" TO "if_so_which_colour";
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke fargeforandringer(64)" TO "which_colour_changed";
+ALTER TABLE sightings RENAME COLUMN "Annet(65)" TO "light_desc_other";
+ALTER TABLE sightings RENAME COLUMN "Annet(66)" TO "lightbeam_desc_other";
+ALTER TABLE sightings RENAME COLUMN "Annet(71)" TO "sound_other";
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke lydforandringer(72)" TO "sound_change_desc";
+ALTER TABLE sightings RENAME COLUMN "Annet(81)" TO "size_other";
+ALTER TABLE sightings RENAME COLUMN "Antall cm pÕ linjalen(82)" TO "size_cm";
+ALTER TABLE sightings RENAME COLUMN "Avgrenset form(8,3)" TO "bounds";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets st°rrelse i meter(84)" TO "size_m";
+ALTER TABLE sightings RENAME COLUMN "Nedsatt syn(8,5)" TO "imparied_vision";
+ALTER TABLE sightings RENAME COLUMN "Fargeblind(8,6)" TO "colour_blind";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(93)" TO "movement";
+ALTER TABLE sightings RENAME COLUMN "Avstand til fenomen i meter(99)" TO "distance_m";
+ALTER TABLE sightings RENAME COLUMN "Hvordan forsvant fenomenet(102)" TO "disappearance_desc";
+ALTER TABLE sightings RENAME COLUMN "Passerte fenomenet foran/bak noe(103)" TO "passed_by_something";
+ALTER TABLE sightings RENAME COLUMN "Kikkert_X_(10,4,8)" TO "binoculars_magnification";
+ALTER TABLE sightings RENAME COLUMN "Teleskop_X_(10,4,9)" TO "telescope_magnification";
+ALTER TABLE sightings RENAME COLUMN "Merket de psykiske pÕvirkninger under observasjonen(113)" TO "psychological_effects_during";
+ALTER TABLE sightings RENAME COLUMN "Merket de psykiske pÕvirkninger etter observasjonen(113)" TO "psychological_effects_after";
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, beskriv dem(113)" TO "psychological_effects_desc";
+ALTER TABLE sightings RENAME COLUMN "Temperatur ca i gr C(125)" TO "centigrade";
+ALTER TABLE sightings RENAME COLUMN "Ukedag(31)" TO "weekday";
+ALTER TABLE sightings RENAME COLUMN "Obs  startet kl (32)" TO "start_time";
+ALTER TABLE sightings RENAME COLUMN "Hvor lenge iakttok?(35)" TO "duration";
+ALTER TABLE sightings RENAME COLUMN "Hovedobservat°rens alder" TO "observer_age";
+ALTER TABLE sightings RENAME COLUMN "Antall observat°rer" TO "other_observers";
