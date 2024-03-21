@@ -33,6 +33,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     window.addEventListener('resize', setScreenSizeClass);
+    setScreenSizeClass();
     return () => window.removeEventListener('resize', setScreenSizeClass);
   }, []);
 
