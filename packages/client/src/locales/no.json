@@ -5,6 +5,9 @@
         "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner.",
         "no_results": "Prøv å zoome ut/endre søket."
     },
+    "sighting_details": {
+        "title": "Rapport"
+    },
     "feature_table": {
         "date": "Dato",
         "location": "Sted",

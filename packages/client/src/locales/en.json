@@ -5,6 +5,9 @@
         "only_clusters_not_points": "Please zoom to for details of sightings.",
         "no_results": "No results: try zooming out or changing your terms"
     },
+    "sighting_details": {
+        "title": "Report"
+    },
     "feature_table": {
         "date": "Date",
         "location": "Location",

@@ -91,8 +91,12 @@ table.feature-table {
     }
 
     .row-goto-full-report::after {
-        content: '🛈';
+        content: '▶';
+    }
+
+    .row-goto-details:after {
         font-size: 120%;
+        content: '🛈';
     }
 
     .close-full-width::after {

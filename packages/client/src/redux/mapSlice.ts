@@ -51,7 +51,7 @@ export interface MapState {
   previousQueryString: string;
 }
 
-const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoint.search;
+const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
 
 const initialState: MapState = {
   featureCollection: null,

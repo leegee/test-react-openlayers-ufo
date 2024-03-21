@@ -11,6 +11,7 @@ import Modal from './Modal';
 import About from './Modal/About';
 import Contact from './Modal/Contact';
 import Histogram from './Histogram';
+import SightingDetails from './SightingDetails';
 
 import './App.css';
 
@@ -39,10 +40,11 @@ const App: React.FC = () => {
     <>
       <BrowserRouter>
         <>
-          <Modal>
+          <Modal allowedRoutes={['about', 'contact', 'histogram', 'sighting']}>
             <Routes>
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/sighting/:id" element={<SightingDetails />} />
               <Route path="/histogram/dates" element={<Histogram />} />
             </Routes>
           </Modal>

@@ -5,14 +5,15 @@
  */
 import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
-import { useSelector } from 'react-redux';
 
+import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
 import { REPORT_FULL_WIDTH, REPORT_HIDE, REPORT_NARROW_WIDTH, dispatchSetReportWidthEvent } from './custom-events/report-width';
+import config from '@ufo-monorepo-test/config/src';
+import { Link } from 'react-router-dom';
 
 import './FeatureTable.css';
-import config from '@ufo-monorepo-test/config/src';
 
 function getRowId(id: number | string) {
     return 'fid_' + id;
@@ -134,6 +135,7 @@ const FeatureTable: React.FC = () => {
                             <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
                             <td className='ctrls'>
                                 <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
+                                <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
                             </td>
                         </tr>

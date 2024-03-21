@@ -5,6 +5,7 @@ import './Modal.css';
 
 interface ModalProps {
     children?: ReactNode;
+    allowedRoutes: string[];
 }
 
 export const CLOSE_MODAL = 'ufo-close-modal';
@@ -13,12 +14,11 @@ export const dispatchCloseModalEvent = () => document.dispatchEvent(
     new CustomEvent(CLOSE_MODAL) as CustomEvent
 );
 
-const Modal: React.FC<ModalProps> = ({ children }) => {
+const Modal: React.FC<ModalProps> = ({ children, allowedRoutes }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const allowedPaths = ['about', 'contact', 'histogram'];
 
-    const shouldRenderContent = allowedPaths.some(path => location.pathname.includes(path));
+    const shouldRenderContent = allowedRoutes.some(path => location.pathname.includes(path));
 
     function handleClose() {
         navigate(-1);

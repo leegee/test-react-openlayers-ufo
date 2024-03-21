@@ -2,7 +2,7 @@
 import React from 'react';
 
 const Contact: React.FC = () => {
-    return <div className="contact">Contact info</div>;
+    return <section className="contact">Contact info</section>;
 };
 
 export default Contact;
