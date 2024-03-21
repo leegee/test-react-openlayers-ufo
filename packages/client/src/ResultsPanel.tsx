@@ -4,10 +4,8 @@
 
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
+import { selectPointsCount } from './redux/mapSlice';
 import { setPanel } from './redux/guiSlice';
-
-// import { dispatchHideReportEvent } from './custom-events/report-width';
 
 import './ResultsPanel.css';
 
@@ -19,11 +17,18 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
     const pointsCount = useSelector(selectPointsCount);
     const dispatch = useDispatch();
 
+    const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('')) } };
+
     useEffect(() => {
         if (!pointsCount) {
             dispatch(setPanel(''));
         }
     }, [pointsCount, dispatch]);
+
+    useEffect(() => {
+        document.addEventListener('keyup', onEscCloseFullReport);
+        return () => document.removeEventListener('keyup', onEscCloseFullReport)
+    }, [])
 
     return !pointsCount ? '' : (
         <section className='panel'>

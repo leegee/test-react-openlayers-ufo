@@ -39,16 +39,6 @@ const FeatureTable: React.FC = () => {
     const featureCollection = useSelector((state: any) => state.map.featureCollection);
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
-    const { panel } = useSelector((state: RootState) => state.gui);
-
-    const addEscListener = () => document.addEventListener('keyup', onEscCloseFullReport);
-    const removeEscListener = () => document.removeEventListener('keyup', onEscCloseFullReport);
-
-    function onEscCloseFullReport(e: KeyboardEvent) {
-        if (e.key === 'Escape') {
-            dispatch(setPanel(''));
-        }
-    }
 
     // Might be easier or better to re-render reactively
     function handleShowPoint(e: ShowPointEventType) {
