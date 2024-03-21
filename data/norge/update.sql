@@ -94,18 +94,30 @@ ALTER TABLE sightings ADD CONSTRAINT fk_observed_via_id FOREIGN KEY ("observed_v
 -- SELECT sightings.observed_via_id, observed_via.* FROM sightings JOIN observed_via ON sightings.observed_via_id = observed_via.id;
 
 
--- 112 "Fysiske pÕvirkninger(112)" --> physical_effects_id -> yes_no_dontknow.id
-ALTER TABLE sightings ADD COLUMN physical_effects_id VARCHAR(50);
-UPDATE sightings SET physical_effects_id = "Fysiske pÕvirkninger(112)";
-ALTER TABLE sightings ALTER COLUMN physical_effects_id TYPE INTEGER USING physical_effects_id::INTEGER;
+-- 112 "Fysiske pÕvirkninger(112)" --> physical_effects -> yes_no_dontknow.id
+-- todo: associated free-text col
+ALTER TABLE sightings ADD COLUMN physical_effects VARCHAR(50);
+UPDATE sightings SET physical_effects = "Fysiske pÕvirkninger(112)";
+ALTER TABLE sightings ALTER COLUMN physical_effects TYPE INTEGER USING physical_effects::INTEGER;
 ALTER TABLE "112" RENAME TO yes_no_dontknow;
 ALTER TABLE yes_no_dontknow ADD CONSTRAINT yes_no_dontknow_id_unique UNIQUE (id);
 ALTER TABLE yes_no_dontknow ALTER COLUMN id TYPE INTEGER USING id::INTEGER;
 ALTER TABLE yes_no_dontknow RENAME COLUMN "Avgj°relse" TO "yes_no_dontknow";
 ALTER TABLE yes_no_dontknow ALTER COLUMN yes_no_dontknow TYPE VARCHAR(20);
 INSERT INTO yes_no_dontknow (id, "yes_no_dontknow") VALUES (0, 'Not specified');
-ALTER TABLE sightings ADD CONSTRAINT fk_physical_effects_id FOREIGN KEY ("physical_effects_id") REFERENCES "yes_no_dontknow" (id);
--- SELECT sightings.physical_effects_id, yes_no_dontknow.* FROM sightings JOIN yes_no_dontknow ON sightings.physical_effects_id = yes_no_dontknow.id;
+ALTER TABLE sightings ADD CONSTRAINT fk_physical_effects FOREIGN KEY ("physical_effects") REFERENCES "yes_no_dontknow" (id);
+-- SELECT sightings.physical_effects, yes_no_dontknow.* FROM sightings JOIN yes_no_dontknow ON sightings.physical_effects = yes_no_dontknow.id;
+
+-- Table 132 is the same as 112, a ja/nei/ikke vet dictionary
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, nÕr(132)" TO "prior_sightings_date";
+-- utf8 ALTER TABLE sightings RENAME COLUMN "Hvis ja, når(132)" TO "prior_sightings_date";
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvem rapporterte de til(132)" TO "prior_sightings_reported_to";
+
+ALTER TABLE sightings RENAME COLUMN "Har de tidligere observert/rapportert UFO(132)" TO prior_sightings;
+ALTER TABLE sightings ADD CONSTRAINT fk_prior_sightings_id FOREIGN KEY ("prior_sightings") REFERENCES "yes_no_dontknow" (id);
+
+
+
 
 -- 121 "Himmelen var ved observasjonen(121)" --> sky_condition
 ALTER TABLE sightings ADD COLUMN sky_condition_id VARCHAR(20);
@@ -130,7 +142,6 @@ ALTER TABLE sun_position ADD CONSTRAINT sun_position_unique UNIQUE (id);
 ALTER TABLE sun_position ALTER COLUMN id TYPE INTEGER USING id::INTEGER;
 ALTER TABLE sun_position RENAME COLUMN "Solen befant seg(127)" TO "sun_position";
 ALTER TABLE sun_position ALTER COLUMN sun_position TYPE VARCHAR(20);
-
 INSERT INTO sun_position (id, sun_position) VALUES (0, 'Not specified');
 UPDATE sun_position SET id=1 WHERE sun_position='Annet';
 UPDATE sun_position SET id=2 WHERE sun_position='Bak';
