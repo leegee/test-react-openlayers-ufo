@@ -61,8 +61,11 @@ However, there are still lots of entries such as:
 
 I suspect these rely upon entries in `Switchboard Items`, at which I have yet to look.
 
-## Todo:
+## Feedback, pull requests
 
+Please fix anything you can or suggest a better way of doing things.
+
+## Todo:
 
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Fix all dates
