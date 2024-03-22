@@ -14,9 +14,11 @@
     "packages/server-tiny"
   ],
   "scripts": {
-    "build": "tsc --build --verbose",
+    "build": "npm run build -ws",
     "dev:client": "npm run dev -w packages/client",
-    "dev:api": "npm run dev -w packages/server-tiny"
+    "dev:api": "npm run dev -w packages/server-tiny",
+    "dev:preview": "npm run preview -w packages/client",
+    "start": "concurrently \"npm run dev:api\" \"npm run dev:preview"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.1.0",
@@ -49,6 +51,7 @@
     "@types/koa-router": "^7.4.8",
     "@ufo-monorepo-test/client": "^0.0.0",
     "@ufo-monorepo-test/common-types": "^0.0.0",
+    "concurrently": "^8.2.2",
     "debounce": "^2.0.0",
     "dotenv": "^16.4.5",
     "koa": "^2.15.0",

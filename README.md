@@ -17,9 +17,14 @@ Work in progress.
 
 ```bash
   # After installing the DB and editing the config:
-  npm i
+  npm install
+
+  # Either
   npm run dev:api &
   npm run dev:client
+
+  # Or to do both via 'concurrently':
+  npm start
 ```
 
 ## Description
@@ -44,7 +49,7 @@ Everything is controlled by the Redux 'slices':
 
 There is a PostGIS database dump in [./data/norge/pg-dump/](./data/norge/pg-dump/): install the usual way with `psql`.
 
-Configuration access options are hard-coded  in [the global config](./packages/config/). Of course this should (and will) be upgraded to use `.env` files.
+Configuration access options in hard-coded  in [the global config](./packages/config/): PG access tries the usual PG environment varirables, but of course this should (and will) be upgraded to use `.env` files.
 
 The database was constructed from an MS Access dump, which can be found in [./data/norge/](./data/norge/) along with the scripts used to port it to PostGIS. The only manual step remaining is geocoding, which was done via a free of charge online geocoder and exported as CSV.
 
