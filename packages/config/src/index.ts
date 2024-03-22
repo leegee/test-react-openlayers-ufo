@@ -8,7 +8,7 @@ const config = {
     database: process.env.UFO_DATABASE || 'norge',
   },
   api: {
-    port: parseInt(process.env.HTTP_PORT || '8080'),
+    port: parseInt(process.env.UFO_HTTP_PORT || '8080'),
     host: 'http://localhost',
     endopoints: {
       search: '/search',
