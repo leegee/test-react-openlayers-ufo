@@ -163,8 +163,8 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
         },
     };
 
-    let min = undefined;
-    let max = undefined;
+    let min: string | undefined = undefined;
+    let max: string | undefined = undefined;
 
     if (!featureCollection || !featureCollection.features) {
         console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
@@ -174,11 +174,11 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     for (const feature of featureCollection.features) {
         const datetime: string | undefined = feature.properties?.datetime;
 
-        if (datetime) {
-            if (min === undefined || datetime < min) {
+        if (typeof datetime !== 'undefined') {
+            if (min === undefined || Number(datetime) < Number(min)) {
                 min = datetime;
             }
-            if (max === undefined || datetime > max) {
+            if (max === undefined || Number(datetime) > Number(max)) {
                 max = datetime;
             }
         }
