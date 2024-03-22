@@ -5,8 +5,8 @@ table.feature-table {
     display: table;
     border-collapse: collapse;
     margin: 1em;
-    max-width: calc(100%-2em);
-    width: calc(100%-2em);
+    max-width: calc(100% - 2em);
+    width: calc(100% - 2em);
     background-color: var(--ufo-primary-bg);
 }
 
