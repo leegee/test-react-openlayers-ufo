@@ -31,30 +31,35 @@ A simple OpenLayers map to fetch and display data when the map is rendered, zoom
 * Date-range search
 * CSV downloads
 
-Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux. I prefer Vue and Pinia, but....
-
-Currently the master branch has server- and client-side clustering, but  the is also a slightly-outdate `no-clusters` branch.
-
-See the `README`s in the sub-directories of `data/` for details of the MUFON and Norge UFO sighting data.
-
 Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. If zoomed out
 by a configurable amount, the server clusters the points.
 
-Everything is controll by the Redux 'slices' - `gui` contains stuff just relating to the interface, `details` just the details of a single report, and `map` contains everything needed to query and render results.
+Everything is controlled by the Redux 'slices':
+
+- `gui` contains stuff just relating to the interface
+- `details` just the details of a single report
+- `map` contains everything needed to query and render results.
 
 ## Installing and Accessing the DB
 
-There is a PostGIS database dump in [./data/norge/pg-dump//](./data/norge/pg-dump/): install the usual way with `psql`.
+There is a PostGIS database dump in [./data/norge/pg-dump/](./data/norge/pg-dump/): install the usual way with `psql`.
 
 Configuration access options are hard-coded  in [the global config](./packages/config/). Of course this should (and will) be upgraded to use `.env` files.
 
-## State of the data
+The database was constructed from an MS Access dump, which can be found in [./data/norge/](./data/norge/) along with the scripts used to port it to PostGIS. The only manual step remaining is geocoding, which was done via a free of charge online geocoder and exported as CSV.
 
-Look around [./data/norge/](./data/norge/) for scripts that were used to create this database from a Microsoft Access Dump: they name the database `norge`. 
+## State of the data
 
 Some effort has been put into massaging dates into usable state (`197?-13-31` was no use), as well as to geocode the sighting locations to gain latitude and longitude to plot.
 
-Joining the old Access tables is a work in progress, as the dump contained no actual joins in its scheme.
+As far as I can tell today, table relations (missing in the MDB dump) have been restored.
+
+However, there are still lots of entries such as:
+
+    Hvor befant de dem(4,1,1)	  false
+    Hvor befant de dem(4,1,2)	  false
+
+I suspect these rely upon entries in `Switchboard Items`, at which I have yet to look.
 
 ## Todo:
 
