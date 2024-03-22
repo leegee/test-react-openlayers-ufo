@@ -27,8 +27,10 @@ export async function details(ctx: Context) {
         yes_no_dontknow.*, 
         sky_condition.*, 
         sun_position.*, 
-        fylke.*
+        fylke.*,
+        report_status.*
         FROM sightings
+        LEFT JOIN report_status ON sightings.report_status = report_status.report_status
         LEFT JOIN observed_via ON sightings.observed_via_id = observed_via.id
         LEFT JOIN yes_no_dontknow ON sightings.physical_effects = yes_no_dontknow.id
         LEFT JOIN sky_condition ON sightings.sky_condition_id = sky_condition.id

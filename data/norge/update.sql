@@ -79,7 +79,9 @@ SET datetime =
 -- ALTER TABLE sightings RENAME COLUMN annet61 TO weather_other;
 
 
-
+ALTER TABLE Rapportstatus RENAME TO report_status;
+ALTER TABLE report_status RENAME COLUMN rapportstatus TO report_status;
+ALTER TABLE sightings RENAME COLUMN rapportstatus TO report_status;
 
 -- Joined tables: add some English, make real joins
 -- 104 "Fenomenet ble observert med/gjennom(104)" --> "observed_via" 
