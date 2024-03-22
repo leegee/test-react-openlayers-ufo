@@ -40,3 +40,4 @@ export interface FetchSightingDetailsResponse {
 export type SightingRecordType = {
   [key: string]: string | number | undefined | null
 }
+

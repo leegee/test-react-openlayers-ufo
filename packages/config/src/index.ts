@@ -1,3 +1,7 @@
+const isBrowser = typeof window !== 'undefined';
+
+const env = isBrowser ? (import.meta as any).env : process.env;
+
 export type ConfigType = {
   locale: 'no' | 'en',
   db: {
@@ -36,16 +40,16 @@ export type ConfigType = {
 const config: ConfigType = {
   locale: 'no',
   db: {
-    host: process.env.PGHOST || 'localhost',
-    port: parseInt(process.env.PGPORT || '5432'),
-    user: process.env.PGUSER || 'postgres',
-    password: process.env.PGPASSWORD || 'password',
-    database: process.env.UFO_DATABASE || 'norge',
-    engine: 'postgis'
+    host: env.PGHOST || 'localhost',
+    port: parseInt(env.PGPORT || '5432'),
+    user: env.PGUSER || 'postgres',
+    password: env.PGPASSWORD || 'password',
+    database: env.UFO_DATABASE || 'norge',
+    engine: env.DB_ENGINE || 'postgis'
   },
   api: {
-    port: parseInt(process.env.UFO_HTTP_PORT || '8080'),
-    host: process.env.UFO_HTTP_HOST || 'http://localhost',
+    port: parseInt(env.UFO_HTTP_PORT || '8080'),
+    host: env.UFO_HTTP_HOST || 'http://localhost',
     endopoints: {
       search: '/search',
       details: '/details'
