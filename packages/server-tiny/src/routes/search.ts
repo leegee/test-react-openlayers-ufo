@@ -120,7 +120,18 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const whereParams: string[] = [];
     const orderByClause: string[] = [];
 
-    whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+    if (config.db.engine === 'postgis') {
+        whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+    } else {
+        whereColumns.push(`MBRIntersects(
+            point, 
+            ST_Envelope(LineString(
+                PointFromWKB( Point($${whereParams.length + 1}, $${whereParams.length + 2}) ), 
+                PointFromWKB( Point($${whereParams.length + 3}, $${whereParams.length + 4}) )
+            ))
+        )`);
+    }
+
     whereParams.push(
         String(userArgs.minlng), String(userArgs.minlat), String(userArgs.maxlng), String(userArgs.maxlat)
     );
@@ -138,11 +149,19 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         whereColumns.push(`(${searchConditions})`);
 
         // Construct the SELECT clause to calculate search score for each word
-        selectColumns.push(`(
-            COALESCE(similarity(location_text, $${whereParams.length}), 0.001) 
-            +
-            COALESCE(similarity(report_text, $${whereParams.length}), 0.001)
-        ) / 2 AS search_score`);
+        if (config.db.engine === 'postgis') {
+            selectColumns.push(`(
+                COALESCE(similarity(location_text, $${whereParams.length}), 0.001) 
+                +
+                COALESCE(similarity(report_text, $${whereParams.length}), 0.001)
+                ) / 2 AS search_score`);
+        } else {
+            selectColumns.push(`( (
+                GREATEST(similarity(location_text, $${whereParams.length}), 0.001) 
+                + 
+                GREATEST(similarity(report_text, $${whereParams.length}), 0.001)
+            ) / 2 ) AS search_score` );
+        }
 
         // Always sort best-match first
         orderByClause.push('search_score DESC')
@@ -277,56 +296,108 @@ function getCleanArgs(args: ParsedUrlQuery) {
 
 
 function geoJsonForPoints(sqlBits: SqlBitsType) {
-    return `SELECT jsonb_build_object(
-        'type', 'FeatureCollection',
-        'features', jsonb_agg(feature),
-        'pointsCount', COUNT(*),
-        'clusterCount', 0
-    ) 
-    FROM (
-        SELECT jsonb_build_object(
-            'type', 'Feature',
-            'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
-            'properties', to_jsonb(s) - 'point'
-        ) AS feature
+    return config.db.engine === 'postgis' ?
+        `SELECT jsonb_build_object(
+            'type', 'FeatureCollection',
+            'features', jsonb_agg(feature),
+            'pointsCount', COUNT(*),
+            'clusterCount', 0
+        ) 
         FROM (
-            SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
-            WHERE ${sqlBits.whereColumns.join(' AND ')}
-            ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
-        ) AS s
-    ) AS fc`;
+            SELECT jsonb_build_object(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
+                'properties', to_jsonb(s) - 'point'
+            ) AS feature
+            FROM (
+                SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
+                WHERE ${sqlBits.whereColumns.join(' AND ')}
+                ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
+            ) AS s
+        ) AS fc`
+        :
+        `SELECT JSON_OBJECT(
+            'type', 'FeatureCollection',
+            'features', JSON_ARRAYAGG(feature),
+            'pointsCount', COUNT(*),
+            'clusterCount', 0
+        ) 
+        FROM (
+            SELECT JSON_OBJECT(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.point)::json,
+                'properties', JSON_REMOVE(JSON_OBJECT('point', s.point), 'point')
+            ) AS feature
+            FROM (
+                SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
+                WHERE ${sqlBits.whereColumns.join(' AND ')}
+                ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
+            ) AS s
+        ) AS fc
+        `;
 }
 
 function geoJsonForClusters(sqlBits: SqlBitsType) {
-    return `
-    SELECT jsonb_build_object(
-        'type', 'FeatureCollection',
-        'features', jsonb_agg(feature),
-        'pointsCount', 0,
-        'clusterCount', COUNT(*)  
-    ) 
-    FROM (
+    return config.db.engine === 'postgis' ? `
         SELECT jsonb_build_object(
-            'type', 'Feature',
-            'geometry', ST_AsGeoJSON(s.cluster_geom, 3857)::jsonb,
-            'properties', jsonb_build_object(
-                'cluster_id', s.cluster_id,
-                'num_points', s.num_points
-            )
-        ) AS feature
+            'type', 'FeatureCollection',
+            'features', jsonb_agg(feature),
+            'pointsCount', 0,
+            'clusterCount', COUNT(*)  
+        ) 
         FROM (
-            SELECT 
-                cluster_id,
-                ST_Centroid(ST_Collect(point)) AS cluster_geom,
-                COUNT(*) AS num_points
+            SELECT jsonb_build_object(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.cluster_geom, 3857)::jsonb,
+                'properties', jsonb_build_object(
+                    'cluster_id', s.cluster_id,
+                    'num_points', s.num_points
+                )
+            ) AS feature
             FROM (
                 SELECT 
-                    ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
-                    point
-                FROM sightings
-                WHERE ${sqlBits.whereColumns.join(' AND ')}
-            ) AS clustered_points
-            GROUP BY cluster_id
-        ) AS s
-    ) AS fc `;
+                    cluster_id,
+                    ST_Centroid(ST_Collect(point)) AS cluster_geom,
+                    COUNT(*) AS num_points
+                FROM (
+                    SELECT 
+                        ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                        point
+                    FROM sightings
+                    WHERE ${sqlBits.whereColumns.join(' AND ')}
+                ) AS clustered_points
+                GROUP BY cluster_id
+            ) AS s
+        ) AS fc `
+        :
+        `SELECT JSON_OBJECT(
+            'type', 'FeatureCollection',
+            'features', JSON_ARRAYAGG(feature),
+            'pointsCount', 0,
+            'clusterCount', COUNT(*)
+        ) 
+        FROM (
+            SELECT JSON_OBJECT(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.cluster_geom)::json,
+                'properties', JSON_OBJECT(
+                    'cluster_id', s.cluster_id,
+                    'num_points', s.num_points
+                )
+            ) AS feature
+            FROM (
+                SELECT 
+                    cluster_id,
+                    ST_Centroid(ST_Collect(point)) AS cluster_geom,
+                    COUNT(*) AS num_points
+                FROM (
+                    SELECT 
+                        ST_ClusterDBSCAN(point, ${config.gui.map.cluster_eps_metres}, 1) OVER() AS cluster_id,
+                        point
+                    FROM sightings
+                    WHERE ${sqlBits.whereColumns.join(' AND ')}
+                ) AS clustered_points
+                GROUP BY cluster_id
+            ) AS s
+        ) AS fc `;
 }
