@@ -2,12 +2,9 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-RUN npm install -ws
-
 COPY . .
 
+RUN npm install -ws
 RUN npm run build -ws
 
 EXPOSE 4173
