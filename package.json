@@ -1,7 +1,10 @@
 {
   "name": "ufo-monorepo-test",
   "version": "1.0.0",
-  "description": "Testing UFO data",
+  "engines": {
+    "node": "20.x"
+  },
+  "description": "Testing Norwegian UFO data in PostGIS and React with OpenLayers",
   "private": true,
   "type": "module",
   "workspaces": [

@@ -6,10 +6,14 @@
     "type": "module",
     "scripts": {
         "build": "tsc --build",
-        "dev": "npx tsx src/server.ts"
+        "dev": "npx tsx src/server.ts",
+        "start": "node ./build/index.js"
     },
     "dependencies": {
         "@ufo-monorepo-test/common-types": "file:../common-types",
         "@ufo-monorepo-test/config": "file:../config"
+    },
+    "engines": {
+        "node": "20.x"
     }
 }
