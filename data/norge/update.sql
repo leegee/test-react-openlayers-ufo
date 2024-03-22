@@ -90,6 +90,7 @@ ALTER TABLE "104" RENAME TO observed_via;
 ALTER TABLE observed_via ADD CONSTRAINT observed_via_id_unique UNIQUE (id);
 ALTER TABLE observed_via ALTER COLUMN id TYPE INTEGER USING id::INTEGER;
 INSERT INTO observed_via (id, "Observert med/gjennom(104)") VALUES (0, 'Not specified');
+ALTER TABLE observed_via RENAME COLUMN "Observert med/gjennom(104)" TO observed_via;
 ALTER TABLE sightings ADD CONSTRAINT fk_observed_via_id FOREIGN KEY ("observed_via_id") REFERENCES "observed_via" (id);
 -- SELECT sightings.observed_via_id, observed_via.* FROM sightings JOIN observed_via ON sightings.observed_via_id = observed_via.id;
 
@@ -98,6 +99,8 @@ ALTER TABLE sightings ADD CONSTRAINT fk_observed_via_id FOREIGN KEY ("observed_v
 -- todo: associated free-text col
 ALTER TABLE sightings RENAME COLUMN "Fysiske pÕvirkninger(112)" TO physical_effects;
 ALTER TABLE sightings ALTER COLUMN physical_effects TYPE INTEGER USING physical_effects::INTEGER;
+UPDATE sightings SET physical_effects=0 WHERE  physical_effects IS NULL;
+
 ALTER TABLE "112" RENAME TO yes_no_dontknow;
 ALTER TABLE yes_no_dontknow ADD CONSTRAINT yes_no_dontknow_id_unique UNIQUE (id);
 ALTER TABLE yes_no_dontknow ALTER COLUMN id TYPE INTEGER USING id::INTEGER;
