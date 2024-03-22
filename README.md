@@ -24,7 +24,12 @@ Work in progress.
 
 ## Description
 
-A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved (ie on `moveend`), with a portable Koa data access layer.
+A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved, with a portable Koa data access layer to a supplied PostGIS database.
+
+* Clustering
+* Text search
+* Date-range search
+* CSV downloads
 
 Using Redux Toolkit's 'slices' to try and tame the horribly dated and ungainly Redux. I prefer Vue and Pinia, but....
 
