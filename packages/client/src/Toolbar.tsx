@@ -4,6 +4,7 @@ import React from 'react';
 import DateRange from './Toolbar/DateRange';
 import SearchText from './Toolbar/SearchText';
 import ReportCount from './Toolbar/Status'
+import DonwloadCsvButton from './Toolbar/DonwloadCsvButton';
 import './Toolbar.css';
 
 const Toolbar: React.FC = () => {
@@ -11,6 +12,7 @@ const Toolbar: React.FC = () => {
         <ReportCount />
         <DateRange />
         <SearchText />
+        <DonwloadCsvButton />
     </nav>)
 }
 

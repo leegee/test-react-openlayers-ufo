@@ -1,3 +1,4 @@
+import { PassThrough, Writable } from 'stream';
 import { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import { ParsedUrlQuery } from "querystring";
@@ -5,6 +6,7 @@ import { ParsedUrlQuery } from "querystring";
 import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from '../middleware/errors';
+import { listToCsvLine } from '../lib/csv';
 
 type SqlBitsType = {
     selectColumns: string[],
@@ -41,12 +43,18 @@ export async function search(ctx: Context) {
 
     let forErrorReporting = {};
 
+    const acceptHeader = ctx.headers.accept || '';
+    const sendCsv = acceptHeader.includes('text/csv')
+
     try {
         let sql: string;
         let sqlBits = constructSqlBits(userArgs);
 
-        // Return points for queries, or when zoomed in
-        if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
+        if (sendCsv) {
+            ctx.type = 'text/csv';
+            sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
+        }
+        else if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
         }
         else {
@@ -60,14 +68,39 @@ export async function search(ctx: Context) {
 
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
-        const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+        if (sendCsv) {
+            ctx.attachment('ufo-sightings.csv');
 
-        if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-            console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
+            const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+            type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
+            let bodyStream: ResponseBody = ctx.body as ResponseBody;
+            if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
+                bodyStream = new PassThrough();
+                ctx.body = bodyStream;
+            }
+
+            // Should enforce order. Map?
+            let firstLine = true;
+            for (const row of results.rows) {
+                if (firstLine) {
+                    listToCsvLine(Object.keys(row), bodyStream);
+                    firstLine = false;
+                }
+                listToCsvLine(Object.values(row), bodyStream);
+            }
+
+            bodyStream.end();
         }
 
-        body.results = rows[0].jsonb_build_object as FeatureCollection;
-        body.dictionary = await getDictionary(body.results);
+        else {
+            const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+            if (rows[0].jsonb_build_object.features === null && config.api.debug) {
+                console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
+            }
+            body.results = rows[0].jsonb_build_object as FeatureCollection;
+            body.dictionary = await getDictionary(body.results);
+            ctx.body = JSON.stringify(body);
+        }
     }
     catch (e) {
         throw new CustomError({
@@ -77,7 +110,6 @@ export async function search(ctx: Context) {
         });
     }
 
-    ctx.body = JSON.stringify(body);
 }
 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {

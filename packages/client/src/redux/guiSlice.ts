@@ -20,7 +20,6 @@ const localeSlice = createSlice({
         },
         setPanel: (state, action) => {
             state.panel = action.payload;
-            console.debug('Panel', state.panel);
         }
     },
 });

@@ -49,6 +49,7 @@ export interface MapState {
   q?: string;
   basemapSource: string;
   previousQueryString: string;
+  requestingCsv: boolean;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
@@ -64,6 +65,7 @@ const initialState: MapState = {
   q: '',
   basemapSource: localStorage.getItem('basemap_source') || 'geo',
   previousQueryString: '',
+  requestingCsv: false,
 };
 
 const mapSlice = createSlice({
@@ -95,15 +97,27 @@ const mapSlice = createSlice({
     setPreviousQueryString: (state, action) => {
       state.previousQueryString = action.payload;
     },
-    failedRequest: (state, _action) => {
+    setCsvRequesting: (state) => {
+      state.requestingCsv = true;
+    },
+    csvRequestDone: (state) => {
+      state.requestingCsv = false;
+    },
+    csvRequestFailed: (state) => {
+      state.requestingCsv = false;
+    },
+    failedRequest: (state) => {
       state.featureCollection = null;
       state.previousQueryString = '';
       // action.payload.status etc
-    }
+    },
   },
 });
 
-export const { setPreviousQueryString, setMapParams, setFromDate, setToDate, setQ, setBasemapSource } = mapSlice.actions;
+export const {
+  setPreviousQueryString, setMapParams, setFromDate,
+  setToDate, setQ, setBasemapSource,
+} = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
 
@@ -137,8 +151,7 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
   return new URLSearchParams(queryObject).toString();
 };
 
-
-const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { state: RootState }>(
+const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
     const mapState = getState().map;
@@ -161,11 +174,10 @@ const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, void, { 
     }
     catch (error) {
       console.error(error);
-      dispatch(mapSlice.actions.failedRequest(response));
+      dispatch(mapSlice.actions.failedRequest());
     }
   }
 );
-
 
 export const fetchFeatures = debounce(
   _fetchFeatures,
@@ -173,6 +185,52 @@ export const fetchFeatures = debounce(
   { immediate: true }
 );
 
+export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
+  'data/fetchData',
+  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+    const mapState = getState().map;
+
+    dispatch(mapSlice.actions.setCsvRequesting());
+
+    const queryString: string | undefined = selectQueryString(mapState);
+
+    const requestOptions = {
+      headers: {
+        accept: 'text/csv',
+      }
+    };
+
+    let response;
+    try {
+      response = await fetch(`${searchEndpoint}?${queryString}`, requestOptions);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Expose the CSV
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'data.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      dispatch(mapSlice.actions.csvRequestDone());
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(mapSlice.actions.csvRequestFailed());
+    }
+  }
+);
+
+export const fetchCsv = debounce(
+  _fetchCsv,
+  config.gui.apiRequests.debounceMs * 10,
+  { immediate: true }
+);
 
 export default mapSlice.reducer;
 
