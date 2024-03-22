@@ -3,7 +3,7 @@ const isBrowser = typeof window !== 'undefined';
 const env = isBrowser ? (import.meta as any).env : process.env;
 
 export type ConfigType = {
-  locale: 'no' | 'en',
+  locale: 'no',
   db: {
     host: string;
     port: number;
