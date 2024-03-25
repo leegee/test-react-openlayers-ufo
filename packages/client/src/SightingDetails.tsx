@@ -3,6 +3,7 @@ import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import Modal from './Modal';
 import { RootState } from './redux/store';
 import { fetchSightingDetails } from './redux/details';
 
@@ -24,21 +25,23 @@ const SightingDetails: React.FC = () => {
     }
 
     return (
-        <section id='sighting-details'>
-            <h2>{get('sighting_details.title')} {id}</h2>
-            <table>
-                <tbody>
-                    {Object.keys(details)
-                        .filter((column: string) => column !== 'point' && details[column] !== null)
-                        .map((column: string, index: number) => (
-                            <tr key={index}>
-                                <td>{column}</td>
-                                <td>{details[column]?.toString()}</td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table>
-        </section>
+        <Modal title={get('sighting_details.title') + ' ' + id}>
+            <section id='sighting-details'>
+                <h2></h2>
+                <table>
+                    <tbody>
+                        {Object.keys(details)
+                            .filter((column: string) => column !== 'point' && details[column] !== null)
+                            .map((column: string, index: number) => (
+                                <tr key={index}>
+                                    <td>{column}</td>
+                                    <td>{details[column]?.toString()}</td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </section >
+        </Modal >
     );
 };
 

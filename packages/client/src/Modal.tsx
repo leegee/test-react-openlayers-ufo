@@ -1,19 +1,16 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import './Modal.css';
 
 interface ModalProps {
     children?: ReactNode;
-    allowedRoutes: string[];
+    title?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ children, allowedRoutes }) => {
+const Modal: React.FC<ModalProps> = ({ children, title }) => {
     const navigate = useNavigate();
-    const location = useLocation();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    const shouldRenderContent = allowedRoutes.some(path => location.pathname.includes(path));
 
     function handleClose() {
         setIsOpen(false);
@@ -27,21 +24,23 @@ const Modal: React.FC<ModalProps> = ({ children, allowedRoutes }) => {
             }
         }
 
-        if (shouldRenderContent) {
-            setIsOpen(true);
-            document.addEventListener('keydown', handleKeyDown);
-        }
+        setIsOpen(true);
+        document.addEventListener('keydown', handleKeyDown);
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [shouldRenderContent]);
+    });
 
     return isOpen ? (
-        <section className="modal">
-            <div className='modal-content'>
-                <nav className='modal-close' onClick={handleClose}></nav>
-                {children}
+        <section id="modal">
+            <div id='modal-content'>
+                <h2>{title}
+                    <nav id='modal-close' onClick={handleClose}></nav>
+                </h2>
+                <div id='modal-inner'>
+                    {children}
+                </div>
             </div>
         </section>
     ) : null;

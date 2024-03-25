@@ -1,4 +1,4 @@
-.modal {
+#modal {
     background: var(--ufo-modal-bg);
     color: var(--ufo-modal-fg);
     position: absolute;
@@ -14,44 +14,53 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
-.modal .modal-content {
-    position: relative;
-    background: var(--ufo-modal-bg);
-    color: var(--ufo-modal-fg);
-    width: 80vw;
-    height: 80vh;
-    padding: 2em;
-    border: 1pt solid var(--ufo-modal-border-clr);
-    border-radius: 4pt;
-    overflow: auto;
-}
+#modal {
+    h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1em;
+    }
 
-.modal .modal-close {
-    position: absolute;
-    top: 1em;
-    right: 1.3em;
-}
+    #modal-content {
+        position: relative;
+        background: var(--ufo-modal-bg);
+        color: var(--ufo-modal-fg);
+        width: 80vw;
+        height: 80vh;
+        border: 1pt solid var(--ufo-modal-border-clr);
+        border-radius: 4pt;
+        overflow: hidden;
+    }
 
-.modal .modal-close:after {
-    content: 'X';
-    border: 1pt solid var(--ufo-ctrl-fg);
-    border-radius: 50%;
-    min-width: 1em;
-    max-width: 1em;
-    min-height: 1em;
-    max-height: 1em;
-    font-size: 120%;
-    display: block;
-    line-height: 1em;
-    display: flex;
-    justify-content: center;
-    padding: 10%;
-    cursor: pointer;
-}
+    #modal-close:after {
+        content: 'X';
+        border: 1pt solid var(--ufo-ctrl-fg);
+        border-radius: 50%;
+        min-width: 1em;
+        max-width: 1em;
+        min-height: 1em;
+        max-height: 1em;
+        font-size: 14pt;
+        display: block;
+        line-height: 1em;
+        display: flex;
+        justify-content: center;
+        padding: 10%;
+        cursor: pointer;
+    }
 
-.modal .modal-close:hover:after {
-    color: var(--ufo-brand-clr);
-    border-color: var(--ufo-brand-clr)
+    #modal-close:hover:after {
+        color: var(--ufo-brand-clr);
+        border-color: var(--ufo-brand-clr)
+    }
+
+    #modal-inner {
+        padding: 0 2em;
+        height: 100%;
+        overflow: auto;
+    }
 }
