@@ -15,7 +15,7 @@ const ThemeToggleButton: React.FC = () => {
     }
 
     return (
-        <button onClick={handleClick} className='map-ctrl theme-ctrl highlightable ol-unselectable ol-control' />
+        <button onClick={handleClick} id='theme-ctrl' className='map-ctrl highlightable ol-unselectable ol-control' />
     );
 };
 
