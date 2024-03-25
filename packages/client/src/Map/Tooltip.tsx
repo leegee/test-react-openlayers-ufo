@@ -19,17 +19,24 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         if (!overlay || !event.map || !event.pixel) return;
 
         const feature = event.map.forEachFeatureAtPixel(event.pixel, (feature) => feature);
+        let featureCount = 0;
+        event.map.forEachFeatureAtPixel(event.pixel, () => featureCount++);
         const coordinate = event.coordinate;
 
         if (feature) {
             let tooltipContent = '';
             const location_text = feature.get('location_text');
             if (location_text) {
-                const date = new Date(feature.get('datetime'));
-                if (date) {
-                    tooltipContent = new Intl.DateTimeFormat(config.locale).format(date) + '<br/>';
+                if (featureCount === 1) {
+                    const date = new Date(feature.get('datetime'));
+                    if (date) {
+                        tooltipContent = new Intl.DateTimeFormat(config.locale).format(date) + '<br/>';
+                    }
                 }
                 tooltipContent += feature.get('location_text');
+                if (featureCount > 1) {
+                    tooltipContent += ' x' + featureCount;
+                }
             }
             else {
                 tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
