@@ -382,7 +382,7 @@ ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,2)" TO "movement_
 ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,3)" TO "movement_9_3_3";
 ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,4)" TO "movement_9_3_4";
 
-ALTER TABLE sightings RENAME COLUMN "Hvor mange fenomener(51)" TO "how_many_objects";
+ALTER TABLE sightings RENAME COLUMN "Hvor mange fenomener(51)" TO "number_of_objects";
 
 ALTER TABLE sightings RENAME COLUMN "Konfidensielt(143)" TO "confidential";
 
@@ -416,5 +416,13 @@ ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke(112)" TO "hvilke_112";
 ALTER TABLE sightings RENAME COLUMN "Annet(121)" TO "sky_condition_other";
 ALTER TABLE sightings RENAME COLUMN "Har de tidligere vµrt utsatt for fenomener(133)" TO "prior_witness";
 
+ALTER TABLE sightings RENAME COLUMN "Antall observat°rer" TO "number_of_observers";
+ALTER TABLE sightings RENAME COLUMN "Solen befant seg(127)" TO "sunlight";
+ALTER TABLE sightings RENAME COLUMN "Solen befant seg(12,7)" TO "sunlight_12_7";
 
-  
+ALTER TABLE sightings RENAME COLUMN "Annet(12,7)" TO "sunlight_12_7_other";
+ALTER TABLE sightings RENAME COLUMN "MÕnen befant seg(12,8)" TO "moonlight";
+ALTER TABLE sightings RENAME COLUMN "Annet(12,8)" TO "moonlight_other";
+ALTER TABLE sightings RENAME COLUMN "Hva tror de selv at de sÕ(131)" TO "observers_thoughts";
+ALTER TABLE sightings RENAME COLUMN "MÕnefasen(12,8B)" TO "moon_phase";
+
