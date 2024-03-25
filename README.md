@@ -66,7 +66,7 @@ However, there are still lots of entries such as:
     Hvor befant de dem(4,1,1)	  false
     Hvor befant de dem(4,1,2)	  false
 
-I suspect these rely upon entries in `Switchboard Items`, at which I have yet to look.
+I've had to rename these as part of the move to MYSQL. Perhaps they relate to the `hovedtabell querybaerum` table?
 
 ## Feedback, pull requests
 
