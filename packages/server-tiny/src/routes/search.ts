@@ -66,8 +66,6 @@ export async function search(ctx: Context) {
             return typeof param === 'string' ? `'${param}'` : '';
         });
 
-        console.log(formattedQueryForLogging);
-
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         if (sendCsv) {
@@ -216,8 +214,8 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
         },
     };
 
-    let min: string | undefined = undefined;
-    let max: string | undefined = undefined;
+    let min: Date | undefined = undefined;
+    let max: Date | undefined = undefined;
 
     if (!featureCollection || !featureCollection.features) {
         console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
@@ -225,21 +223,27 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     }
 
     for (const feature of featureCollection.features) {
-        const datetime: string | undefined = feature.properties?.datetime;
+        let thisDatetime: Date | undefined;
 
-        if (typeof datetime !== 'undefined') {
-            if (min === undefined || Number(datetime) < Number(min)) {
-                min = datetime;
+        try {
+            thisDatetime = new Date(feature.properties?.datetime);
+        } catch (e) {
+            thisDatetime = undefined;
+        }
+
+        if (typeof thisDatetime !== 'undefined') {
+            if (typeof min === 'undefined' || thisDatetime.getTime() < min.getTime()) {
+                min = thisDatetime;
             }
-            if (max === undefined || Number(datetime) > Number(max)) {
-                max = datetime;
+            if (typeof max === 'undefined' || thisDatetime.getTime() > max.getTime()) {
+                max = thisDatetime;
             }
         }
     }
 
     dictionary.datetime = {
-        min: typeof min !== 'undefined' && min !== '0001-01-01T00:00:00' ? new Date(min).getFullYear() : undefined,
-        max: typeof max !== 'undefined' && max !== '0001-01-01T00:00:00' ? new Date(max).getFullYear() : undefined,
+        min: typeof min !== 'undefined' ? new Date(min).getFullYear() : undefined,
+        max: typeof max !== 'undefined' ? new Date(max).getFullYear() : undefined,
     };
 
     return dictionary;
