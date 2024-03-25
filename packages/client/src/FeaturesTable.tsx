@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { EVENT_SHOW_POINT, ShowPointEventType, showPointByCoords } from './custom-events/point-show';
+import { showPointByCoords } from './custom-events/point-show';
 import { setPanel } from './redux/guiSlice';
 
 import './FeatureTable.css';
@@ -40,36 +40,11 @@ const FeatureTable: React.FC = () => {
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
 
-    // Might be easier or better to re-render reactively
-    function handleShowPoint(e: ShowPointEventType) {
-        if (!e.detail.id) {
-            console.log("Heard EVENT_SHOW_POINT but got no e.detail.id", e.detail);
-            console.trace();
-            return;
-        }
-        const element = document.getElementById(getRowId(e.detail.id));
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
-            setTimeout(() => {
-                element.classList.add('flash', 'selected');
-                element.addEventListener('animationend', () => element.classList.remove('flash'));
-            }, 500);
-        }
-    };
-
     useEffect(() => {
         if (featureCollection) {
             setLocalFeatures(featureCollection.features);
         }
     }, [featureCollection]);
-
-    useEffect(() => {
-        document.addEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
-
-        return () => {
-            document.removeEventListener(EVENT_SHOW_POINT, handleShowPoint as EventListener);
-        }
-    }, []);
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
         dispatch(setPanel('narrow'));
