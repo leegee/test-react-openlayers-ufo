@@ -38,12 +38,20 @@
     content: 'X';
     border: 1pt solid var(--ufo-ctrl-fg);
     border-radius: 50%;
-    width: 1em;
-    height: 1em;
+    min-width: 1em;
+    max-width: 1em;
+    min-height: 1em;
+    max-height: 1em;
+    font-size: 120%;
     display: block;
     line-height: 1em;
     display: flex;
     justify-content: center;
     padding: 10%;
     cursor: pointer;
+}
+
+.modal .modal-close:hover:after {
+    color: var(--ufo-brand-clr);
+    border-color: var(--ufo-brand-clr)
 }

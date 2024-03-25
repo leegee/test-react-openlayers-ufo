@@ -86,7 +86,6 @@
     }
 
     .ctrl {
-        opacity: 50%;
         filter: grayscale(100%);
         cursor: pointer;
         margin: 0 1pt;
@@ -111,7 +110,8 @@
 
     .row-goto-details:after {
         font-size: 120%;
-        content: '🛈';
+        content: '▶';
+        /* content: '🛈'; */
     }
 
     .close-full-width::after {
@@ -120,7 +120,6 @@
 
     .open-full-width::after {
         content: '▶';
-        opacity: 50%;
     }
 
     .open-full-width:hover,

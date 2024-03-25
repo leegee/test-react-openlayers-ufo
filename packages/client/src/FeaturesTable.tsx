@@ -97,9 +97,9 @@ const FeatureTable: React.FC = () => {
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
                             <div className='td report_text'>{highlightText(q, feature.properties.report_text)}</div>
                             <div className='td ctrls'>
-                                <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
-                                <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
+                                {/* <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} /> */}
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
+                                <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
                             </div>
                         </div>
                     ))}
