@@ -6,7 +6,7 @@
     overflow: hidden;
 }
 
-.map {
+#map {
     position: fixed;
     top: var(--ufo-toolbar-height);
     right: 0;
@@ -15,25 +15,25 @@
     padding: 0;
 }
 
-.map {
+#map {
     width: 100%;
 }
 
-.REPORT_HIDDEN .map {
+#map.panel-is-hidden {
     width: 100%;
 }
 
-.REPORT_FULL_WIDTH .map {
+#map.panel-is-full {
     width: 0;
     max-width: 0;
 }
 
-.LARGER-SCREEN.REPORT_NARROW_WIDTH .map {
+.LARGER-SCREEN #map.panel-is-narrow {
     width: calc(100% - var(--ufo-panel-narrow-width));
     max-width: calc(100% - var(--ufo-panel-narrow-width));
 }
 
-.SMALL-SCREEN.REPORT_NARROW_WIDTH .map {
+.SMALL-SCREEN #map.panel-is-narrow {
     height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
     max-height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
 }
@@ -80,8 +80,4 @@
     padding: 0;
     margin: 0;
     margin-bottom: 4pt;
-}
-
-.theme-ctrl::after {
-    content: '🗺️';
 }

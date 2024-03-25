@@ -17,11 +17,14 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
     const pointsCount = useSelector(selectPointsCount);
     const dispatch = useDispatch();
 
-    const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('')) } };
+    const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('hidden')) } };
 
     useEffect(() => {
         if (!pointsCount) {
-            dispatch(setPanel(''));
+            dispatch(setPanel('hidden'));
+        }
+        else {
+            dispatch(setPanel('narrow'));
         }
     }, [pointsCount, dispatch]);
 

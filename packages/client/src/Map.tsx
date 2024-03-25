@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'debounce';
 import { Feature, Map, MapBrowserEvent, View } from 'ol';
@@ -112,6 +112,7 @@ const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const pointsCount = useSelector(selectPointsCount);
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
+  const { panel: panelState } = useSelector((state: RootState) => state.gui);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -208,8 +209,13 @@ const OpenLayersMap: React.FC = () => {
     }
   }, [featureCollection]);
 
+  useEffect(() => {
+    console.log('Component re-rendered with panelState:', panelState);
+  }, [panelState]);
+
+  // NB The size of the map is controlled by the state of the panel (state.gui.panel, locally aka panelState)
   return (
-    <section className='map' ref={mapElementRef} >
+    <section id='map' className={'panel-is-' + panelState} ref={mapElementRef} >
       <div className='map-ctrls'>
         <ThemeToggleButton />
         <LocaleManager />
