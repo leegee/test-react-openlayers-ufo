@@ -20,22 +20,20 @@
 }
 
 #map.panel-is-hidden {
-    width: 100%;
+    /* width: 100%; */
+    width: calc(100% - var(--ufo-panel-narrow-width));
 }
 
 #map.panel-is-full {
     width: 0;
-    max-width: 0;
 }
 
 .LARGER-SCREEN #map.panel-is-narrow {
     width: calc(100% - var(--ufo-panel-narrow-width));
-    max-width: calc(100% - var(--ufo-panel-narrow-width));
 }
 
 .SMALL-SCREEN #map.panel-is-narrow {
     height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
-    max-height: calc(100% - var(--ufo-panel-SMALL-SCREEN-height));
 }
 
 .ol-zoom {

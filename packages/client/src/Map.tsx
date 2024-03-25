@@ -61,7 +61,8 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
   let didOneFeature = false;
   map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
     if (clickedFeature && !didOneFeature) {
-      if (clickedFeature.get('cluster_id')) { // clsuter
+      // Clicked a clsuter
+      if (clickedFeature.get('cluster_id')) {
         map!.getView().animate({
           center: e.coordinate,
           zoom: config.zoomLevelForPoints,
@@ -69,8 +70,8 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
           easing: easeOut
         });
       }
-      else { // point
-        console.log('click', clickedFeature);
+      else {
+        // Clicked a point
         showPoint(clickedFeature.get('id'));
       }
       didOneFeature = true;

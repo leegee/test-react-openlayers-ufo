@@ -22,14 +22,12 @@
 }
 
 .REPORT_FULL_WIDTH .panel {
-    max-width: 100%;
     width: 100%;
     height: 100%;
 }
 
 .SMALL-SCREEN .panel {
     width: 100%;
-    max-width: 100%;
     top: calc(100vh - var(--ufo-panel-SMALL-SCREEN-height));
     left: 0;
     right: 0;
@@ -38,4 +36,9 @@
 
 .SMALL-SCREEN.REPORT_FULL_WIDTH .panel {
     top: var(--ufo-toolbar-height);
+}
+
+.only_clusters_not_points {
+    margin: 3em 1em;
+    text-align: center;
 }

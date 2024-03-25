@@ -3,6 +3,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPointsCount } from './redux/mapSlice';
 import { setPanel } from './redux/guiSlice';
@@ -33,9 +34,14 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
         return () => document.removeEventListener('keyup', onEscCloseFullReport)
     }, [])
 
-    return !pointsCount ? '' : (
+    return (
         <section className='panel'>
-            {children}
+            {pointsCount ?
+                children
+                : <p className='only_clusters_not_points'>
+                    {get('panel.only_clusters_not_points')}
+                </p>
+            }
         </section>
     );
 };
