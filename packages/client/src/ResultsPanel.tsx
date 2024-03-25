@@ -18,15 +18,6 @@ const Panel: React.FC = () => {
     const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('hidden')) } };
 
     useEffect(() => {
-        if (!pointsCount) {
-            dispatch(setPanel('hidden'));
-        }
-        else {
-            dispatch(setPanel('narrow'));
-        }
-    }, [pointsCount, dispatch]);
-
-    useEffect(() => {
         document.addEventListener('keyup', onEscCloseFullReport);
         return () => document.removeEventListener('keyup', onEscCloseFullReport)
     }, [])
