@@ -7,14 +7,11 @@ import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPointsCount } from './redux/mapSlice';
 import { setPanel } from './redux/guiSlice';
+import FeatureTable from './FeaturesTable';
 
 import './ResultsPanel.css';
 
-interface PanelProps {
-    children: React.ReactNode;
-}
-
-const Panel: React.FC<PanelProps> = ({ children }) => {
+const Panel: React.FC = () => {
     const pointsCount = useSelector(selectPointsCount);
     const dispatch = useDispatch();
 
@@ -37,7 +34,7 @@ const Panel: React.FC<PanelProps> = ({ children }) => {
     return (
         <section className='panel'>
             {pointsCount ?
-                children
+                <FeatureTable />
                 : <p className='only_clusters_not_points'>
                     {get('panel.only_clusters_not_points')}
                 </p>

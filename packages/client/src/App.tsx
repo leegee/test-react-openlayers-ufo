@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import FeatureTable from './FeaturesTable';
 import Map from './Map';
 import Panel from './ResultsPanel';
 import Toolbar from './Toolbar';
@@ -61,9 +60,7 @@ const App: React.FC = () => {
           <Toolbar />
           <div className='map-panel-container'>
             <Map />
-            <Panel>
-              <FeatureTable />
-            </Panel>
+            <Panel />
           </div>
         </>
       </BrowserRouter>
