@@ -9,7 +9,6 @@
     position: fixed;
     overflow: auto;
     width: var(--ufo-panel-narrow-width);
-    max-width: var(--ufo-panel-narrow-width);
     top: var(--ufo-toolbar-height);
     left: 0;
     bottom: unset;

@@ -69,12 +69,16 @@
         z-index: 2;
         top: 0;
         right: 0;
-        background: var(--ufo-primary-bg-highlight);
     }
 
     .td.ctrls {
-        /* position: absolute; */
         display: none;
+        position: absolute;
+        right: 2em;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--ufo-primary-bg-highlight);
+        border-radius: 4pt;
     }
 
     .tr:hover .td.ctrls {
@@ -131,12 +135,23 @@
     .report_text {
         display: none;
     }
+
+    /* No button to close full-width when already narrow-width */
+    .close-full-width {
+        display: none;
+    }
+
+    /* No our-datetime in narrow width only in full-width */
+    .our-datetime {
+        display: none;
+    }
 }
 
 /* Show the report text in full-width */
 .REPORT_FULL_WIDTH {
+
     #feature-table .report_text {
-        display: table-cell;
+        display: block;
     }
 
     /* No button to open full-width when already full-width */
@@ -155,17 +170,30 @@
         display: none;
     }
 
+    .th.datetime,
+    .td.datetime {
+        min-width: 7em;
+        width: 7em;
+        max-width: 7em;
+    }
+
     #feature-table .our-datetime {
         display: block;
     }
-}
 
-/* No button to close full-width when already narrow-width */
-#feature-table .close-full-width {
-    display: none;
-}
+    .th.location_text,
+    .td.location_text {
+        min-width: 10em;
+        width: 10em;
+        max-width: 10em;
+    }
 
-/* No our-datetime in narrow width only in full-width */
-#feature-table .our-datetime {
-    display: none;
+    .td.ctrls {
+        padding: 4pt;
+        border: 2pt solid var(--ufo-brand-clr);
+    }
+
+    .td.ctrls * {
+        opacity: 1 !important;
+    }
 }
