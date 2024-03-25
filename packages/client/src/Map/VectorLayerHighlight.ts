@@ -7,6 +7,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Circle, Style, Stroke, Fill } from 'ol/style';
 
+export const FEATURE_IS_HIGHLIGHT_PROP = 'isHighilght';
+
 const featureSource = new VectorSource();
 
 const featureOverlay = new VectorLayer({
@@ -61,7 +63,7 @@ function highlightFeature(map: Map, pixel: number[]) {
             featureSource.removeFeature(highlight);
         }
         if (feature) {
-            (feature as Feature).set('highlight', true);
+            (feature as Feature).set(FEATURE_IS_HIGHLIGHT_PROP, true);
             featureSource.addFeature(feature as Feature<Geometry>);
         }
         highlight = feature as Feature<Geometry>;

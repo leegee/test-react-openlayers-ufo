@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
 import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
-
 import config from '@ufo-monorepo-test/config/src';
+import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
+
 import './Tooltip.css';
 
 interface TooltipComponentProps {
@@ -16,40 +18,48 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
     const tooltipElementRef = useRef<HTMLDivElement>(null);
 
     const handleMapHover = (event: MapBrowserEvent<MouseEvent>) => {
-        if (!overlay || !event.map || !event.pixel) return;
+        if (!overlay || !event.map || !event.pixel) {
+            return;
+        }
 
-        const feature = event.map.forEachFeatureAtPixel(event.pixel, (feature) => feature);
         let featureCount = 0;
-        event.map.forEachFeatureAtPixel(event.pixel, () => featureCount++);
-        const coordinate = event.coordinate;
+        let feature: FeatureLike | undefined = undefined;
+        event.map.forEachFeatureAtPixel(event.pixel, (_feature) => {
+            if (_feature.get(FEATURE_IS_HIGHLIGHT_PROP)) {
+                return;
+            }
+            featureCount++;
+            feature = _feature;
+        });
 
-        if (feature) {
+        if (typeof feature === 'undefined') {
+            overlay.setPosition(undefined);
+        }
+        else {
             let tooltipContent = '';
-            const location_text = feature.get('location_text');
+            const location_text = (feature as FeatureLike).get('location_text');
             if (location_text) {
                 if (featureCount === 1) {
-                    const date = new Date(feature.get('datetime'));
+                    const date = new Date((feature as FeatureLike).get('datetime'));
                     if (date) {
                         tooltipContent = new Intl.DateTimeFormat(config.locale).format(date) + '<br/>';
                     }
                 }
-                tooltipContent += feature.get('location_text');
+                tooltipContent += (feature as FeatureLike).get('location_text');
                 if (featureCount > 1) {
                     tooltipContent += ' x' + featureCount;
                 }
             }
             else {
-                tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
+                tooltipContent = (feature as FeatureLike).get('num_points') + ' ' + get('panel.cluster_count');
             }
 
             if (tooltipContent) {
                 tooltipElementRef.current!.innerHTML = tooltipContent;
-                overlay.setPosition(coordinate);
+                overlay.setPosition(event.coordinate);
             } else {
                 overlay.setPosition(undefined);
             }
-        } else {
-            overlay.setPosition(undefined);
         }
     };
 
