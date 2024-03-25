@@ -81,6 +81,11 @@ const mapSlice = createSlice({
       state.featureCollection = (action.payload.results || []) as UfoFeatureCollection;
       state.dictionary = action.payload.dictionary as MapDictionary;
     },
+    resetDates(state) {
+      state.from_date = undefined;
+      state.to_date = undefined;
+      console.log('reset dates')
+    },
     setFromDate(state, action: PayloadAction<number | undefined>) {
       state.from_date = action.payload;
     },
@@ -115,8 +120,9 @@ const mapSlice = createSlice({
 });
 
 export const {
-  setPreviousQueryString, setMapParams, setFromDate,
-  setToDate, setQ, setBasemapSource,
+  setPreviousQueryString, setMapParams,
+  resetDates, setFromDate, setToDate,
+  setQ, setBasemapSource,
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;

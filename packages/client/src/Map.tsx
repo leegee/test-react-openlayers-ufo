@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { type Dispatch, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'debounce';
 import { Feature, Map, MapBrowserEvent, View } from 'ol';
@@ -11,7 +11,7 @@ import TileLayer from 'ol/layer/Tile';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount } from './redux/mapSlice';
+import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from './redux/mapSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
@@ -24,6 +24,7 @@ import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } fr
 import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -57,7 +58,7 @@ function setTheme(baseLayerName: MapBaseLayerKeyType) {
 }
 
 // Zoom to the cluster or point on click
-function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
+function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<UnknownAction>) {
   let didOneFeature = false;
   map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
     if (clickedFeature && !didOneFeature) {
@@ -72,6 +73,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null) {
       }
       else {
         // Clicked a point
+        dispatch(resetDates());
         showPoint(clickedFeature.get('id'));
       }
       didOneFeature = true;
@@ -182,7 +184,7 @@ const OpenLayersMap: React.FC = () => {
 
       map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
 
-      map.on('click', debounce((e) => clickMap(e, map), config.gui.debounce, { immediate: true }));
+      map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
     }
 
     return () => map?.dispose();
