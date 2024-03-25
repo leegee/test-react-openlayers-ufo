@@ -19,8 +19,8 @@ const DateRange: React.FC = () => {
 
     useEffect(() => {
         if (dictionary && dictionary.datetime) {
-            dispatch(setFromDate(dictionary.datetime.min));
-            dispatch(setToDate(dictionary.datetime.max));
+            setLocalFromDate(dictionary.datetime.min);
+            setLocalToDate(dictionary.datetime.max);
         }
     }, [dispatch, dictionary]);
 
