@@ -10,6 +10,12 @@ import { details as detailsRoute } from './routes/details';
 import { errorHandler } from "./middleware/errors";
 import { dbhMiddleware } from './middleware/dbh';
 
+if (!config.db.engine) {
+    throw new TypeError('Env var UFO_DB_ENGINE needs to be postgres or mysql');
+} else {
+    console.debug(`config.db.engine=${config.db.engine}`);
+}
+
 const app = new Koa();
 const router = new Router();
 

@@ -10,7 +10,7 @@ Work in progress.
 * Jest
 * Vite 
 * OpenLayers 9
-* PostGIS 
+* PostGIS/MySQL
 * UFOs
 
 ## Synopsis
@@ -46,6 +46,8 @@ Everything is controlled by the Redux 'slices':
 - `map` contains everything needed to query and render results.
 
 ## Installing and Accessing the DB
+
+Currently porting to also run on MySQL.
 
 There is a PostGIS database dump in [./data/norge/pg-dump/](./data/norge/pg-dump/): install the usual way with `psql`.
 

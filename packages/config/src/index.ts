@@ -2,8 +2,10 @@ const isBrowser = typeof window !== 'undefined';
 
 const env = isBrowser ? (import.meta as any).env : process.env;
 
+const isMysql = env.UFO_DB_ENGINE === 'mysql';
+
 export type ConfigType = {
-  locale: 'no',
+  locale: string,
   db: {
     host: string;
     port: number;
@@ -45,7 +47,7 @@ const config: ConfigType = {
     user: env.PGUSER || 'postgres',
     password: env.PGPASSWORD || 'password',
     database: env.UFO_DATABASE || 'norge',
-    engine: env.DB_ENGINE || 'postgis'
+    engine: 'postgis'
   },
   api: {
     port: parseInt(env.UFO_HTTP_PORT || '8080'),
@@ -71,5 +73,13 @@ const config: ConfigType = {
   zoomLevelForPointDetails: 12,
   minQLength: 3,
 };
+
+if (isMysql) {
+  config.db.host = env.MYSQL_HOST || 'localhost';
+  config.db.port = parseInt(env.MYSQL_PORT || '5432');
+  config.db.user = env.MYSQL_USER || env.MYSQL_USERNAME || 'root';
+  config.db.password = env.MYSQL_PASSWORD || 'password';
+  config.db.engine = 'mysql';
+}
 
 export default config;
