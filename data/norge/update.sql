@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS sightings;
 CREATE TABLE sightings AS SELECT * FROM hovedtabell;
 
 ALTER TABLE sightings 
-    ADD COLUMN datetime_original VARCHAR(20),  
-    ADD COLUMN datetime TIMESTAMP
+ ADD COLUMN datetime_original VARCHAR(20),  
+ ADD COLUMN datetime TIMESTAMP
 ;
 
 -- Create a auto-incrementing primary key from 'datarapp nr':
@@ -39,36 +39,36 @@ UPDATE sightings SET "obs år" = REPLACE("obs år", '?', '0');
 
 UPDATE sightings
 SET
-    datetime_original = "obs år" || '-' || "Obs måned" || '-' || "observasjonsdato",
-    datetime = CASE 
-        WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
-            TO_DATE(
-                CONCAT(
-                    COALESCE("obs år", '0000'),
-                    '-',
-                    CASE WHEN "Obs måned"::integer > 12 THEN '01' ELSE COALESCE(NULLIF("Obs måned", '?'), '01') END,
-                    '-',
-                    COALESCE(NULLIF(observasjonsdato, '?'), '01')
-                ),
-                'YYYY-MM-DD'
-            )
-        ELSE NULL
-    END,
-    datetime_invalid = CASE 
-        WHEN datetime IS NULL THEN
-            true
-        ELSE
-            false
-        END;
+ datetime_original = "obs år" || '-' || "Obs måned" || '-' || "observasjonsdato",
+ datetime = CASE 
+  WHEN "obs år" IS NOT NULL AND "Obs måned" IS NOT NULL AND observasjonsdato IS NOT NULL THEN
+TO_DATE(
+ CONCAT(
+  COALESCE("obs år", '0000'),
+  '-',
+  CASE WHEN "Obs måned"::integer > 12 THEN '01' ELSE COALESCE(NULLIF("Obs måned", '?'), '01') END,
+  '-',
+  COALESCE(NULLIF(observasjonsdato, '?'), '01')
+ ),
+ 'YYYY-MM-DD'
+)
+  ELSE NULL
+ END,
+ datetime_invalid = CASE 
+  WHEN datetime IS NULL THEN
+true
+  ELSE
+false
+  END;
 
 
 UPDATE sightings
 SET datetime = 
-    CASE 
-        WHEN datetime = '0001-01-01 00:00:00' THEN NULL
-        WHEN datetime = '0960-06-30 00:00:00' THEN '1960-06-30 00:00:00'
-        ELSE datetime
-    END;
+ CASE 
+  WHEN datetime = '0001-01-01 00:00:00' THEN NULL
+  WHEN datetime = '0960-06-30 00:00:00' THEN '1960-06-30 00:00:00'
+  ELSE datetime
+ END;
 
 -- County of sighting: Key (fylke)=(20) is not present in table "fylke". Vest-Agder, Troms, and others are absent.
 -- So, skip for now.
@@ -147,6 +147,7 @@ ALTER TABLE sky_condition RENAME COLUMN "Himmelen var ved observasjonen(121)" TO
 ALTER TABLE sky_condition ALTER COLUMN sky_condition TYPE VARCHAR(20);
 INSERT INTO sky_condition (id, "sky_condition") VALUES (0, 'Not specified');
 ALTER TABLE sightings ADD CONSTRAINT fk_sky_condition_id FOREIGN KEY (sky_condition_id) REFERENCES "sky_condition" (id);
+ALTER TABLE sightings DROP COLUMN "Himmelen var ved observasjonen(121)";
 -- SELECT sightings.sky_condition_id, sky_condition.* FROM sightings JOIN sky_condition ON sightings.sky_condition_id = sky_condition.id;
 
 -- 127 "Solen befant seg(12,7)" --> sun_position
@@ -183,7 +184,7 @@ ALTER TABLE sightings DROP COLUMN "Hvor lenge iakttok(3,5,2)";
 ALTER TABLE sightings DROP COLUMN "Hvor lenge iakttok(3,5,3)";
 
 ALTER TABLE sightings RENAME COLUMN "annet62" TO "colour";
-ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(63)" TO "if_so_which_colour";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(63)" TO "if_so_which_colour_63";
 ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke fargeforandringer(64)" TO "which_colour_changed";
 ALTER TABLE sightings RENAME COLUMN "Annet(65)" TO "light_desc_other";
 ALTER TABLE sightings RENAME COLUMN "Annet(66)" TO "lightbeam_desc_other";
@@ -199,6 +200,7 @@ ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(93)" TO "movement";
 ALTER TABLE sightings RENAME COLUMN "Avstand til fenomen i meter(99)" TO "distance_m";
 ALTER TABLE sightings RENAME COLUMN "Hvordan forsvant fenomenet(102)" TO "disappearance_desc";
 ALTER TABLE sightings RENAME COLUMN "Passerte fenomenet foran/bak noe(103)" TO "passed_by_something";
+ALTER TABLE sightings RENAME COLUMN "Passerte fenomenet foran/bak noe(10,3)" TO "passed_by_something_10_3";
 ALTER TABLE sightings RENAME COLUMN "Kikkert_X_(10,4,8)" TO "binoculars_magnification";
 ALTER TABLE sightings RENAME COLUMN "Teleskop_X_(10,4,9)" TO "telescope_magnification";
 ALTER TABLE sightings RENAME COLUMN "Merket de psykiske pÕvirkninger under observasjonen(113)" TO "psychological_effects_during";
@@ -210,3 +212,209 @@ ALTER TABLE sightings RENAME COLUMN "Obs  startet kl (32)" TO "start_time";
 ALTER TABLE sightings RENAME COLUMN "Hvor lenge iakttok?(35)" TO "duration";
 ALTER TABLE sightings RENAME COLUMN "Hovedobservat°rens alder" TO "observer_age";
 ALTER TABLE sightings RENAME COLUMN "Antall observat°rer" TO "other_observers";
+
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,1)" TO "illumination_661";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,2)" TO "illumination_662";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,3)" TO "illumination_663";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,4)" TO "illumination_664";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,5)" TO "illumination_665";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,6)" TO "illumination_666";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,7)" TO "illumination_667";
+ALTER TABLE sightings RENAME COLUMN "LysstrÕlingen var(6,6,8)" TO "illumination_668";
+
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,1)" TO "colour_621";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,2)" TO "colour_622";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,3)" TO "colour_623";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,4)" TO "colour_624";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,5)" TO "colour_625";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,6)" TO "colour_626";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,7)" TO "colour_627";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,8)" TO "colour_628";
+ALTER TABLE sightings RENAME COLUMN "Farge pÕ fenomenet(6,2,9)" TO "colour_629";
+
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,1)" TO "if_so_which_colour_6321";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,2)" TO "if_so_which_colour_6322";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,3)" TO "if_so_which_colour_6323";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,4)" TO "if_so_which_colour_6324";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,5)" TO "if_so_which_colour_6325";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,6)" TO "if_so_which_colour_6326";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,7)" TO "if_so_which_colour_6327";
+ALTER TABLE sightings RENAME COLUMN "I sÕ fall hvilken farge(6,3,2,8)" TO "if_so_which_colour_6328";
+
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,1)" TO "initial_altitude_941";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,2)" TO "initial_altitude_942";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,3)" TO "initial_altitude_943";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,4)" TO "initial_altitude_944";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,5)" TO "initial_altitude_945";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,6)" TO "initial_altitude_946";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved oppdagelsen(9,4,7)" TO "initial_altitude_947";
+
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,1)" TO "final_altitude_951";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,2)" TO "final_altitude_952";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,3)" TO "final_altitude_953";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,4)" TO "final_altitude_954";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,5)" TO "final_altitude_955";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,6)" TO "final_altitude_956";
+ALTER TABLE sightings RENAME COLUMN "H°yde pÕ himmelen ved slutt pÕ observasjon(9,5,7)" TO "final_altitude_957";
+
+ALTER TABLE sightings DROP COLUMN "├Ñr";
+ALTER TABLE sightings DROP COLUMN "Obs m├Ñned";
+
+ALTER TABLE sightings RENAME COLUMN "observasjonsdato" TO "day_of_month";
+ALTER TABLE sightings RENAME COLUMN "Obs mÕned" TO "month";
+ALTER TABLE sightings RENAME COLUMN "obs Õr" TO "year";
+
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(104)" TO "observed_with_through_104";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,1)" TO "observed_with_through_10_4_1";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,2)" TO "observed_with_through_10_4_2";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,3)" TO "observed_with_through_10_4_3";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,4)" TO "observed_with_through_10_4_4";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,5)" TO "observed_with_through_10_4_5";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,6)" TO "observed_with_through_10_4_6";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,7)" TO "observed_with_through_10_4_7";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,8)" TO "observed_with_through_10_4_8";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,9)" TO "observed_with_through_10_4_9";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet ble observert med/gjennom(10,4,10)" TO "observed_with_through_10_4_10";
+
+ALTER TABLE sightings RENAME COLUMN "Ble fenomenet fotografert(111)" TO "photographed";
+
+
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,1)" TO "weather_12_2_1";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,2)" TO "weather_12_2_2";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,3)" TO "weather_12_2_3";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,4)" TO "weather_12_2_4";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,5)" TO "weather_12_2_5";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,6)" TO "weather_12_2_6";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,7)" TO "weather_12_2_7";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,8)" TO "weather_12_2_8";
+ALTER TABLE sightings RENAME COLUMN "Vµret(12,2,9)" TO "weather_12_2_9";
+ALTER TABLE sightings RENAME COLUMN "Annet(122)" TO "weather";
+
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,1)" TO "size_8_1_1";
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,2)" TO "size_8_1_2";
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,3)" TO "size_8_1_3";
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,4)" TO "size_8_1_4";
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,5)" TO "size_8_1_5";
+ALTER TABLE sightings RENAME COLUMN "Hvor stort var fenomenet(8,1,6)" TO "size_8_1_6";
+ALTER TABLE sightings RENAME COLUMN "Annet(81)" TO "size";
+
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,1)" TO "sound_7_1_1";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,2)" TO "sound_7_1_2";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,3)" TO "sound_7_1_3";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,4)" TO "sound_7_1_4";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,5)" TO "sound_7_1_5";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,6)" TO "sound_7_1_6";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,7)" TO "sound_7_1_7";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,8)" TO "sound_7_1_8";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,9)" TO "sound_7_1_9";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,10)" TO "sound_7_1_10";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,11)" TO "sound_7_1_11";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,12)" TO "sound_7_1_12";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,13)" TO "sound_7_1_13";
+ALTER TABLE sightings RENAME COLUMN "Fenomenets lyd(7,1,14)" TO "sound_7_1_14";
+
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke fargeforandringer(64)" TO "colour_change";
+ALTER TABLE sightings RENAME COLUMN "Fargeforandringer(6,4,1)" TO "colour_change_6_4_1";
+ALTER TABLE sightings RENAME COLUMN "Fargeforandringer(6,4,2)" TO "colour_change_6_4_2";
+ALTER TABLE sightings RENAME COLUMN "Fargeforandringer(6,4,3)" TO "colour_change_6_4_3";
+
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,1)" TO "where_cound_4_1_1";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,2)" TO "where_cound_4_1_2";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,3)" TO "where_cound_4_1_3";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,4)" TO "where_cound_4_1_4";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,5)" TO "where_cound_4_1_5";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,6)" TO "where_cound_4_1_6";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,7)" TO "where_cound_4_1_7";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,8)" TO "where_cound_4_1_8";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,9)" TO "where_cound_4_1_9";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,10)" TO "where_cound_4_1_10";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,11)" TO "where_cound_4_1_11";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,12)" TO "where_cound_4_1_12";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,13)" TO "where_cound_4_1_13";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,14)" TO "where_cound_4_1_14";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,15)" TO "where_cound_4_1_15";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,16)" TO "where_cound_4_1_16";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,17)" TO "where_cound_4_1_17";
+ALTER TABLE sightings RENAME COLUMN "Hvor befant de dem(4,1,18)" TO "where_cound_4_1_18";
+
+ALTER TABLE sightings RENAME COLUMN "Var fenomenet(6,1,1)" to "var_fenomenet_6_1_1";
+ALTER TABLE sightings RENAME COLUMN "Var fenomenet(6,1,2)" to "var_fenomenet_6_1_2";
+ALTER TABLE sightings RENAME COLUMN "Var fenomenet(6,1,3)" to "var_fenomenet_6_1_3";
+ALTER TABLE sightings RENAME COLUMN "Var fenomenet(6,1,4)" to "var_fenomenet_6_1_4";
+
+ALTER TABLE sightings RENAME COLUMN "Hadde fenomenet(6,3,1,1)" TO "had_6_3_1_1";
+ALTER TABLE sightings RENAME COLUMN "Hadde fenomenet(6,3,1,2)" TO "had_6_3_1_2";
+ALTER TABLE sightings RENAME COLUMN "Hadde fenomenet(6,3,1,3)" TO "had_6_3_1_3";
+
+
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,1)" TO "how_powerful_6_5_1";
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,2)" TO "how_powerful_6_5_2";
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,3)" TO "how_powerful_6_5_3";
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,4)" TO "how_powerful_6_5_4";
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,5)" TO "how_powerful_6_5_5";
+ALTER TABLE sightings RENAME COLUMN "Hvor kraftig(6,5,6)" TO "how_powerful_6_5_6";
+
+ALTER TABLE sightings RENAME COLUMN "Forandringer i lyden(7,2,1)" TO "sound_change_7_2_1";
+ALTER TABLE sightings RENAME COLUMN "Forandringer i lyden(7,2,2)" TO "sound_change_7_2_2";
+ALTER TABLE sightings RENAME COLUMN "Forandringer i lyden(7,2,3)" TO "sound_change_7_2_3";
+
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,1)" TO "initial_celestial_direction_9_1_1";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,2)" TO "initial_celestial_direction_9_1_2";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,3)" TO "initial_celestial_direction_9_1_3";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,4)" TO "initial_celestial_direction_9_1_4";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,5)" TO "initial_celestial_direction_9_1_5";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,6)" TO "initial_celestial_direction_9_1_6";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,7)" TO "initial_celestial_direction_9_1_7";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,8)" TO "initial_celestial_direction_9_1_8";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved oppdagelse(9,1,9)" TO "initial_celestial_direction_9_1_9";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,1)" TO "final_celestial_direction_9_2_1";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,2)" TO "final_celestial_direction_9_2_2";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,3)" TO "final_celestial_direction_9_2_3";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,4)" TO "final_celestial_direction_9_2_4";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,5)" TO "final_celestial_direction_9_2_5";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,6)" TO "final_celestial_direction_9_2_6";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,7)" TO "final_celestial_direction_9_2_7";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,8)" TO "final_celestial_direction_9_2_8";
+ALTER TABLE sightings RENAME COLUMN "Himmelretning ved slutt pÕ observasjon(9,2,9)" TO "final_celestial_direction_9_2_9";
+
+ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,1)" TO "movement_9_3_1";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,2)" TO "movement_9_3_2";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,3)" TO "movement_9_3_3";
+ALTER TABLE sightings RENAME COLUMN "Fenomenet beveget seg(9,3,4)" TO "movement_9_3_4";
+
+ALTER TABLE sightings RENAME COLUMN "Hvor mange fenomener(51)" TO "how_many_objects";
+
+ALTER TABLE sightings RENAME COLUMN "Konfidensielt(143)" TO "confidential";
+
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,1)" TO "wind_force_12_3_1";
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,2)" TO "wind_force_12_3_2";
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,3)" TO "wind_force_12_3_3";
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,4)" TO "wind_force_12_3_4";
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,5)" TO "wind_force_12_3_5";
+ALTER TABLE sightings RENAME COLUMN "Vindstyrken(12,3,6)" TO "wind_force_12_3_6";
+ALTER TABLE sightings RENAME COLUMN "Annet(123)" TO "wind_other";
+
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,1)" TO "wind_direction_12_4_1";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,2)" TO "wind_direction_12_4_2";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,3)" TO "wind_direction_12_4_3";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,4)" TO "wind_direction_12_4_4";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,5)" TO "wind_direction_12_4_5";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,6)" TO "wind_direction_12_4_6";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,7)" TO "wind_direction_12_4_7";
+ALTER TABLE sightings RENAME COLUMN "Vindretning(12,4,8)" TO "wind_direction_12_4_8";
+
+ALTER TABLE sightings RENAME COLUMN "Det var(12,6)" TO "det_var_12_6";
+ALTER TABLE sightings RENAME COLUMN "Annet(12,6)" TO "annet_12_6";
+ALTER TABLE sightings RENAME COLUMN "Annet(93)" TO "movement_other";
+
+ALTER TABLE sightings RENAME COLUMN "Hvordan forsvant fenomenet(10,2,1)" TO "disappearance_10_2_1";
+ALTER TABLE sightings RENAME COLUMN "Hvordan forsvant fenomenet(10,2,2)" TO "disappearance_10_2_2";
+
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, av hvem(111)" TO "av_hvem_111";
+ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke(112)" TO "hvilke_112";
+
+ALTER TABLE sightings RENAME COLUMN "Annet(121)" TO "sky_condition_other";
+ALTER TABLE sightings RENAME COLUMN "Har de tidligere vµrt utsatt for fenomener(133)" TO "prior_witness";
+
+
+  
