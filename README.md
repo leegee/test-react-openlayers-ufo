@@ -47,13 +47,13 @@ Everything is controlled by the Redux 'slices':
 
 ## Installing and Accessing the DB
 
-Currently porting to also run on MySQL.
-
 There is a PostGIS database dump in [./data/norge/pg-dump/](./data/norge/pg-dump/): install the usual way with `psql`.
 
 Configuration access options in hard-coded  in [the global config](./packages/config/): PG access tries the usual PG environment varirables, but of course this should (and will) be upgraded to use `.env` files.
 
 The database was constructed from an MS Access dump, which can be found in [./data/norge/](./data/norge/) along with the scripts used to port it to PostGIS. The only manual step remaining is geocoding, which was done via a free of charge online geocoder and exported as CSV.
+
+Currently porting to also run on MySQL. Check the `packages/config` for options.
 
 ## State of the data
 
