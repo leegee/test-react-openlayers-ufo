@@ -82,19 +82,20 @@ const FeatureTable: React.FC = () => {
     }
 
     return (
-        <table className='feature-table'>
-            <thead>
-                <tr>
-                    <th className='datetime'>{get('feature_table.date')}</th>
-                    <th className='location_text'>{get('feature_table.location')}</th>
-                    <th className='report_text'>{get('feature_table.report')}</th>
-                    <th className='ctrls'>
+        <div id='feature-table'>
+            <div className='thead'>
+                <div className='tr'>
+                    <div className='th datetime'>{get('feature_table.date')}</div>
+                    <div className='th location_text'>{get('feature_table.location')}</div>
+                    <div className='th report_text'>{get('feature_table.report')}</div>
+                    <div className='th ctrls'>
                         <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
                         <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+                    </div>
+                </div>
+            </div>
+
+            <div className='tbody'>
                 {localFeatures
                     .slice() // Create a copy of the array to avoid mutating the original array
                     .sort((a, b) => {
@@ -107,27 +108,28 @@ const FeatureTable: React.FC = () => {
                         return 0; // Leave them unchanged in order
                     })
                     .map((feature: any, index: number) => (
-                        <tr key={index} id={getRowId(feature.properties.id)} title={
+
+                        <div className='tr' key={index} id={getRowId(feature.properties.id)} title={
                             (feature.properties.search_score ? feature.properties.search_score : 'unscored')
                             + ' ' + feature.properties.datetime
                         }>
-                            <td className='datetime'>
+                            <div className='td datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{
                                     new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime))
                                 }</span>
-                            </td>
-                            <td className='location_text'>{highlightText(q, feature.properties.location_text)}</td>
-                            <td className='report_text'>{highlightText(q, feature.properties.report_text)}</td>
-                            <td className='ctrls'>
+                            </div>
+                            <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
+                            <div className='td report_text'>{highlightText(q, feature.properties.report_text)}</div>
+                            <div className='td ctrls'>
                                 <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} />
                                 <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     ))}
-            </tbody>
-        </table>
+            </div>
+        </div>
     );
 };
 

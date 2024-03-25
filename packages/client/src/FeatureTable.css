@@ -1,83 +1,94 @@
 /* FeatureTable.css */
 
-table.feature-table {
+#feature-table {
     position: relative;
-    display: table;
-    border-collapse: collapse;
-    margin: 1em;
-    max-width: calc(100% - 2em);
-    width: calc(100% - 2em);
+    display: block;
     background-color: var(--ufo-primary-bg);
 }
 
-table.feature-table {
-    thead {
+#feature-table {
+    .thead {
         position: sticky;
         top: 0;
         background-color: var(--ufo-primary-bg-highlight);
+        border-bottom: 1pt solid var(--ufo-primary-border-clr);
         z-index: 1;
     }
 
-    tr:nth-child(even) {
+    .tr {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .tr:nth-child(even) {
         background-color: var(--ufo-primary-bg-highlight);
     }
 
-    tr:hover {
+    .tr.selected {
         outline: 1px solid var(--ufo-brand-clr);
     }
 
-    tr.selected {
-        outline: 1px solid var(--ufo-brand-clr);
-    }
-
-    th {
-        border-bottom: 1pt solid var(--ufo-primary-border-clr);
+    .th {
         text-align: left;
         font-weight: 100;
     }
 
-    th,
-    td {
-        padding: 0.125em;
+    .th,
+    .td {
+        display: inline-block;
+        padding: 0.5em;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    td {
+    .td {
         vertical-align: top;
     }
 
-    th.datetime,
-    td.datetime {
+    .th.datetime,
+    .td.datetime {
         white-space: nowrap;
         text-overflow: unset;
+        width: 6em;
     }
 
-    th.location_text,
-    td.location_text {
-        padding-left: 1em;
+    .th.location_text,
+    .td.location_text {
+        margin-left: 0.2em;
+        width: auto;
     }
 
-    .no_data {
-        padding: 1em;
-        text-align: center;
-    }
-
-    td.ctrls {
+    .th.ctrls,
+    .td.ctrls {
+        margin-left: auto;
         white-space: nowrap;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        z-index: 2;
+        top: 0;
+        right: 0;
+        background: var(--ufo-primary-bg-highlight);
+    }
+
+    .td.ctrls {
+        /* position: absolute; */
+        display: none;
+    }
+
+    .tr:hover .td.ctrls {
+        display: block;
     }
 
     .ctrl {
         opacity: 50%;
         filter: grayscale(100%);
         cursor: pointer;
+        margin: 0 1pt;
     }
 
     .ctrl:hover {
-        outline: 1px solid var(--ufo-brand-clr);
         filter: none;
         opacity: 1;
     }
@@ -113,6 +124,10 @@ table.feature-table {
         color: var(--ufo-brand-clr);
     }
 
+    .open-full-width:hover::after {
+        opacity: 1;
+    }
+
     .report_text {
         display: none;
     }
@@ -120,17 +135,17 @@ table.feature-table {
 
 /* Show the report text in full-width */
 .REPORT_FULL_WIDTH {
-    .feature-table .report_text {
+    #feature-table .report_text {
         display: table-cell;
     }
 
     /* No button to open full-width when already full-width */
-    .feature-table .open-full-width {
+    #feature-table .open-full-width {
         display: none;
     }
 
     /* Show button to close full-width when in full width */
-    .feature-table .close-full-width {
+    #feature-table .close-full-width {
         display: unset;
     }
 
@@ -140,17 +155,17 @@ table.feature-table {
         display: none;
     }
 
-    .feature-table .our-datetime {
+    #feature-table .our-datetime {
         display: block;
     }
 }
 
 /* No button to close full-width when already narrow-width */
-.feature-table .close-full-width {
+#feature-table .close-full-width {
     display: none;
 }
 
 /* No our-datetime in narrow width only in full-width */
-.feature-table .our-datetime {
+#feature-table .our-datetime {
     display: none;
 }
