@@ -10,7 +10,7 @@ Work in progress.
 * Jest
 * Vite 
 * OpenLayers 9
-* PostGIS/MySQL
+* PostGIS
 * UFOs
 
 ## Synopsis
