@@ -3,6 +3,8 @@
 import Feature, { FeatureLike } from "ol/Feature";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 
+import { store } from "../redux/store";
+
 const bgSaturation = 100;
 const bgLightness = 50;
 const borderSaturation = 80;
@@ -55,19 +57,27 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     }
 
     else {
+        const selectionId = store.getState().gui.selectionId;
+        const selected = selectionId && selectionId === feature.get('id');
+
         const score = parseFloat(feature.get('search_score'));
         const hue = score ? mapScoreToHue(score) : '180';
         if (score) {
-            (feature as Feature).set('zIndex', score * 100);
+            (feature as Feature).set('zIndex', score * 2);
         }
         style = new Style({
             image: new Circle({
                 radius: 10,
                 fill: new Fill({ color: `hsl(${hue}, ${bgSaturation}%, ${bgLightness}%)` }),
-                stroke: new Stroke({
-                    color: `hsl(${hue}, ${borderSaturation}%, ${borderLightness}%)`,
-                    width: 2
-                })
+                stroke: new Stroke(
+                    selected ? {
+                        color: 'hsl(40,100%,70%)',
+                        width: 5
+                    } : {
+                        color: `hsl(${hue}, ${borderSaturation}%, ${borderLightness}%)`,
+                        width: 2
+                    }
+                )
             }),
         });
     }

@@ -55,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/contact" element={<Modal><Contact /></Modal>} />
             <Route path="/sighting/:id" element={<SightingDetails />} />
             <Route path="/histogram/dates" element={<Modal><Histogram /></Modal>} />
+            <Route path="/" element={<span />} />{/* noop */}
           </Routes>
 
           <Toolbar />
