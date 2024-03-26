@@ -57,11 +57,6 @@ const FeatureTable: React.FC = () => {
         dispatch(setSelectionId(feature.properties.id));
     }
 
-    function gotoFulLReport(_id: string) {
-        dispatch(setPanel('full'));
-        // todo highlgiht row with EVENT_SHOW_POINT or directly
-    }
-
     return (
         <div id='feature-table'>
             <div className='thead'>
