@@ -22,37 +22,46 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             return;
         }
 
-        let featureCount = 0;
         let feature: FeatureLike | undefined = undefined;
-        event.map.forEachFeatureAtPixel(event.pixel, (_feature) => {
-            // Can't recall why I did this:
-            // if (_feature.get(FEATURE_IS_HIGHLIGHT_PROP)) {
-            //     return;
-            // }
-            featureCount++;
-            feature = _feature;
+        const features: FeatureLike[] = [];
+        event.map.forEachFeatureAtPixel(event.pixel, (checkFeature) => {
+            features.push(checkFeature);
         });
 
-        if (typeof feature === 'undefined') {
+        // Skip any highlight
+        feature = features.find(
+            feature => !feature.get(FEATURE_IS_HIGHLIGHT_PROP)
+        );
+
+        // If there was a highlight, pop the list to allow correct count of features
+        if (features.length > 1 && !feature) {
+            features.pop();
+        }
+
+        if (!feature) {
+            feature = features[0];
+        }
+
+        if (!feature) {
             overlay.setPosition(undefined);
         }
         else {
             let tooltipContent = '';
             const location_text = (feature as FeatureLike).get('location_text');
             if (location_text) {
-                if (featureCount === 1) {
+                if (features.length === 1) {
                     const date = new Date((feature as FeatureLike).get('datetime'));
                     if (date) {
-                        tooltipContent = new Intl.DateTimeFormat(config.locale).format(date) + '<br/>';
+                        tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
                     }
                 }
-                tooltipContent += (feature as FeatureLike).get('location_text');
-                if (featureCount > 1) {
-                    tooltipContent += ' x' + featureCount;
+                tooltipContent += '<b font-style="font-size:120%">' + (feature as FeatureLike).get('location_text') + '</b>';
+                if (features.length > 1) {
+                    tooltipContent += ' x' + features.length;
                 }
                 const score = (feature as FeatureLike).get('search_score');
                 if (score) {
-                    tooltipContent += '<br/>Search score: ' + score;
+                    tooltipContent += '<br/><small style="font-weight:light">Search score: ' + score + '</small>';
                 }
             }
             else {
