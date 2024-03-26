@@ -1,10 +1,9 @@
 import React, { type Dispatch, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'debounce';
-import { Feature, Map, MapBrowserEvent, View } from 'ol';
+import { Map, type MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
-import Layer from 'ol/layer/Layer';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import TileLayer from 'ol/layer/Tile';
@@ -15,7 +14,6 @@ import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, re
 import { setSelectionId } from './redux/guiSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
-import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
 import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
@@ -91,29 +89,29 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
   }
 }
 
-function centerMapOnFeature(map: Map, feature: any) { // ugh
-  const geometry = feature.getGeometry();
-  if (geometry) {
-    const coordinates = geometry.getCoordinates();
-    map.getView().animate({
-      center: coordinates,
-      zoom: config.zoomLevelForPointDetails,
-      duration: 500,
-    });
-  }
-}
+// function centerMapOnFeature(map: Map, feature: any) { // ugh
+//   const geometry = feature.getGeometry();
+//   if (geometry) {
+//     const coordinates = geometry.getCoordinates();
+//     map.getView().animate({
+//       center: coordinates,
+//       zoom: config.zoomLevelForPointDetails,
+//       duration: 500,
+//     });
+//   }
+// }
 
-function findFeatureById(layer: Layer, id: string | number): Feature | null {
-  const source = layer.getSource() as VectorSource;
-  const features = source.getFeatures();
+// function findFeatureById(layer: Layer, id: string | number): Feature | null {
+//   const source = layer.getSource() as VectorSource;
+//   const features = source.getFeatures();
 
-  for (const feature of features) {
-    if (feature.get('id') == id) {
-      return feature;
-    }
-  }
-  return null;
-}
+//   for (const feature of features) {
+//     if (feature.get('id') == id) {
+//       return feature;
+//     }
+//   }
+//   return null;
+// }
 
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
