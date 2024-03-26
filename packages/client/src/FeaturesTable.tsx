@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { showPointByCoords } from './custom-events/point-show';
 import { setPanel, setSelectionId } from './redux/guiSlice';
 
 import './FeatureTable.css';
@@ -53,7 +52,6 @@ const FeatureTable: React.FC = () => {
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
         dispatch(setPanel('narrow'));
-        showPointByCoords(feature.geometry.coordinates);
         dispatch(setSelectionId(feature.properties.id));
     }
 
