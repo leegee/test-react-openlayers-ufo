@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './Modal.css';
 
@@ -9,18 +9,12 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children, title }) => {
-    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    function handleClose() {
-        setIsOpen(false);
-        navigate(-1);
-    }
 
     useEffect(() => {
         function handleKeyDown(event: KeyboardEvent) {
             if (event.key === 'Escape') {
-                handleClose();
+                setIsOpen(false);
             }
         }
 
@@ -36,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({ children, title }) => {
         <section id="modal">
             <div id='modal-content'>
                 <h2>{title}
-                    <nav id='modal-close' onClick={handleClose}></nav>
+                    <Link to='/'><nav id='modal-close' onClick={() => setIsOpen(false)}></nav></Link>
                 </h2>
                 <div id='modal-inner'>
                     {children}
