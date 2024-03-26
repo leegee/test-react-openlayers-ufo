@@ -14,7 +14,7 @@ const DonwloadCsvButton: React.FC = () => {
     const download = () => dispatch(fetchCsv('csv'));
 
     return (
-        <button disabled={requestingCsv} onClick={download} className='download-csv-button grey component highlightable' />
+        <button title='CSV' aria-label='CSV' disabled={requestingCsv} onClick={download} className='download-csv-button grey component highlightable' />
     );
 }
 
