@@ -9,7 +9,7 @@ psql -c "DROP DATABASE IF EXISTS norge"
 # psql -c "CREATE DATABASE norge"
 psql -c "CREATE DATABASE norge WITH ENCODING = 'UTF8'"
 
-for file in mdb-export/*.sql; do
+for file in mdb-to-postgis/*.sql; do
     echo $file
     psql -d norge < "$file"
 done

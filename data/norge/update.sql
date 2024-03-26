@@ -70,6 +70,8 @@ SET datetime =
   ELSE datetime
  END;
 
+-- UPDATE sightings SET datetime = datetime + start_time::time WHERE start_time IS NOT NULL AND datetime IS NOT NULL;
+
 -- County of sighting: Key (fylke)=(20) is not present in table "fylke". Vest-Agder, Troms, and others are absent.
 -- So, skip for now.
 -- ALTER TABLE fylke ADD CONSTRAINT pk_fylke PRIMARY KEY (id);

@@ -29,31 +29,31 @@ Work in progress.
 
 ## Description
 
-A simple OpenLayers map to fetch and display data when the map is rendered, zoomed, or moved, with a portable Koa data access layer to a supplied PostGIS database.
-
-* Clustering
+* Server-side clustering
 * Text search
 * Date-range search
 * CSV downloads
 
-Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. If zoomed out
-by a configurable amount, the server clusters the points.
+This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of an [OpenLayers](https://openlayers.org/) map.
 
-Everything is controlled by the Redux 'slices':
+Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. 
+If zoomed out by a configurable amount, the server clusters the points that represent sightings.
 
-- `gui` contains stuff just relating to the interface
-- `details` just the details of a single report
-- `map` contains everything needed to query and render results.
+Locations of sightings were semi-manually geocoded from the locations given in the original MS Access database, which was converted to both Postgres and MySQL by a trial version of [Exportizer Enterprise](https://www.vlsoftware.net/exportizer/). The [data/norge/](data/norge/) directory contains those dumps, as well as scripts used to restore relations between the tables, convert the column names to English (since we hope to add Swedish and other data too), as well as cleaning dates and some other values.
+
+All state is controlled by the Redux 'slices':
+
+- `gui`: the state of the interface
+- `details`: the details of a single report
+- `map`: everything needed to query and render results.
 
 ## Installing and Accessing the DB
 
-There is a PostGIS database dump in [./data/norge/pg-dump/](./data/norge/pg-dump/): install the usual way with `psql`.
+There is a dump of the current state of the PostGIS database: [./data/norge/pg-dump/](./data/norge/pg-dump/) - install the usual way with `psql < dump.sh`.
 
 Configuration access options in hard-coded  in [the global config](./packages/config/): PG access tries the usual PG environment varirables, but of course this should (and will) be upgraded to use `.env` files.
 
-The database was constructed from an MS Access dump, which can be found in [./data/norge/](./data/norge/) along with the scripts used to port it to PostGIS. The only manual step remaining is geocoding, which was done via a free of charge online geocoder and exported as CSV.
-
-Currently porting to also run on MySQL. Check the `packages/config` for options.
+Soem work has been done to port to MySQL, but the big `update.sql` has yet to be tackled.
 
 ## State of the data
 
@@ -75,18 +75,13 @@ Please fix anything you can or suggest a better way of doing things.
 ## Todo:
 
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
-* Fix all dates
-* Add to dateitme `Obs  startet kl (32)` (eg `19.45`)
-* Link to full details
+* Clean the start time column and add to the dateitme column: (which was `Obs  startet kl (32)` but is not `start_time`).
 * Tests.
 * Logger transports/etc
 * Store bounds and filter settings in the URI (4h)
 * Highlight on map feature chosen in report or click on
 * Initialise with map extent rather than center
 * Server should infer cluster size (`cluster_eps`) from zoom level.
-* Expose more data: 
-  * shape, colour, direction, etc from lin columns
-  * Include `Hvor lenge iakttok?(35)`
 
 ## DB
 
