@@ -14,7 +14,9 @@
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området",
         "open": "Åpne",
-        "close": "Lukke"
+        "close": "Lukke",
+        "shape": "Form",
+        "duration_seconds": "Varighet (sekunder)"
     },
     "search_text": {
         "title": "Søk etter tre tegn eller malm",

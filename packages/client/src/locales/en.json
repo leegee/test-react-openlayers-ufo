@@ -14,7 +14,9 @@
         "report": "Report",
         "no_data": "No data for the visible area",
         "open": "Open",
-        "close": "Close"
+        "close": "Close",
+        "shape": "Shape",
+        "duration_seconds": "Duration (seconds)"
     },
     "search_text": {
         "title": "Search for three characters or more",
