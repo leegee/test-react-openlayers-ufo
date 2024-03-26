@@ -76,8 +76,6 @@ When viewing points, clicking the date range calendar icon  shows a histogram of
 
 ## Technical
 
-Locations of sightings were semi-manually geocoded from the locations given in the original MS Access database, which was converted to both Postgres and MySQL by a trial version of [Exportizer Enterprise](https://www.vlsoftware.net/exportizer/). The [data/norge/](data/norge/) directory contains those dumps, as well as scripts used to restore relations between the tables, convert the column names to English (since we hope to add Swedish and other data too), as well as cleaning dates and some other values.
-
 All state is controlled by the Redux 'slices':
 
 - `gui`: the state of the interface
@@ -96,7 +94,11 @@ Soem work has been done to port to MySQL, but the big `update.sql` has yet to be
 
 Location data is stored in EPSG:3857 for speed, with the API accepting EPSG:4326/WGS84 for legibility.
 
-### The Current State of the data
+## The Current State of the data
+
+### UFO Norge
+
+Locations of sightings were semi-manually geocoded from the locations given in the original MS Access database, which was converted to both Postgres and MySQL by a trial version of [Exportizer Enterprise](https://www.vlsoftware.net/exportizer/). The [data/norge/](data/norge/) directory contains those dumps, as well as scripts used to restore relations between the tables, convert the column names to English (since we hope to add Swedish and other data too), as well as cleaning dates and some other values.
 
 Some effort has been put into massaging dates into usable state (`197?-13-31` was no use), as well as to geocode the sighting locations to gain latitude and longitude to plot.
 
@@ -108,6 +110,12 @@ However, there are still lots of entries such as:
     Hvor befant de dem(4,1,2)	  false
 
 I've had to rename these as part of the move to MYSQL. Perhaps they relate to the `hovedtabell querybaerum` table?
+
+### MUFON
+
+Some kind soul has done most of the above for the [MUFON dataset](data\mufon\datapackage.info.json) avaiable through Kaggle.
+
+See [./data/mufon/](./data/mufon/) for details. The data is not as verbose, but does cover quite a large area.
 
 ## Todo:
 
