@@ -30,6 +30,8 @@
 
     .tr.selected {
         outline: 1px solid var(--ufo-brand-clr);
+        background-color: var(--ufo-brand-clr);
+        color: black;
     }
 
     .th {

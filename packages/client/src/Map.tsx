@@ -12,6 +12,7 @@ import TileLayer from 'ol/layer/Tile';
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from './redux/mapSlice';
+import { setSelectionId } from './redux/guiSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import { EVENT_SHOW_POINT, ShowPointEventType, showPoint } from './custom-events/point-show';
@@ -64,6 +65,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
     if (clickedFeature && !didOneFeature) {
       // Clicked a clsuter
       if (clickedFeature.get('cluster_id')) {
+        dispatch(setSelectionId(undefined));
         map!.getView().animate({
           center: e.coordinate,
           zoom: config.zoomLevelForPoints,
@@ -73,8 +75,10 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
       }
       else {
         // Clicked a point
+        const id = clickedFeature.get('id');
         dispatch(resetDates());
-        showPoint(clickedFeature.get('id'));
+        dispatch(setSelectionId(id));
+        showPoint(id);
       }
       didOneFeature = true;
     }

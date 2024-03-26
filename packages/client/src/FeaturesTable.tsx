@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { showPointByCoords } from './custom-events/point-show';
-import { setPanel } from './redux/guiSlice';
+import { setPanel, setSelectionId } from './redux/guiSlice';
 
 import './FeatureTable.css';
 
@@ -36,7 +36,8 @@ const highlightText = (q: string | undefined, text: string) => {
 
 const FeatureTable: React.FC = () => {
     const dispatch = useDispatch();
-    const featureCollection = useSelector((state: any) => state.map.featureCollection);
+    const featureCollection = useSelector((state: RootState) => state.map.featureCollection);
+    const { selectionId } = useSelector((state: RootState) => state.gui);
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
 
@@ -46,9 +47,14 @@ const FeatureTable: React.FC = () => {
         }
     }, [featureCollection]);
 
+    function getRowClass(id: number | string) {
+        return selectionId && selectionId === Number(id) ? 'tr selected' : 'tr';
+    }
+
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
         dispatch(setPanel('narrow'));
         showPointByCoords(feature.geometry.coordinates);
+        dispatch(setSelectionId(feature.properties.id));
     }
 
     function gotoFulLReport(_id: string) {
@@ -84,10 +90,11 @@ const FeatureTable: React.FC = () => {
                     })
                     .map((feature: any, index: number) => (
 
-                        <div className='tr' key={index} id={getRowId(feature.properties.id)} title={
-                            (feature.properties.search_score ? feature.properties.search_score : 'unscored')
-                            + ' ' + feature.properties.datetime
-                        }>
+                        <div className={getRowClass(feature.properties.id)}
+                            key={index} id={getRowId(feature.properties.id)} title={
+                                (feature.properties.search_score ? feature.properties.search_score : 'unscored')
+                                + ' ' + feature.properties.datetime
+                            }>
                             <div className='td datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{

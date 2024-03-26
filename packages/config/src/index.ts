@@ -70,7 +70,7 @@ const config: ConfigType = {
     }
   },
   zoomLevelForPoints: 8,
-  zoomLevelForPointDetails: 12,
+  zoomLevelForPointDetails: 10,
   minQLength: 3,
 };
 
