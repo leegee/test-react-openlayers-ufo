@@ -61,6 +61,9 @@ export async function search(ctx: Context) {
         else if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
         }
+        else if (config.TESTING_GL) {
+            sql = geoJsonForPoints(sqlBits);
+        }
         else {
             sql = geoJsonForClusters(sqlBits, userArgs);
         }

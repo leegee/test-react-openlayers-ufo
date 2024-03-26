@@ -37,6 +37,7 @@ export type ConfigType = {
   zoomLevelForPoints: number;
   zoomLevelForPointDetails: number;
   minQLength: number;
+  TESTING_GL: boolean;
 };
 
 const config: ConfigType = {
@@ -72,6 +73,7 @@ const config: ConfigType = {
   zoomLevelForPoints: 8,
   zoomLevelForPointDetails: 11,
   minQLength: 3,
+  TESTING_GL: true,
 };
 
 if (isMysql) {

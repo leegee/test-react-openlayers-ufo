@@ -29,8 +29,10 @@
         background-color: var(--ufo-primary-bg-highlight);
     }
 
-    .tr:hover {
+    .tbody .tr:hover {
         outline: 1px solid var(--ufo-brand-clr);
+        background: var(--ufo-brand-clr);
+        color: black;
     }
 
     .tr.selected {

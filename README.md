@@ -119,6 +119,8 @@ See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as 
 
 ## Todo:
 
+Currently looking at using a WebGL layer to render many more points at once, sacrificing the text in the panel on the left.
+
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Clean the start time column and add to the dateitme column: (which was `Obs  startet kl (32)` but is not `start_time`).
 * Tests.
