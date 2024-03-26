@@ -22,11 +22,15 @@
         position: relative;
         display: flex;
         justify-content: flex-start;
-        align-items: center;
+        align-items: flex-start
     }
 
     .tr:nth-child(even) {
         background-color: var(--ufo-primary-bg-highlight);
+    }
+
+    .tr:hover {
+        outline: 1px solid var(--ufo-brand-clr);
     }
 
     .tr.selected {
@@ -63,6 +67,23 @@
     .td.location_text {
         margin-left: 0.2em;
         width: auto;
+        text-transform: capitalize;
+    }
+
+    .th.report_text,
+    .td.report_text {
+        width: auto;
+        flex: 1;
+    }
+
+    .shape {
+        min-width: 7em;
+        max-width: 7em;
+    }
+
+    .duration_seconds {
+        min-width: 4em;
+        max-width: 4em;
     }
 
     .th.ctrls,
@@ -117,7 +138,7 @@
 
     .row-goto-details:after {
         font-size: 120%;
-        content: '▶';
+        content: '📄';
         /* content: '🛈'; */
     }
 

@@ -69,6 +69,7 @@ const FeatureTable: React.FC = () => {
                     <div className='th location_text'>{get('feature_table.location')}</div>
                     <div className='th report_text hideable'>{get('feature_table.report')}</div>
                     <div className='th shape hideable'>{get('feature_table.shape')}</div>
+                    <div className='th shape duration_seconds'>{get('feature_table.duration_seconds')}</div>
                     <div className='th ctrls'>
                         <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
                         <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
@@ -92,10 +93,7 @@ const FeatureTable: React.FC = () => {
 
                         <div className={getRowClass(feature.properties.id)}
                             ref={feature.properties.id === selectionId ? selectedRowRef : null}
-                            key={index} id={getRowId(feature.properties.id)} title={
-                                (feature.properties.search_score ? feature.properties.search_score : 'unscored')
-                                + ' ' + feature.properties.datetime
-                            }>
+                            key={index} id={getRowId(feature.properties.id)}>
                             <div className='td datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{
@@ -105,8 +103,8 @@ const FeatureTable: React.FC = () => {
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
                             <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text)}</div>
                             <div className='td shape hideable'>{highlightText(q, feature.properties.shape)}</div>
+                            <div className='td duration_seconds hideable'>{highlightText(q, feature.properties.duration_seconds)}</div>
                             <div className='td ctrls'>
-                                {/* <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} /> */}
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
                                 <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
                             </div>

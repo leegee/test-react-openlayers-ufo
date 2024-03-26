@@ -65,7 +65,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         const hue = 180;
         let alpha = 1;
         if (score) {
-            (feature as Feature).set('zIndex', score * 2);
+            // (feature as Feature).set('zIndex', score * 2);
             alpha = score + 0.2;
             if (alpha < 0.55) alpha = 0.55;
             console.log(alpha);
@@ -78,8 +78,8 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
                 }),
                 stroke: new Stroke(
                     selected ? {
-                        color: 'hsl(40,100%,40%)',
-                        width: 5
+                        color: 'hsl(40,100%,60%)',
+                        width: 8
                     } : {
                         color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
                         width: 2
