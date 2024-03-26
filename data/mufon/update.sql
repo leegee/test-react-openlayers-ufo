@@ -18,8 +18,8 @@ ALTER TABLE sightings
   ALTER COLUMN latitude TYPE double precision USING latitude::double precision,
   ALTER COLUMN longitude TYPE double precision USING longitude::double precision;
 
-UPDATE sightings SET location_text = city || ' ' || state || ' ' || country;
-UPDATE sightings SET "address" = city || ' ' || state || ' ' || country;
+UPDATE sightings SET location_text = city || ' ' || COALESCE(state, '') || ' ' || COALESCE(country, '');
+UPDATE sightings SET "address" = location_text;
 UPDATE sightings SET datetime_original = datetime;
 
 UPDATE sightings

@@ -1,6 +1,11 @@
+/**
+ * Until the MUFON Kaggle and Norege UFO databases are merged, their hard-coded names
+ * (from config.db.database) control some SQL.
+ */
 import { Context } from 'koa';
 
 import { FetchSightingDetailsResponse } from '@ufo-monorepo-test/common-types/src';
+import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from '../middleware/errors';
 
 export async function details(ctx: Context) {
@@ -22,7 +27,9 @@ export async function details(ctx: Context) {
 
     try {
         // let sql = 'SELECT * FROM sightings WHERE id=$1';
-        let sql = `SELECT sightings.*, 
+        let sql = config.db.database === 'ufo' ?
+            `SELECT * FROM sightings WHERE id=$1`
+            : `SELECT sightings.*,
         observed_via.*, 
         yes_no_dontknow.*, 
         sky_condition.*, 
