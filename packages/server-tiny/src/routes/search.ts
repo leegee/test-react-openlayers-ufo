@@ -15,6 +15,10 @@ type SqlBitsType = {
     orderByClause?: string[],
 };
 
+const baseEPS: number = 0.01;
+const maxZoom: number = 18;
+const minZoom: number = 0;
+
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
         msg: '',
@@ -58,7 +62,7 @@ export async function search(ctx: Context) {
             sql = geoJsonForPoints(sqlBits);
         }
         else {
-            sql = geoJsonForClusters(sqlBits);
+            sql = geoJsonForClusters(sqlBits, userArgs);
         }
 
         const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_: string, index: number) => {
@@ -339,11 +343,20 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
                 WHERE ${sqlBits.whereColumns.join(' AND ')}
                 ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
         ) AS s
-    ) AS fc
-        `;
+    ) AS fc`;
 }
 
-function geoJsonForClusters(sqlBits: SqlBitsType) {
+
+function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
+    // const eps = config.gui.map.cluster_eps_metres;
+    const eps: number =
+        userArgs.zoom < 5 ? config.gui.map.cluster_eps_metres * 2
+            : userArgs.zoom < 6 ? config.gui.map.cluster_eps_metres
+                : userArgs.zoom < 7 ? config.gui.map.cluster_eps_metres
+                    : userArgs.zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
+                        : config.gui.map.cluster_eps_metres / 2;
+
+
     return config.db.engine === 'postgis' ?
         `SELECT jsonb_build_object(
             'type', 'FeatureCollection',
@@ -367,7 +380,7 @@ function geoJsonForClusters(sqlBits: SqlBitsType) {
             COUNT(*) AS num_points
                 FROM(
                 SELECT 
-                        ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                        ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
                 point
                     FROM sightings
                     WHERE ${sqlBits.whereColumns.join(' AND ')}
