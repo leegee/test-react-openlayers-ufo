@@ -16,12 +16,14 @@
   # After installing the DB and editing the config:
   npm install
 
-  # Either
+  # For dev, either
   npm run dev:api &
   npm run dev:client
-
-  # Or to do both via 'concurrently':
+  # or to do both via 'concurrently':
   npm start
+
+  # For production
+  npm run build -ws
 ```
 
 ## Description
