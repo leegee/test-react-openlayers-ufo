@@ -1,8 +1,3 @@
-// FeatureTable.tsx
-/**
- * Some place names are very long on smaller screns, forcing controls out of the table
- * Could float the controls over and on the right of the locatino_text.
- */
 import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
