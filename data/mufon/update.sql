@@ -18,12 +18,6 @@ UPDATE sightings
 UPDATE sightings
   SET duration_seconds = CAST(REGEXP_REPLACE(duration_seconds, '[^0-9.]', '', 'g') AS NUMERIC(10, 2));
 
--- UPDATE sightings
---   SET point = ST_Transform(
---     ST_SetSRID( ST_MakePoint(longitude::numeric, latitude::numeric)::geometry, 4326)::point,
---     3857
---   );
-
 UPDATE sightings 
   SET point = ST_Transform(
     ST_SetSRID( ST_MakePoint(longitude, latitude ), 4326),
