@@ -67,7 +67,8 @@ const FeatureTable: React.FC = () => {
                 <div className='tr'>
                     <div className='th datetime'>{get('feature_table.date')}</div>
                     <div className='th location_text'>{get('feature_table.location')}</div>
-                    <div className='th report_text'>{get('feature_table.report')}</div>
+                    <div className='th report_text hideable'>{get('feature_table.report')}</div>
+                    <div className='th shape hideable'>{get('feature_table.shape')}</div>
                     <div className='th ctrls'>
                         <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
                         <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
@@ -102,7 +103,8 @@ const FeatureTable: React.FC = () => {
                                 }</span>
                             </div>
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
-                            <div className='td report_text'>{highlightText(q, feature.properties.report_text)}</div>
+                            <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text)}</div>
+                            <div className='td shape hideable'>{highlightText(q, feature.properties.shape)}</div>
                             <div className='td ctrls'>
                                 {/* <span className='ctrl row-goto-full-report' onClick={() => gotoFulLReport(feature.properties.id)} /> */}
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />

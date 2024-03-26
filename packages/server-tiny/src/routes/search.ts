@@ -200,6 +200,10 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     //     whereColumns.push("datetime_invalid IS NOT true");
     // }
 
+    if (config.db.database === 'ufo') {
+        selectColumns.push('shape', 'duration')
+    }
+
     const rv: SqlBitsType = {
         selectColumns: selectColumns,
         whereColumns: whereColumns,
