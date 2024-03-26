@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -32,8 +32,19 @@ const FeatureTable: React.FC = () => {
     const dispatch = useDispatch();
     const featureCollection = useSelector((state: RootState) => state.map.featureCollection);
     const { selectionId } = useSelector((state: RootState) => state.gui);
-    const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const { q } = useSelector((state: RootState) => state.map);
+    const [localFeatures, setLocalFeatures] = useState<any[]>([]);
+    const selectedRowRef = useRef<HTMLDivElement>(null);
+
+    // Scroll the selected row into view when user selectionchanges, if it is not already visible
+    useEffect(() => {
+        if (selectedRowRef.current) {
+            const rect = selectedRowRef.current.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                selectedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            }
+        }
+    }, [selectionId]);
 
     useEffect(() => {
         if (featureCollection) {
@@ -79,6 +90,7 @@ const FeatureTable: React.FC = () => {
                     .map((feature: any, index: number) => (
 
                         <div className={getRowClass(feature.properties.id)}
+                            ref={feature.properties.id === selectionId ? selectedRowRef : null}
                             key={index} id={getRowId(feature.properties.id)} title={
                                 (feature.properties.search_score ? feature.properties.search_score : 'unscored')
                                 + ' ' + feature.properties.datetime
