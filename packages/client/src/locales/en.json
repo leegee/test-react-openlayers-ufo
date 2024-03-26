@@ -17,8 +17,8 @@
         "close": "Close"
     },
     "search_text": {
-        "title": "Search",
-        "placeholder": "Search"
+        "title": "Search for three characters or more",
+        "placeholder": "Search here"
     },
     "date_range": {
         "title": "Date range",

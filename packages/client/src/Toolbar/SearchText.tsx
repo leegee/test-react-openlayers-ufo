@@ -34,6 +34,7 @@ const SearchText: React.FC = () => {
             <span className='grey search-icon' />
             <input
                 title={get('search_text.title')}
+                aria-label={get('search_text.title')}
                 type='search'
                 id='q'
                 name='q'

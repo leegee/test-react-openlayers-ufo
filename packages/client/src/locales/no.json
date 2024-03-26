@@ -17,8 +17,8 @@
         "close": "Lukke"
     },
     "search_text": {
-        "title": "Søk",
-        "placeholder": "Søk"
+        "title": "Søk etter tre tegn eller malm",
+        "placeholder": "Søk her"
     },
     "date_range": {
         "title": "Datoperiode",
