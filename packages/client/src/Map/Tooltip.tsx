@@ -25,9 +25,10 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         let featureCount = 0;
         let feature: FeatureLike | undefined = undefined;
         event.map.forEachFeatureAtPixel(event.pixel, (_feature) => {
-            if (_feature.get(FEATURE_IS_HIGHLIGHT_PROP)) {
-                return;
-            }
+            // Can't recall why I did this:
+            // if (_feature.get(FEATURE_IS_HIGHLIGHT_PROP)) {
+            //     return;
+            // }
             featureCount++;
             feature = _feature;
         });
@@ -48,6 +49,10 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                 tooltipContent += (feature as FeatureLike).get('location_text');
                 if (featureCount > 1) {
                     tooltipContent += ' x' + featureCount;
+                }
+                const score = (feature as FeatureLike).get('search_score');
+                if (score) {
+                    tooltipContent += '<br/>Search score: ' + score;
                 }
             }
             else {
