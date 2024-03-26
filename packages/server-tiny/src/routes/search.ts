@@ -201,7 +201,7 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     // }
 
     if (config.db.database === 'ufo') {
-        selectColumns.push('shape', 'duration')
+        selectColumns.push('shape', 'duration_seconds')
     }
 
     const rv: SqlBitsType = {
@@ -354,11 +354,12 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
     // const eps = config.gui.map.cluster_eps_metres;
     const eps: number =
-        userArgs.zoom < 5 ? config.gui.map.cluster_eps_metres * 2
-            : userArgs.zoom < 6 ? config.gui.map.cluster_eps_metres
-                : userArgs.zoom < 7 ? config.gui.map.cluster_eps_metres
-                    : userArgs.zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
-                        : config.gui.map.cluster_eps_metres / 2;
+        userArgs.zoom < 3 ? config.gui.map.cluster_eps_metres * 4
+            : userArgs.zoom < 5 ? config.gui.map.cluster_eps_metres * 2
+                : userArgs.zoom < 6 ? config.gui.map.cluster_eps_metres
+                    : userArgs.zoom < 7 ? config.gui.map.cluster_eps_metres
+                        : userArgs.zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
+                            : config.gui.map.cluster_eps_metres / 2;
 
 
     return config.db.engine === 'postgis' ?
