@@ -77,15 +77,19 @@
     .td.ctrls {
         display: none;
         position: absolute;
-        right: 0;
         top: 50%;
-        transform: translateY(-50%);
+        transform: translateY(-50%) translateX(-50%);
         background: var(--ufo-primary-bg-highlight);
         border-radius: 4pt;
+        right: unset;
+        left: 50%;
+        width: 6em;
+        align-items: center;
+        justify-content: space-evenly
     }
 
     .tr:hover .td.ctrls {
-        display: block;
+        display: flex;
     }
 
     .ctrl {
