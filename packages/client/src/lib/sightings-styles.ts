@@ -68,10 +68,12 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         style = new Style({
             image: new Circle({
                 radius: 10,
-                fill: new Fill({ color: `hsl(${hue}, ${bgSaturation}%, ${bgLightness}%)` }),
+                fill: new Fill({
+                    color: selected ? 'hsl(40,100%,70%)' : `hsl(${hue}, ${bgSaturation}%, ${bgLightness}%)`
+                }),
                 stroke: new Stroke(
                     selected ? {
-                        color: 'hsl(40,100%,70%)',
+                        color: 'hsl(40,100%,40%)',
                         width: 5
                     } : {
                         color: `hsl(${hue}, ${borderSaturation}%, ${borderLightness}%)`,
