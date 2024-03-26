@@ -115,7 +115,7 @@ I've had to rename these as part of the move to MYSQL. Perhaps they relate to th
 
 Some kind soul has done most of the above for the [MUFON dataset](data\mufon\datapackage.info.json) avaiable through Kaggle.
 
-See [./data/mufon/](./data/mufon/) for details. The data is not as verbose, but does cover quite a large area.
+See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as verbose, but does cover quite a large area. The text had some HTML entities good and bad (soem of tabs and commas, presumably from others' ingestion), which are tidied by the SQL ingestion scripts.
 
 ## Todo:
 
