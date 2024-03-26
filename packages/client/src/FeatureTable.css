@@ -4,6 +4,7 @@
     position: relative;
     display: block;
     background-color: var(--ufo-primary-bg);
+    padding-bottom: 1em;
 }
 
 #feature-table {
