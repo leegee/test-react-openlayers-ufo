@@ -45,3 +45,28 @@ CREATE INDEX ON sightings USING GIST (point);
 SELECT COUNT(*) AS total_in_table FROM sightings;
 
 SELECT COUNT(*) AS no_lat_lng FROM sightings WHERE point IS NULL;
+
+
+-- HTML entity conversion:
+CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
+RETURNS TEXT AS $$
+DECLARE
+    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&apos;', '&aring;', '&oslash;'];
+    utf8_map TEXT[] := ARRAY['&', '<', '>', '"', '''', 'å', 'ø'];
+    i INTEGER;
+BEGIN
+    FOR i IN 1..array_length(entity_map, 1) LOOP
+        input_text := REPLACE(input_text, entity_map[i], utf8_map[i]);
+    END LOOP;
+    
+    RETURN input_text;
+END;
+$$ LANGUAGE plpgsql;
+
+UPDATE sightings
+SET report_text = decode_html_entities(report_text);
+
+UPDATE sightings SET report_text = regexp_replace(report_text, '&#39', '''', 'g');
+UPDATE sightings SET report_text = regexp_replace(report_text, '&#9;', ' ', 'g');
+UPDATE sightings SET report_text = regexp_replace(report_text, '&#44', ', ', 'g');
+UPDATE sightings SET report_text = regexp_replace(report_text, '&#160;', ', ', 'g');
