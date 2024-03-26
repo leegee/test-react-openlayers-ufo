@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
+set -e
 
 export DUMP_DIR=./pg-dump
 
 cd ${DUMP_DIR}
 
-rm *.sql*
+shopt -s nullglob
+files=(*.sql*)
+if [[ ${#files[@]} -gt 0 ]]; then
+    rm *.sql*
+fi
 
 pg_dump -d norge | split -b 50m - norge_part.sql
 
