@@ -89,35 +89,32 @@ Using PostGIS, storing data in EPSG:3857 for speed, with the API accepting EPSG:
 
 ## Pics
 
-Points are clustered when zoomed out:
+Sightings are clustered when zoomed out:
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181056.png)
+![Initial view](./docs/images/init.png)
 
-One can toggle between three different base maps:
+When the map is zoomed in or searched, sightings are displayed on the map and in an abbreviated table:
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20202144.png)
+![Sightings](./docs/images/search-text.png)
 
-Zoom in to clusters to view individual sightings, with a list of their reported dates and locations:
+Selecting a point highlights it:
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181156.png)
+![Highlights](./docs/images/selection.png)
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181241.png)
+Clicking the arrow in the head of the abbreviated table opens the full table:
 
-Search the visible area of the map for text that appears in the report (location, report text, more later):
+![Report](./docs/images/wide-report.png)
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20202028.png)
+Both tables give access to the details of the full report:
 
-After making a search query, points are displayed.
+![Details](./docs/images/details.png)
 
-Whenever points are displayed, the date range input is populated with the minimum and maximum values of the visible points:
+At any time, the visible sightings can be downloaded as a CSV:
 
-![Date range input screenshot](./docs/images/date-range.png)
+![Download](./docs/images/save-csv.png)
 
-The table on the left links to the full report, which will in time link to all the available data:
+![CSV](./docs/images/csv.png)
 
-![Screenshot](./docs/images/Screenshot%202024-03-17%20181317.png)
+When viewing points, clicking the date range calendar icon  shows a histogram of the sightings by year:
 
-Clicking the date range when viewing points shows a histogram:
 ![Histogram](./docs/images/histogram.png)
-
-.
