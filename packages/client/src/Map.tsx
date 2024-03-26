@@ -78,7 +78,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
         const id = clickedFeature.get('id');
         dispatch(resetDates());
         dispatch(setSelectionId(id));
-        showPoint(id);
+        // showPoint(id);
       }
       didOneFeature = true;
     }
@@ -119,7 +119,7 @@ const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const pointsCount = useSelector(selectPointsCount);
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
-  const { panel: panelState } = useSelector((state: RootState) => state.gui);
+  const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -137,31 +137,15 @@ const OpenLayersMap: React.FC = () => {
     setTheme(basemapSource);
   }, [basemapSource]);
 
+  // Re-render visible layers when user selects a point
   useEffect(() => {
-    const handleShowPointEvent = (e: ShowPointEventType) => {
-      let feature;
-      if (e.detail.id) {
-        feature = findFeatureById(pointsLayer, e.detail.id);
+    Object.values(mapLayers).forEach((layer) => {
+      if (layer.getVisible()) {
+        const source = layer.getSource();
+        source?.changed();
       }
-      if (feature) {
-        centerMapOnFeature(mapRef.current!, feature);
-      }
-      else if (e.detail.coords && mapRef.current) {
-        mapRef.current.getView().animate({
-          center: e.detail.coords,
-          zoom: config.zoomLevelForPointDetails,
-          duration: 500,
-          easing: easeOut
-        });
-      }
-    };
-
-    document.addEventListener(EVENT_SHOW_POINT, handleShowPointEvent as EventListener);
-
-    return () => {
-      document.removeEventListener(EVENT_SHOW_POINT, handleShowPointEvent as EventListener);
-    };
-  }, []);
+    });
+  }, [mapRef.current, selectionId]);
 
   useEffect(() => {
     let map: Map | null = null;
