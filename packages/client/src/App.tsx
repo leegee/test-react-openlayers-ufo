@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
+import { RootState } from './redux/store';
 import Map from './Map';
-import Panel from './ResultsPanel';
+import ResultsPanel from './ResultsPanel';
 import Toolbar from './Toolbar';
 import Modal from './Modal';
 import About from './Modal/About';
@@ -12,8 +14,6 @@ import Histogram from './Histogram';
 import SightingDetails from './SightingDetails';
 
 import './App.css';
-import { useSelector } from 'react-redux';
-import { RootState } from 'redux/store';
 
 function setScreenSizeClass() {
   if (window.innerWidth < 768) {
@@ -54,14 +54,14 @@ const App: React.FC = () => {
             <Route path="/about" element={<Modal><About /></Modal>} />
             <Route path="/contact" element={<Modal><Contact /></Modal>} />
             <Route path="/sighting/:id" element={<SightingDetails />} />
-            <Route path="/histogram/dates" element={<Modal><Histogram /></Modal>} />
+            <Route path="/histogram/dates" element={<Histogram />} />
             <Route path="/" element={<span />} />{/* noop */}
           </Routes>
 
           <Toolbar />
           <div className='map-panel-container'>
             <Map />
-            <Panel />
+            <ResultsPanel />
           </div>
         </>
       </BrowserRouter>

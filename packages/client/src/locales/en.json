@@ -20,6 +20,9 @@
         "title": "Search for three characters or more",
         "placeholder": "Search here"
     },
+    "histogram": {
+        "title": "Sightings by year"
+    },
     "date_range": {
         "title": "Date range",
         "histogram-button": "View date histogram",

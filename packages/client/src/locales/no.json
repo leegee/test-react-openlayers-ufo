@@ -20,6 +20,9 @@
         "title": "Søk etter tre tegn eller malm",
         "placeholder": "Søk her"
     },
+    "histogram": {
+        "title": "Observasjoner etter år"
+    },
     "date_range": {
         "title": "Datoperiode",
         "histogram-button": "Se datodiagram",

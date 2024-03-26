@@ -4,13 +4,11 @@ import { useSelector } from 'react-redux';
 
 import config from '@ufo-monorepo-test/config/src';
 import { type RootState } from '../redux/store';
-import { mapScoreToHue } from '../lib/sightings-styles';
 import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
 
 import './Status.css';
 
 const Panel: React.FC = () => {
-    const { q } = useSelector((state: RootState) => state.map);
     const { locale } = useSelector((state: RootState) => state.gui);
     const pointsCount = useSelector(selectPointsCount);
     const clusterCount = useSelector(selectClusterCount);

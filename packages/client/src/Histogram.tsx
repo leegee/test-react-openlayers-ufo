@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { get } from 'react-intl-universal';
 import { Bar } from 'react-chartjs-2';
+import { useSelector } from 'react-redux';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
+
 import { selectPointsCount } from './redux/mapSlice';
 import { RootState } from 'redux/store';
+import Modal from './Modal';
+
+import './Histogram.css';
 
 ChartJS.register(
     CategoryScale,
@@ -63,7 +68,7 @@ const Histogram: React.FC = () => {
                 },
                 title: {
                     display: false,
-                    text: `Sightings by Year ${yearOneCount && ` (Excludes ${yearOneCount} sightings without parsable dates.)`}`,
+                    text: get('histogram.title'),
                 },
             }
         };
@@ -84,15 +89,11 @@ const Histogram: React.FC = () => {
 
 
     return pointsCount ? (
-        <section>
-            {/* <h2>
-                {yearOneCount && (<small>
-                    &nbsp;(Excludes {yearOneCount} sightings without parsable dates.)
-                </small>)}
-            </h2> */}
-            {data && <Bar data={data} options={options} />}
-
-        </section>
+        <Modal title={get('histogram.title')}>
+            <section>
+                {data && <Bar data={data} options={options} />}
+            </section>
+        </Modal>
     ) : '';
 };
 
