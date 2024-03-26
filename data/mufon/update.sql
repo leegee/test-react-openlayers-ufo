@@ -4,16 +4,23 @@ ALTER TABLE sightings
   ALTER COLUMN datetime TYPE DATE USING TO_DATE(datetime, 'MM/DD/YYYY'),
   ADD COLUMN source VARCHAR(25) CHECK (source IN ('mufon-kaggle')),
   ADD COLUMN point GEOMETRY(POINT, 3857),
-  ADD COLUMN location_text VARCHAR(255);
+  ADD COLUMN location_text VARCHAR(255),
+  ADD COLUMN address VARCHAR(255),
+  ADD COLUMN datetime_invalid BOOLEAN default false,
+  ADD COLUMN datetime_original VARCHAR(40);
 
 ALTER TABLE sightings RENAME COLUMN comments TO report_text;
+
+ALTER TABLE sightings ADD COLUMN id SERIAL PRIMARY KEY;
+UPDATE sightings SET id = nextval(pg_get_serial_sequence('sightings', 'id'));
 
 ALTER TABLE sightings
   ALTER COLUMN latitude TYPE double precision USING latitude::double precision,
   ALTER COLUMN longitude TYPE double precision USING longitude::double precision;
 
-UPDATE sightings 
-  SET location_text = city || ' ' || state || ' ' || country;
+UPDATE sightings SET location_text = city || ' ' || state || ' ' || country;
+UPDATE sightings SET "address" = city || ' ' || state || ' ' || country;
+UPDATE sightings SET datetime_original = datetime;
 
 UPDATE sightings
   SET duration_seconds = CAST(REGEXP_REPLACE(duration_seconds, '[^0-9.]', '', 'g') AS NUMERIC(10, 2));
