@@ -124,7 +124,7 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
     let sql = '';
 
     // No clustering when zoomed in
-    if (userArgs.z > 9) {
+    if (userArgs.z >= config.zoomLevelForPoints) {
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
             FROM (
                 SELECT ${sqlBits.selectColumns.join(', ')},
