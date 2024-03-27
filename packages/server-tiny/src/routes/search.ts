@@ -99,89 +99,10 @@ async function streamCsv(ctx, sql, sqlBits) {
     bodyStream.end();
 }
 
-// @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
 export async function mvt(ctx: Context) {
     const userArgs: MvtParams | null = getCleanMvtArgs(ctx.request.query, ctx.params,);
-    let sql = '';
 
-    // No clustering when zoomed in
-    if (userArgs.z > 9) {
-        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-        FROM (
-            SELECT id, datetime, location_text,
-                ST_AsMvtGeom(
-                point,
-                BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-                4096,
-                256,
-                true
-                ) AS geom
-            FROM sightings
-            WHERE point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-            AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-        ) AS q;`;
-    }
-
-    else {
-        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-        // FROM (
-        //   SELECT
-        //     cluster_id,
-        //     COUNT(*) as num_points,
-        //     ST_AsMVTGeom(
-        //       ST_Centroid(ST_Collect(point)),
-        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-        //       4096,
-        //       256,
-        //       true
-        //     ) AS geom
-        //   FROM (
-        //     SELECT
-        //       ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
-        //       point
-        //     FROM sightings
-        //     WHERE
-        //       point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-        //       AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-        //   ) AS clusters
-        //   GROUP BY cluster_id
-        // ) AS q;`;
-
-        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-        FROM (
-          SELECT 
-            cluster_id,
-            COUNT(*) as num_points,
-            ST_AsMVTGeom(
-              CASE
-                WHEN COUNT(*) = 1 THEN ST_Collect(point)
-                ELSE ST_Centroid(ST_Collect(point))
-              END,
-              BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-              4096,
-              256,
-              true
-            ) AS geom,
-            -- Include additional data for single points
-            MAX(id) as id,
-            MAX(datetime) as datetime,
-            MAX(location_text) as location_text
-          FROM (
-            SELECT 
-              ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
-              id,
-              datetime,
-              location_text,
-              point
-            FROM sightings
-            WHERE 
-              point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-              AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-          ) AS clusters
-          GROUP BY cluster_id
-        ) AS q;`;
-
-    }
+    const sql = sqlForMvt(userArgs);
 
     try {
         const { rows } = await ctx.dbh.query(sql);
@@ -203,32 +124,98 @@ export async function mvt(ctx: Context) {
     }
 }
 
-function constructSqlBits(userArgs: QueryParams): SqlBitsType {
+// @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
+function sqlForMvt(userArgs): string {
+    const sqlBits = constructSqlBits(userArgs, false);
+    let sql = '';
+
+    // No clustering when zoomed in
+    if (userArgs.z > 9) {
+        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+            FROM (
+                SELECT id, datetime, location_text,
+                    ST_AsMvtGeom(
+                    point,
+                    BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+                    4096,
+                    256,
+                    true
+                    ) AS geom
+                FROM sightings
+                WHERE point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
+                AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+            ) AS q;`;
+    }
+
+    else {
+        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+            FROM (
+              SELECT 
+                cluster_id,
+                COUNT(*) as num_points,
+                ST_AsMVTGeom(
+                  CASE
+                    WHEN COUNT(*) = 1 THEN ST_Collect(point)
+                    ELSE ST_Centroid(ST_Collect(point))
+                  END,
+                  BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+                  4096,
+                  256,
+                  true
+                ) AS geom,
+                MAX(id) as id,
+                MAX(datetime) as datetime,
+                MAX(location_text) as location_text
+              FROM (
+                SELECT 
+                  ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                  id,
+                  datetime,
+                  location_text,
+                  point
+                FROM sightings
+                WHERE 
+                  point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
+                  AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+                  ${sqlBits.whereColumns ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+              ) AS clusters
+              GROUP BY cluster_id
+            ) AS q;`;
+    }
+
+    return sql;
+}
+
+
+function constructSqlBits(userArgs: QueryParams, includeGeo = true): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
-        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original',
     ];
     const whereParams: Array<number | string> = [];
     const orderByClause: string[] = [];
 
-    if (config.db.engine === 'postgis') {
-        whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
-    } else {
-        whereColumns.push(`MBRIntersects(
+    if (includeGeo) {
+        if (config.db.engine === 'postgis') {
+            whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
+        } else {
+            whereColumns.push(`MBRIntersects(
                 point,
                 ST_Envelope(LineString(
                     PointFromWKB(Point($${whereParams.length + 1}, $${whereParams.length + 2})),
                     PointFromWKB(Point($${whereParams.length + 3}, $${whereParams.length + 4}))
                 ))
-            )`);
-    }
+            )` );
+        }
 
-    whereParams.push(
-        (userArgs as QueryParams).minlng,
-        (userArgs as QueryParams).minlat,
-        (userArgs as QueryParams).maxlng,
-        (userArgs as QueryParams).maxlat
-    );
+        selectColumns.push('point');
+        whereParams.push(
+            (userArgs as QueryParams).minlng,
+            (userArgs as QueryParams).minlat,
+            (userArgs as QueryParams).maxlng,
+            (userArgs as QueryParams).maxlat
+        );
+    }
 
     if (userArgs.q && userArgs.q !== undefined && userArgs.q !== '') {
         // Split the search parameter into individual words
