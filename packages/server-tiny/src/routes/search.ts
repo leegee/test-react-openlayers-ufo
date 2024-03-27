@@ -130,7 +130,7 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
     if (userArgs.z > 9) {
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
             FROM (
-                SELECT id, datetime, location_text,
+                SELECT ${sqlBits.selectColumns.join(', ')},
                     ST_AsMvtGeom(
                     point,
                     BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
@@ -139,9 +139,12 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
                     true
                     ) AS geom
                 FROM sightings
-                WHERE point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-                AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+                WHERE 
+                ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+                ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+                
             ) AS q;`;
+        // point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
     }
 
     else {
