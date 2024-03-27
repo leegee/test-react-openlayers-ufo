@@ -123,21 +123,55 @@ export async function mvt(ctx: Context) {
     }
 
     else {
+        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        // FROM (
+        //   SELECT
+        //     cluster_id,
+        //     COUNT(*) as num_points,
+        //     ST_AsMVTGeom(
+        //       ST_Centroid(ST_Collect(point)),
+        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+        //       4096,
+        //       256,
+        //       true
+        //     ) AS geom
+        //   FROM (
+        //     SELECT
+        //       ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+        //       point
+        //     FROM sightings
+        //     WHERE
+        //       point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
+        //       AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+        //   ) AS clusters
+        //   GROUP BY cluster_id
+        // ) AS q;`;
+
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
         FROM (
           SELECT 
             cluster_id,
             COUNT(*) as num_points,
             ST_AsMVTGeom(
-              ST_Centroid(ST_Collect(point)),
+              CASE
+                WHEN COUNT(*) = 1 THEN ST_Collect(point)
+                ELSE ST_Centroid(ST_Collect(point))
+              END,
               BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
               4096,
               256,
               true
-            ) AS geom
+            ) AS geom,
+            -- Include additional data for single points
+            MAX(id) as id,
+            MAX(datetime) as datetime,
+            MAX(location_text) as location_text
           FROM (
             SELECT 
               ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+              id,
+              datetime,
+              location_text,
               point
             FROM sightings
             WHERE 
@@ -146,6 +180,7 @@ export async function mvt(ctx: Context) {
           ) AS clusters
           GROUP BY cluster_id
         ) AS q;`;
+
     }
 
     try {
