@@ -30,7 +30,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     if (clusterSizeFromServer && clusterSizeFromServer > 1) {
         style = new Style({
             image: new Circle({
-                radius: 10,
+                radius: 15,
                 fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
@@ -61,18 +61,16 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         const selected = selectionId && selectionId === feature.get('id');
 
         const score = parseFloat(feature.get('search_score'));
-        // const hue = score ? mapScoreToHue(score) : '180';
         const hue = 180;
         let alpha = 1;
         if (score) {
-            // (feature as Feature).set('zIndex', score * 2);
             alpha = score + 0.2;
             if (alpha < 0.55) alpha = 0.55;
             console.log(alpha);
         }
         style = new Style({
             image: new Circle({
-                radius: 10,
+                radius: 8,
                 fill: new Fill({
                     color: selected ? 'hsl(40,100%,70%)' : `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`
                 }),
