@@ -87,7 +87,7 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
 
 const OpenLayersMap: React.FC = () => {
     const dispatch = useDispatch();
-    const { center, zoom, featureCollection, updateMap } = useSelector((state: RootState) => state.map);
+    const { center, zoom, updateMap } = useSelector((state: RootState) => state.map);
     const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
     const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
     const mapElementRef = useRef<HTMLDivElement>(null);
