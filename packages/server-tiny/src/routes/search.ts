@@ -120,6 +120,7 @@ export async function mvt(ctx: Context) {
 
 // @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
 function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
+    const eps = epsFromZoom(userArgs.zoom);
     let sql = '';
 
     // No clustering when zoomed in
@@ -164,7 +165,7 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
                 MAX(location_text) as location_text
               FROM (
                 SELECT 
-                  ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                  ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
                   point,
                   ${sqlBits.selectColumns.join(', ')}
                 FROM sightings
@@ -473,16 +474,18 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 }
 
 
+function epsFromZoom(zoom: number): number {
+    return zoom < 3 ? config.gui.map.cluster_eps_metres * 4
+        : zoom < 5 ? config.gui.map.cluster_eps_metres * 2
+            : zoom < 6 ? config.gui.map.cluster_eps_metres
+                : zoom < 7 ? config.gui.map.cluster_eps_metres
+                    : zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
+                        : config.gui.map.cluster_eps_metres / 2;
+}
+
 function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
     // const eps = config.gui.map.cluster_eps_metres;
-    const eps: number =
-        userArgs.zoom < 3 ? config.gui.map.cluster_eps_metres * 4
-            : userArgs.zoom < 5 ? config.gui.map.cluster_eps_metres * 2
-                : userArgs.zoom < 6 ? config.gui.map.cluster_eps_metres
-                    : userArgs.zoom < 7 ? config.gui.map.cluster_eps_metres
-                        : userArgs.zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
-                            : config.gui.map.cluster_eps_metres / 2;
-
+    const eps = epsFromZoom(userArgs.zoom);
 
     return config.db.engine === 'postgis' ?
         `SELECT jsonb_build_object(
