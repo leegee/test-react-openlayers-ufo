@@ -17,9 +17,7 @@ const customTileUrlFunction = (tileCoord: TileCoord) => {
     const x = tileCoord[1];
     const y = tileCoord[2];
     const queryString: string | undefined = selectMvtQueryString(store.getState().map);
-    const url = `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?` + (queryString || '');
-    console.log(url);
-    return url;
+    return `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?` + (queryString || '');
 };
 
 // Create VectorTileSource
@@ -44,8 +42,7 @@ export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
     };
 
     const updateProgress = () => {
-        console.log(loading, loaded, (loaded / loading) * 100);
-        const width = (loaded / loading) * 100; // EH?!!
+        const width = (loaded / loading) * 100;
         dispatch(setLoadingPc(width));
     }
 
