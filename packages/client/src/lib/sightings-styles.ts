@@ -1,6 +1,6 @@
 // lib/sightings-styles.ts.ts
 
-import Feature, { FeatureLike } from "ol/Feature";
+import type { FeatureLike } from "ol/Feature";
 import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 
 import { store } from "../redux/store";
