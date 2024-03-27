@@ -100,7 +100,7 @@ const OpenLayersMap: React.FC = () => {
         setTheme(basemapSource);
     }, [basemapSource]);
 
-    // Re-render visible layers when user selects a point
+    // Re-render visible layers when user selects a point to show highlighted selection
     useEffect(() => {
         Object.values(mapLayers).forEach((layer) => {
             if (layer.getVisible()) {
@@ -155,6 +155,10 @@ const OpenLayersMap: React.FC = () => {
             dispatch(setUpdateMap(false));
         }
     }, [updateMap, dispatch]);
+
+    useEffect(() => {
+        console.log('zoom', zoom, config.zoomLevelForPoints);
+    }, [zoom])
 
     // NB The size of the map is controlled by the state of the panel (state.gui.panel, locally aka panelState)
     return (
