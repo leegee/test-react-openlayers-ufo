@@ -192,7 +192,9 @@ const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { s
 
     let response;
     try {
-      response = await fetch(`${searchEndpoint}?${queryString}`);
+      response = await fetch(`${searchEndpoint}?${queryString}`, {
+        headers: { accept: 'application/geo+json' }
+      });
       const data = await response.json();
       dispatch(mapSlice.actions.setFeatureCollection(data));
     }
