@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
 import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
-import { FeatureLike } from 'ol/Feature';
+import Feature, { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
 import config from '@ufo-monorepo-test/config/src';
 import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
@@ -46,6 +46,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             overlay.setPosition(undefined);
         }
         else {
+            console.log('tooltip', feature);
             let tooltipContent = '';
             const location_text = (feature as FeatureLike).get('location_text');
             if (location_text) {
@@ -55,7 +56,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                         tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
                     }
                 }
-                tooltipContent += '<b font-style="font-size:120%">' + (feature as FeatureLike).get('location_text') + '</b>';
+                tooltipContent += '<b font-style="font-size:120%">' + location_text + '</b>';
                 if (features.length > 1) {
                     tooltipContent += ' x' + features.length;
                 }

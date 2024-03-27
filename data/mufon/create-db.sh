@@ -17,3 +17,4 @@ echo $INPUT_CSV
 psql -d ufo < schema.sql
 psql -d ufo -c "COPY sightings FROM '$INPUT_CSV' WITH (FORMAT CSV, HEADER);"
 psql -d ufo < update.sql
+psql -d uro < functions.sql

@@ -4,6 +4,11 @@ const env = isBrowser ? (import.meta as any).env : process.env;
 
 const isMysql = env.UFO_DB_ENGINE === 'mysql';
 
+export type EndpointType = {
+  route: string;
+  url: string;
+}
+
 export type ConfigType = {
   locale: string,
   db: {
@@ -18,8 +23,9 @@ export type ConfigType = {
     port: number;
     host: string;
     endopoints: {
-      search: string;
-      details: string;
+      search: EndpointType;
+      details: EndpointType;
+      pointsMvt: EndpointType;
     };
     searchableTextColumnNames: string[];
     debug: boolean;
@@ -54,8 +60,9 @@ const config: ConfigType = {
     port: parseInt(env.UFO_HTTP_PORT || '8080'),
     host: env.UFO_HTTP_HOST || 'http://localhost',
     endopoints: {
-      search: '/search',
-      details: '/details'
+      search: { route: '/search', url: '/search' },
+      details: { route: '/details/:id', url: '/details' },
+      pointsMvt: { route: '/tiles/:z/:x/:y.mvt', url: '/tiles/{z}/{x}/{y}.mvt' },
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,

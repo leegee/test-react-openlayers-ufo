@@ -3,7 +3,7 @@ import { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import { ParsedUrlQuery } from "querystring";
 
-import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
+import { MapDictionary, MvtParams, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from '../middleware/errors';
 import { listToCsvLine } from '../lib/csv';
@@ -11,13 +11,9 @@ import { listToCsvLine } from '../lib/csv';
 type SqlBitsType = {
     selectColumns: string[],
     whereColumns: string[],
-    whereParams: string[],
+    whereParams: Array<string | number>,
     orderByClause?: string[],
 };
-
-const baseEPS: number = 0.01;
-const maxZoom: number = 18;
-const minZoom: number = 0;
 
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
@@ -28,22 +24,6 @@ export async function search(ctx: Context) {
     };
 
     const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
-
-    if (!userArgs) {
-        throw new CustomError({
-            action: 'query',
-            msg: 'Missing request parameters',
-            details: userArgs
-        })
-    }
-
-    if (userArgs.q && userArgs.q.length < config.minQLength) {
-        throw new CustomError({
-            action: 'query',
-            msg: 'Text query too short',
-            details: { q: userArgs.q }
-        });
-    }
 
     let forErrorReporting = {};
 
@@ -61,9 +41,6 @@ export async function search(ctx: Context) {
         else if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
         }
-        else if (config.TESTING_GL) {
-            sql = geoJsonForPoints(sqlBits);
-        }
         else {
             sql = geoJsonForClusters(sqlBits, userArgs);
         }
@@ -76,27 +53,7 @@ export async function search(ctx: Context) {
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         if (sendCsv) {
-            ctx.attachment('ufo-sightings.csv');
-
-            const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
-            type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
-            let bodyStream: ResponseBody = ctx.body as ResponseBody;
-            if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
-                bodyStream = new PassThrough();
-                ctx.body = bodyStream;
-            }
-
-            // Should enforce order. Map?
-            let firstLine = true;
-            for (const row of results.rows) {
-                if (firstLine) {
-                    listToCsvLine(Object.keys(row), bodyStream);
-                    firstLine = false;
-                }
-                listToCsvLine(Object.values(row), bodyStream);
-            }
-
-            bodyStream.end();
+            await streamCsv(ctx, sql, sqlBits);
         }
 
         else {
@@ -116,7 +73,99 @@ export async function search(ctx: Context) {
             error: e as Error
         });
     }
+}
 
+
+async function streamCsv(ctx, sql, sqlBits) {
+    ctx.attachment('ufo-sightings.csv');
+
+    const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+    type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
+    let bodyStream: ResponseBody = ctx.body as ResponseBody;
+    if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
+        bodyStream = new PassThrough();
+        ctx.body = bodyStream;
+    }
+
+    let firstLine = true;
+    for (const row of results.rows) {
+        if (firstLine) {
+            listToCsvLine(Object.keys(row), bodyStream);
+            firstLine = false;
+        }
+        listToCsvLine(Object.values(row), bodyStream);
+    }
+
+    bodyStream.end();
+}
+
+// @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
+export async function mvt(ctx: Context) {
+    const userArgs: MvtParams | null = getCleanMvtArgs(ctx.request.query, ctx.params,);
+    let sql = '';
+
+    // No clustering when zoomed in
+    if (userArgs.z > 9) {
+        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        FROM (
+            SELECT id, datetime, location_text,
+                ST_AsMvtGeom(
+                point,
+                BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+                4096,
+                256,
+                true
+                ) AS geom
+            FROM sightings
+            WHERE point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
+            AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+        ) AS q;`;
+    }
+
+    else {
+        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        FROM (
+          SELECT 
+            cluster_id,
+            COUNT(*) as num_points,
+            ST_AsMVTGeom(
+              ST_Centroid(ST_Collect(point)),
+              BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+              4096,
+              256,
+              true
+            ) AS geom
+          FROM (
+            SELECT 
+              ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+              point
+            FROM sightings
+            WHERE 
+              point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
+              AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+          ) AS clusters
+          GROUP BY cluster_id
+        ) AS q;`;
+    }
+
+    try {
+        const { rows } = await ctx.dbh.query(sql);
+
+        if (rows.length > 0) {
+            ctx.set('Content-Type', 'application/vnd.mapbox-vector-tile');
+            ctx.body = rows[0].st_asmvt;
+        } else {
+            ctx.status = 404;
+            ctx.body = 'Tile not found';
+        }
+    }
+    catch (e) {
+        throw new CustomError({
+            action: 'query',
+            details: sql,
+            error: e as Error
+        });
+    }
 }
 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {
@@ -124,26 +173,29 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const selectColumns = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
     ];
-    const whereParams: string[] = [];
+    const whereParams: Array<number | string> = [];
     const orderByClause: string[] = [];
 
     if (config.db.engine === 'postgis') {
         whereColumns.push(`(point && ST_Transform(ST_MakeEnvelope($${whereParams.length + 1}, $${whereParams.length + 2}, $${whereParams.length + 3}, $${whereParams.length + 4}, 4326), 3857))`);
     } else {
         whereColumns.push(`MBRIntersects(
-            point, 
-            ST_Envelope(LineString(
-                PointFromWKB( Point($${whereParams.length + 1}, $${whereParams.length + 2}) ), 
-                PointFromWKB( Point($${whereParams.length + 3}, $${whereParams.length + 4}) )
-            ))
-        )`);
+                point,
+                ST_Envelope(LineString(
+                    PointFromWKB(Point($${whereParams.length + 1}, $${whereParams.length + 2})),
+                    PointFromWKB(Point($${whereParams.length + 3}, $${whereParams.length + 4}))
+                ))
+            )`);
     }
 
     whereParams.push(
-        String(userArgs.minlng), String(userArgs.minlat), String(userArgs.maxlng), String(userArgs.maxlat)
+        (userArgs as QueryParams).minlng,
+        (userArgs as QueryParams).minlat,
+        (userArgs as QueryParams).maxlng,
+        (userArgs as QueryParams).maxlat
     );
 
-    if (userArgs.q !== undefined && userArgs.q !== '') {
+    if (userArgs.q && userArgs.q !== undefined && userArgs.q !== '') {
         // Split the search parameter into individual words
         const searchWords = userArgs.q.split(' ');
 
@@ -152,22 +204,22 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         ).join(' AND ');
 
         // Push the search conditions and parameters
-        searchWords.forEach(word => whereParams.push(`%${word}%`));
+        searchWords.forEach(word => whereParams.push(`% ${word}% `));
         whereColumns.push(`(${searchConditions})`);
 
         // Construct the SELECT clause to calculate search score for each word
         if (config.db.engine === 'postgis') {
             selectColumns.push(`(
-                COALESCE(similarity(location_text, $${whereParams.length}), 0.001) 
+                COALESCE(similarity(location_text, $${whereParams.length}), 0.001)
                 +
                 COALESCE(similarity(report_text, $${whereParams.length}), 0.001)
-                ) / 2 AS search_score`);
+            ) / 2 AS search_score`);
         } else {
-            selectColumns.push(`( (
-                GREATEST(similarity(location_text, $${whereParams.length}), 0.001) 
-                + 
+            selectColumns.push(`((
+                GREATEST(similarity(location_text, $${whereParams.length}), 0.001)
+                +
                 GREATEST(similarity(report_text, $${whereParams.length}), 0.001)
-            ) / 2 ) AS search_score` );
+            ) / 2) AS search_score` );
         }
 
         // Always sort best-match first
@@ -260,6 +312,29 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     return dictionary;
 }
 
+function getCleanMvtArgs(args: ParsedUrlQuery, routeParams) {
+    const userArgs: MvtParams = {
+        z: parseFloat(routeParams.z as string),
+        y: parseFloat(routeParams.y as string),
+        x: parseFloat(routeParams.x as string),
+        ...searchParams(args)
+    };
+
+    if (
+        userArgs === null || userArgs.x === undefined
+        || userArgs.y === undefined && userArgs.z === undefined
+    ) {
+        throw new CustomError({
+            action: 'getCleanMvtArgs',
+            msg: 'Missing request parameters',
+            details: userArgs
+        })
+    }
+
+    return userArgs;
+}
+
+/* @throws invalid q */
 function getCleanArgs(args: ParsedUrlQuery) {
     const userArgs: QueryParams = {
         zoom: parseInt(args.zoom as string),
@@ -267,7 +342,26 @@ function getCleanArgs(args: ParsedUrlQuery) {
         minlat: parseFloat(args.minlat as string),
         maxlng: parseFloat(args.maxlng as string),
         maxlat: parseFloat(args.maxlat as string),
+        ...searchParams(args)
+    };
 
+    if (
+        userArgs === null ||
+        userArgs.minlat === undefined || userArgs.minlng === undefined &&
+        userArgs.maxlat === undefined || userArgs.maxlng === undefined
+    ) {
+        throw new CustomError({
+            action: 'getCleanArgs',
+            msg: 'Missing request parameters',
+            details: userArgs
+        })
+    }
+
+    return userArgs;
+}
+
+function searchParams(args: ParsedUrlQuery) {
+    const userArgs = {
         to_date: args.to_date ? (Array.isArray(args.to_date) ? args.to_date[0] : args.to_date) : undefined,
         from_date: args.from_date ? (Array.isArray(args.from_date) ? args.from_date[0] : args.from_date) : undefined,
 
@@ -285,6 +379,14 @@ function getCleanArgs(args: ParsedUrlQuery) {
 
         sort_order: String(args.sort_order) === 'ASC' || String(args.sort_order) === 'DESC' ? String(args.sort_order) as 'ASC' | 'DESC' : undefined,
     };
+
+    if (userArgs.q && userArgs.q.length < config.minQLength) {
+        throw new CustomError({
+            action: 'searchParams',
+            msg: 'Text query too short',
+            details: { q: userArgs.q }
+        });
+    }
 
     if (userArgs.from_date && Number(userArgs.from_date) === 1) {
         delete userArgs.from_date;
@@ -304,53 +406,54 @@ function getCleanArgs(args: ParsedUrlQuery) {
         userArgs.sort_order = 'DESC';
     }
 
-    return (
-        userArgs !== null &&
-        userArgs.minlat !== undefined && userArgs.minlng !== undefined &&
-        userArgs.maxlat !== undefined && userArgs.maxlng !== undefined
-    ) ? userArgs : null;
+    return userArgs;
 }
 
+function sqlForPoints(sqlBits: SqlBitsType) {
+    return `
+        SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
+        WHERE ${sqlBits.whereColumns.join(' AND ')}
+        ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
+        `;
+}
 
 function geoJsonForPoints(sqlBits: SqlBitsType) {
-    return config.db.engine === 'postgis' ?
-        `SELECT jsonb_build_object(
+    if (config.db.engine === 'postgis') {
+        return `SELECT jsonb_build_object(
             'type', 'FeatureCollection',
             'features', jsonb_agg(feature),
             'pointsCount', COUNT(*),
             'clusterCount', 0
         )
-        FROM (
+        FROM(
             SELECT jsonb_build_object(
                 'type', 'Feature',
-                'geometry', ST_AsGeoJSON(s.point, 3857)::jsonb,
+                'geometry', ST_AsGeoJSON(s.point, 3857):: jsonb,
                 'properties', to_jsonb(s) - 'point'
             ) AS feature
-            FROM (
+            FROM(
+                ${sqlForPoints(sqlBits)}
+            ) AS s
+        ) AS fc`
+    }
+    return `SELECT JSON_OBJECT(
+            'type', 'FeatureCollection',
+            'features', JSON_ARRAYAGG(feature),
+            'pointsCount', COUNT(*),
+            'clusterCount', 0
+        )
+        FROM(
+            SELECT JSON_OBJECT(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.point):: json,
+                'properties', JSON_REMOVE(JSON_OBJECT('point', s.point), 'point')
+            ) AS feature
+            FROM(
                 SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
                 WHERE ${sqlBits.whereColumns.join(' AND ')}
                 ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
             ) AS s
-        ) AS fc`
-        :
-        `SELECT JSON_OBJECT(
-                'type', 'FeatureCollection',
-                'features', JSON_ARRAYAGG(feature),
-                'pointsCount', COUNT(*),
-                'clusterCount', 0
-            )
-    FROM(
-        SELECT JSON_OBJECT(
-            'type', 'Feature',
-            'geometry', ST_AsGeoJSON(s.point):: json,
-            'properties', JSON_REMOVE(JSON_OBJECT('point', s.point), 'point')
-        ) AS feature
-            FROM(
-            SELECT ${sqlBits.selectColumns.join(', ')} FROM sightings
-                WHERE ${sqlBits.whereColumns.join(' AND ')}
-                ${sqlBits.orderByClause ? ' ORDER BY ' + sqlBits.orderByClause.join(',') : ''}
-        ) AS s
-    ) AS fc`;
+        ) AS fc`;
 }
 
 
@@ -372,30 +475,30 @@ function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
             'pointsCount', 0,
             'clusterCount', COUNT(*)
         )
-        FROM (
-        SELECT jsonb_build_object(
-            'type', 'Feature',
-            'geometry', ST_AsGeoJSON(s.cluster_geom, 3857):: jsonb,
-            'properties', jsonb_build_object(
-                'cluster_id', s.cluster_id,
-                'num_points', s.num_points
-            )
-        ) AS feature
+        FROM(
+            SELECT jsonb_build_object(
+                'type', 'Feature',
+                'geometry', ST_AsGeoJSON(s.cluster_geom, 3857):: jsonb,
+                'properties', jsonb_build_object(
+                    'cluster_id', s.cluster_id,
+                    'num_points', s.num_points
+                )
+            ) AS feature
             FROM(
-            SELECT 
-                    cluster_id,
-            ST_Centroid(ST_Collect(point)) AS cluster_geom,
-            COUNT(*) AS num_points
-                FROM(
                 SELECT 
+                    cluster_id,
+                ST_Centroid(ST_Collect(point)) AS cluster_geom,
+                COUNT(*) AS num_points
+                FROM(
+                    SELECT 
                         ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
-                point
+                    point
                     FROM sightings
                     WHERE ${sqlBits.whereColumns.join(' AND ')}
-            ) AS clustered_points
+                ) AS clustered_points
                 GROUP BY cluster_id
-        ) AS s
-    ) AS fc `
+            ) AS s
+        ) AS fc `
         // `SELECT jsonb_build_object(
         //     'type', 'FeatureCollection',
         //     'features', jsonb_agg(feature),

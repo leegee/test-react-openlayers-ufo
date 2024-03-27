@@ -20,4 +20,4 @@ bash geocoding/ingest_all_csv.sh
 
 psql -d norge < post-geocode.sql
 
-
+psql -d norge < functions.sql

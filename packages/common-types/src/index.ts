@@ -1,5 +1,11 @@
 import type { FeatureCollection } from "geojson";
 
+export interface MvtParams {
+  x: number;
+  y: number;
+  z: number;
+}
+
 export interface QueryParams {
   minlng: number;
   minlat: number;

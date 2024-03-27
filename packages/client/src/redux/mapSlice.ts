@@ -52,7 +52,7 @@ export interface MapState {
   requestingCsv: boolean;
 }
 
-const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
+const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search.url;
 
 const initialState: MapState = {
   featureCollection: null,
