@@ -1,17 +1,6 @@
 import type { FeatureCollection } from "geojson";
 
-export interface MvtParams {
-  x: number;
-  y: number;
-  z: number;
-}
-
-export interface QueryParams {
-  minlng: number;
-  minlat: number;
-  maxlng: number;
-  maxlat: number;
-  zoom: number;
+export interface SearchParams {
   to_date?: string | undefined;
   from_date?: string | undefined;
   show_undated?: boolean;
@@ -19,6 +8,20 @@ export interface QueryParams {
   q?: string;
   q_subject?: string;
   sort_order?: 'ASC' | 'DESC'
+}
+
+export interface MvtParams extends SearchParams {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface QueryParams extends SearchParams {
+  minlng: number;
+  minlat: number;
+  maxlng: number;
+  maxlat: number;
+  zoom: number;
 }
 
 export interface DateTimeMinMax {
