@@ -17,24 +17,20 @@ type SqlBitsType = {
 
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
-        msg: '',
+        msg: 'OK',
         status: 200,
         dictionary: {} as MapDictionary,
         results: undefined,
     };
 
     const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
-
     let forErrorReporting = {};
-
-    const acceptHeader = ctx.headers.accept || '';
-    const sendCsv = acceptHeader.includes('text/csv')
 
     try {
         let sql: string;
         let sqlBits = constructSqlBits(userArgs);
 
-        if (sendCsv) {
+        if ((ctx.headers.accept || '').includes('text/csv')) {
             ctx.type = 'text/csv';
             sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
         }
@@ -48,7 +44,7 @@ export async function search(ctx: Context) {
         const formattedQueryForLogging = formatQueryForLogging(sql, sqlBits);
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
-        if (sendCsv) {
+        if ((ctx.headers.accept || '').includes('text/csv')) {
             await streamCsv(ctx, sql, sqlBits);
         }
 
