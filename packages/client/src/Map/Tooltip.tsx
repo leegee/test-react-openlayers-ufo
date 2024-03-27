@@ -46,7 +46,6 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             overlay.setPosition(undefined);
         }
         else {
-            console.log('tooltip', feature);
             let tooltipContent = '';
             const location_text = (feature as FeatureLike).get('location_text');
             if (location_text) {
@@ -57,7 +56,8 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                     }
                 }
                 tooltipContent += '<b font-style="font-size:120%">' + location_text + '</b>';
-                if (features.length > 1) {
+                const num_points = feature.get('num_points') || features.length;
+                if (num_points > 1) {
                     tooltipContent += ' x' + features.length;
                 }
                 const score = (feature as FeatureLike).get('search_score');
