@@ -62,7 +62,7 @@ const config: ConfigType = {
     endopoints: {
       search: { route: '/search', url: '/search' },
       details: { route: '/details/:id', url: '/details' },
-      pointsMvt: { route: '/tiles/:z/:x/:y.mvt', url: '/tiles/{z}/{x}/{y}.mvt' },
+      pointsMvt: { route: '/tiles/:z/:x/:y.mvt', url: '/tiles' },
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,

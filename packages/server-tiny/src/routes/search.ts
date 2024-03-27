@@ -117,8 +117,8 @@ export async function mvt(ctx: Context) {
     }
     catch (e) {
         throw new CustomError({
-            action: 'query',
-            details: sql,
+            action: 'mvt',
+            details: { sql, userArgs },
             error: e as Error
         });
     }
