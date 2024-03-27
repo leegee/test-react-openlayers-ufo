@@ -23,7 +23,7 @@ const customTileUrlFunction = (tileCoord: TileCoord) => {
 // Create VectorTileSource
 const mvtSource = new VectorTileSource({
     format: new MVT(),
-    tileGrid: createXYZ({ maxZoom: 19 }),
+    // tileGrid: createXYZ({ maxZoom: 19 }),
     tileUrlFunction: customTileUrlFunction,
 });
 
