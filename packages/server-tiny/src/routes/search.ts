@@ -45,11 +45,7 @@ export async function search(ctx: Context) {
             sql = geoJsonForClusters(sqlBits, userArgs);
         }
 
-        const formattedQueryForLogging = sql.replace(/\$(\d+)/g, (_: string, index: number) => {
-            const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
-            return typeof param === 'string' ? `'${param}'` : '';
-        });
-
+        const formattedQueryForLogging = formatQueryForLogging(sql, sqlBits);
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         if (sendCsv) {
@@ -102,10 +98,12 @@ async function streamCsv(ctx, sql, sqlBits) {
 export async function mvt(ctx: Context) {
     const userArgs: MvtParams | null = getCleanMvtArgs(ctx.request.query, ctx.params,);
 
-    const sql = sqlForMvt(userArgs);
+    const sqlBits = constructSqlBits(userArgs, false);
+    const sql = sqlForMvt(sqlBits, userArgs);
+    const formattedQueryForLogging = formatQueryForLogging(sql, sqlBits);
 
     try {
-        const { rows } = await ctx.dbh.query(sql);
+        const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
 
         if (rows.length > 0) {
             ctx.set('Content-Type', 'application/vnd.mapbox-vector-tile');
@@ -118,15 +116,14 @@ export async function mvt(ctx: Context) {
     catch (e) {
         throw new CustomError({
             action: 'mvt',
-            details: { sql, userArgs },
+            details: { sql, sqlBits, formattedQueryForLogging, userArgs },
             error: e as Error
         });
     }
 }
 
 // @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
-function sqlForMvt(userArgs): string {
-    const sqlBits = constructSqlBits(userArgs, false);
+function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
     let sql = '';
 
     // No clustering when zoomed in
@@ -169,25 +166,23 @@ function sqlForMvt(userArgs): string {
               FROM (
                 SELECT 
                   ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
-                  id,
-                  datetime,
-                  location_text,
-                  point
+                  point,
+                  ${sqlBits.selectColumns.join(', ')}
                 FROM sightings
                 WHERE 
-                  point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-                  AND ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-                  ${sqlBits.whereColumns ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+                  ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+                  ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
               ) AS clusters
               GROUP BY cluster_id
-            ) AS q;`;
+            ) AS q`;
     }
+    //                   -- point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}) AND
 
     return sql;
 }
 
 
-function constructSqlBits(userArgs: QueryParams, includeGeo = true): SqlBitsType {
+function constructSqlBits(userArgs: QueryParams | MvtParams, includeGeo = true): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original',
@@ -226,7 +221,7 @@ function constructSqlBits(userArgs: QueryParams, includeGeo = true): SqlBitsType
         ).join(' AND ');
 
         // Push the search conditions and parameters
-        searchWords.forEach(word => whereParams.push(`% ${word}% `));
+        searchWords.forEach(word => whereParams.push(`%${word}%`));
         whereColumns.push(`(${searchConditions})`);
 
         // Construct the SELECT clause to calculate search score for each word
@@ -269,7 +264,7 @@ function constructSqlBits(userArgs: QueryParams, includeGeo = true): SqlBitsType
         orderByClause.push('datetime ' + userArgs.sort_order);
     }
     else if (!userArgs.show_undated) {
-        whereColumns.push("(datetime IS NOT NULL)");
+        // whereColumns.push("(datetime IS NOT NULL)");
         orderByClause.push('datetime ' + userArgs.sort_order);
     }
 
@@ -334,7 +329,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
     return dictionary;
 }
 
-function getCleanMvtArgs(args: ParsedUrlQuery, routeParams) {
+function getCleanMvtArgs(args: ParsedUrlQuery, routeParams): MvtParams {
     const userArgs: MvtParams = {
         z: parseFloat(routeParams.z as string),
         y: parseFloat(routeParams.y as string),
@@ -583,4 +578,12 @@ function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
                 GROUP BY cluster_id
         ) AS s
     ) AS fc`;
+}
+
+
+function formatQueryForLogging(sql: string, sqlBits: SqlBitsType) {
+    return sql.replace(/\$(\d+)/g, (_: string, index: number) => {
+        const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
+        return typeof param === 'string' ? `'${param}'` : '';
+    })
 }

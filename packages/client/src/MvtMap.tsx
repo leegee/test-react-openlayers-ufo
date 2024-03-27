@@ -11,7 +11,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { setMapParams, selectBasemapSource, resetDates } from './redux/mapSlice';
+import { setMapParams, selectBasemapSource, resetDates, setUpdateMap } from './redux/mapSlice';
 import { setSelectionId } from './redux/guiSlice';
 import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
@@ -87,7 +87,7 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
 
 const OpenLayersMap: React.FC = () => {
     const dispatch = useDispatch();
-    const { center, zoom, featureCollection } = useSelector((state: RootState) => state.map);
+    const { center, zoom, featureCollection, updateMap } = useSelector((state: RootState) => state.map);
     const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
     const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
     const mapElementRef = useRef<HTMLDivElement>(null);
@@ -146,19 +146,13 @@ const OpenLayersMap: React.FC = () => {
         return () => map?.dispose();
     }, [dispatch]);
 
-    // const debouncedMapChanged = debounce(() => {
-    //     dispatch((fetchFeatures() as any));
-    // }, 750);
-    // useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
-
     useEffect(() => {
-        if (!mapElementRef.current || featureCollection === null) return;
-        // updateWebGlLayer(featureCollection);
-    }, [featureCollection]);
-
-    useEffect(() => {
-        console.log('Component re-rendered with panelState:', panelState);
-    }, [panelState]);
+        if (!mapElementRef.current) return;
+        if (updateMap === true) {
+            mapLayers.all.getSource()?.refresh();
+            dispatch(setUpdateMap(false));
+        }
+    }, [updateMap, dispatch]);
 
     // NB The size of the map is controlled by the state of the panel (state.gui.panel, locally aka panelState)
     return (

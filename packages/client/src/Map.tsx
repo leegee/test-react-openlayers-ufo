@@ -21,7 +21,6 @@ import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { updateWebGlLayer, webGlLayer } from './lib/WebGLPoints';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
 
@@ -29,7 +28,7 @@ import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-export type MapLayerKeyType = 'clusterOnly' | 'all' | 'points';
+export type MapLayerKeyType = 'clusterOnly' | 'points';
 export type MapBaseLayersType = {
   [key in MapBaseLayerKeyType]: Layer<VectorSource<any>> | TileLayer<any>;
 }
@@ -41,7 +40,6 @@ type MapLayersType = {
 const mapLayers: MapLayersType = {
   clusterOnly: clusterOnlyLayer,
   points: pointsLayer,
-  all: webGlLayer,
 }
 
 const mapBaseLayers: MapBaseLayersType = {
@@ -149,11 +147,7 @@ const OpenLayersMap: React.FC = () => {
     let map: Map | null = null;
 
     if (mapElementRef.current) {
-      if (config.TESTING_GL) {
-        setVisibleDataLayer('all');
-      } else {
-        setVisibleDataLayer('clusterOnly');
-      }
+      setVisibleDataLayer('clusterOnly');
 
       map = new Map({
         target: mapElementRef.current,
@@ -181,20 +175,14 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch]);
 
   const debouncedMapChanged = debounce(() => {
-    dispatch((fetchFeatures() as any));
+    // dispatch((fetchFeatures() as any));
   }, 750);
 
   useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
-    if (config.TESTING_GL) {
-      updateWebGlLayer(featureCollection);
-    }
-    if (config.TESTING_GL) {
-      setVisibleDataLayer('all');
-    }
-    else if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
+    if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     } else if (!pointsCount && zoom < config.zoomLevelForPoints) {

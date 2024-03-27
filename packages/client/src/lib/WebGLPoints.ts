@@ -9,21 +9,23 @@ import type { TileCoord } from 'ol/tilecoord';
 import CircleStyle from 'ol/style/Circle';
 import { Fill, Stroke, Style } from 'ol/style';
 
+import { store } from "../redux/store";
+import { selectMvtQueryString } from '../redux/mapSlice';
+
 const customTileUrlFunction = (tileCoord: TileCoord) => {
     const z = tileCoord[0];
     const x = tileCoord[1];
     const y = tileCoord[2];
-    const url = `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?foo=bar`;
+    const queryString: string | undefined = selectMvtQueryString(store.getState().map);
+    const url = `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?` + (queryString || '');
     console.log(url);
     return url;
 };
-
 
 // Create VectorTileSource
 const mvtSource = new VectorTileSource({
     format: new MVT(),
     tileGrid: createXYZ({ maxZoom: 19 }),
-    // url: `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}`,
     tileUrlFunction: customTileUrlFunction,
 });
 

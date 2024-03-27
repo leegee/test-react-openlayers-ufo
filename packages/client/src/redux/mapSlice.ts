@@ -50,6 +50,7 @@ export interface MapState {
   basemapSource: string;
   previousQueryString: string;
   requestingCsv: boolean;
+  updateMap: boolean;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search.url;
@@ -66,6 +67,7 @@ const initialState: MapState = {
   basemapSource: localStorage.getItem('basemap_source') || 'geo',
   previousQueryString: '',
   requestingCsv: false,
+  updateMap: false,
 };
 
 const mapSlice = createSlice({
@@ -114,8 +116,10 @@ const mapSlice = createSlice({
     failedRequest: (state) => {
       state.featureCollection = null;
       state.previousQueryString = '';
-      // action.payload.status etc
     },
+    setUpdateMap: (state, action: PayloadAction<boolean>) => {
+      state.updateMap = action.payload;
+    }
   },
 });
 
@@ -123,6 +127,7 @@ export const {
   setPreviousQueryString, setMapParams,
   resetDates, setFromDate, setToDate,
   setQ, setBasemapSource,
+  setUpdateMap
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
@@ -157,9 +162,22 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
   return new URLSearchParams(queryObject).toString();
 };
 
+export const selectMvtQueryString = (mapState: MapState): string | undefined => {
+  const { zoom, bounds, from_date, to_date, q } = mapState;
+  if (!zoom || !bounds) return;
+
+  const queryObject = {
+    ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+    ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+    ...(q !== '' ? { q: q } : {}),
+  };
+  return new URLSearchParams(queryObject).toString();
+};
+
 const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+    alert("CALLED OLD CODE");
     const mapState = getState().map;
     const queryString: string | undefined = selectQueryString(mapState);
     const { previousQueryString } = mapState;
@@ -191,7 +209,8 @@ export const fetchFeatures = debounce(
   { immediate: true }
 );
 
-export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
+
+const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
     const mapState = getState().map;
