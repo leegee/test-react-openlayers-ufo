@@ -85,3 +85,7 @@
 .map-ctrls .map-ctrl:last-child {
     padding-bottom: 0 !important;
 }
+
+.loading {
+    cursor: wait;
+}

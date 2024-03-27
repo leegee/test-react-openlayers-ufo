@@ -19,7 +19,7 @@ import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
-import { mvtLayer } from './lib/WebGLPoints';
+import { mvtLayer, useProgressBar } from './lib/Mvt';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
 
@@ -141,6 +141,16 @@ const OpenLayersMap: React.FC = () => {
 
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
+
+            const { mvtLoadStart, mvtLoadEnd } = useProgressBar(dispatch);
+            map.on('loadstart', () => {
+                document.body.classList.add('loading');
+                mvtLoadStart();
+            });
+            map.on('loadend', () => {
+                document.body.classList.remove('loading');
+                mvtLoadEnd();
+            });
         }
 
         return () => map?.dispose();

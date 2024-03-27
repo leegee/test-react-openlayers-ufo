@@ -27,7 +27,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     const clusterSizeMadeLocally = features ? features.length : undefined;
     let style;
 
-    if (clusterSizeFromServer) {
+    if (clusterSizeFromServer && clusterSizeFromServer > 1) {
         style = new Style({
             image: new Circle({
                 radius: 10,

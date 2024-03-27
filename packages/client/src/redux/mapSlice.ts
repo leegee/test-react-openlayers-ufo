@@ -51,6 +51,8 @@ export interface MapState {
   previousQueryString: string;
   requestingCsv: boolean;
   updateMap: boolean;
+  loading: boolean;
+  loadingPc: number;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search.url;
@@ -68,6 +70,9 @@ const initialState: MapState = {
   previousQueryString: '',
   requestingCsv: false,
   updateMap: false,
+  loading: false,
+  loadingPc: 0,
+
 };
 
 const mapSlice = createSlice({
@@ -119,7 +124,13 @@ const mapSlice = createSlice({
     },
     setUpdateMap: (state, action: PayloadAction<boolean>) => {
       state.updateMap = action.payload;
-    }
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setLoadingPc: (state, action: PayloadAction<number>) => {
+      state.loadingPc = action.payload;
+    },
   },
 });
 
@@ -127,7 +138,8 @@ export const {
   setPreviousQueryString, setMapParams,
   resetDates, setFromDate, setToDate,
   setQ, setBasemapSource,
-  setUpdateMap
+  setUpdateMap,
+  setLoading, setLoadingPc
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
