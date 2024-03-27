@@ -79,12 +79,6 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
     });
 }
 
-function setVisibleDataLayer(layerName: MapLayerKeyType) {
-    for (let l of Object.keys(mapLayers)) {
-        (mapLayers as any)[l].setVisible(l === layerName);
-    }
-}
-
 const OpenLayersMap: React.FC = () => {
     const dispatch = useDispatch();
     const { center, zoom, updateMap } = useSelector((state: RootState) => state.map);
@@ -120,8 +114,6 @@ const OpenLayersMap: React.FC = () => {
         let map: Map | null = null;
 
         if (mapElementRef.current) {
-            setVisibleDataLayer('all');
-
             map = new Map({
                 target: mapElementRef.current,
                 view: new View({
