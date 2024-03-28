@@ -81,12 +81,12 @@ const FeatureTable: React.FC = () => {
                 {localFeatures
                     .slice() // Create a copy of the array to avoid mutating the original array
                     .sort((a, b) => {
-                        if (a.search_score) {
-                            if (a.search_score < b.search_score) return -1; // Sort a before b
-                            if (a.search_score > b.search_score) return 1;
+                        if (a.properties.search_score) {
+                            if (a.properties.search_score < b.properties.search_score) return -1; // Sort a before b
+                            if (a.properties.search_score > b.properties.search_score) return 1;
                         }
-                        if (a.datetime < b.datetime) return -1;
-                        if (a.datetime > b.datetime) return 1;
+                        if (a.properties.datetime < b.properties.datetime) return -1;
+                        if (a.properties.datetime > b.properties.datetime) return 1;
                         return 0; // Leave them unchanged in order
                     })
                     .map((feature: any, index: number) => (
