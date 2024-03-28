@@ -5,7 +5,10 @@ import cors from "@koa/cors";
 
 import config from '@ufo-monorepo-test/config/src';
 
-import { search as searchRoute } from './routes/search';
+import {
+    search as searchRoute,
+    mvt as mvtRoute
+} from './routes/search';
 import { details as detailsRoute } from './routes/details';
 import { errorHandler } from "./middleware/errors";
 import { dbhMiddleware } from './middleware/dbh';
@@ -25,9 +28,9 @@ app.use(dbhMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// config.api.endopoints.search should update to use objects
-router.get('/search', searchRoute);
-router.get('/details/:id', detailsRoute);
+router.get(config.api.endopoints.search.route, searchRoute);
+router.get(config.api.endopoints.details.route, detailsRoute);
+router.get(config.api.endopoints.pointsMvt.route, mvtRoute);
 
 app.listen(config.api.port, () => {
     console.info({ action: 'start-up', port: config.api.port });

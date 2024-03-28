@@ -63,8 +63,12 @@ function highlightFeature(map: Map, pixel: number[]) {
             featureSource.removeFeature(highlight);
         }
         if (feature) {
-            (feature as Feature).set(FEATURE_IS_HIGHLIGHT_PROP, true);
-            featureSource.addFeature(feature as Feature<Geometry>);
+            try {
+                featureSource.addFeature(feature as Feature<Geometry>);
+            } catch (e) {
+                // Why is this needed?
+                featureSource.removeFeature(feature as Feature<Geometry>);
+            }
         }
         highlight = feature as Feature<Geometry>;
     }

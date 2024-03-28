@@ -4,7 +4,7 @@ import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
-import { fetchFeatures, setQ } from '../redux/mapSlice';
+import { fetchFeatures, setQ, setUpdateMap } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 
 import './SearchText.css';
@@ -19,7 +19,8 @@ const SearchText: React.FC = () => {
     const debouncedFetchRequest = debounce((value: string) => {
         if (value.trim().length === 0 || value.length > config.minQLength) {
             dispatch(setQ(value));
-            dispatch((fetchFeatures() as any));
+            // dispatch((fetchFeatures() as any));
+            dispatch((setUpdateMap(true)));
         }
     }, DEBOUNCE_INPUT_MS);
 
@@ -33,8 +34,8 @@ const SearchText: React.FC = () => {
         <nav className='search-text component highlightable'>
             <span className='grey search-icon' />
             <input
-                title={get('search_text.title')}
-                aria-label={get('search_text.title')}
+                title={get('search_text.title', { maxChars: config.minQLength })}
+                aria-label={get('search_text.title', { maxChars: config.minQLength })}
                 type='search'
                 id='q'
                 name='q'

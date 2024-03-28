@@ -3,7 +3,8 @@
         "results_count": "observasjoner",
         "cluster_count": "grupper av observasjoner",
         "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner.",
-        "no_results": "Prøv å zoome ut/endre søket."
+        "no_results": "Prøv å zoome ut/endre søket.",
+        "loading": "Last inn kartet..."
     },
     "sighting_details": {
         "title": "Rapport"
@@ -19,7 +20,7 @@
         "duration_seconds": "Varighet (sekunder)"
     },
     "search_text": {
-        "title": "Søk etter tre tegn eller malm",
+        "title": "Søk etter {maxChars} tegn eller malm",
         "placeholder": "Søk her"
     },
     "histogram": {

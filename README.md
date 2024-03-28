@@ -1,5 +1,14 @@
 # Norwegian UFO Database
 
+## Branch Description
+
+For larger datasets, implementing a performant MVT layer with clustering, which is now done, but at 
+the expense of a the textual summary of the results, which came from GeoJSON.
+
+Deciding what to do to replace that.
+
+## Synopsis
+
 * npm Typescript Monorepo
 * Koa
 * React (hooks)
@@ -10,7 +19,6 @@
 * PostGIS
 * UFOs
 
-## Synopsis
 
 ```bash
   # After installing the DB and editing the config:
@@ -118,6 +126,8 @@ Some kind soul has done most of the above for the [MUFON dataset](data\mufon\dat
 See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as verbose, but does cover quite a large area. The text had some HTML entities good and bad (soem of tabs and commas, presumably from others' ingestion), which are tidied by the SQL ingestion scripts.
 
 ## Todo:
+
+Currently looking at using a WebGL layer to render many more points at once, sacrificing the text in the panel on the left.
 
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Clean the start time column and add to the dateitme column: (which was `Obs  startet kl (32)` but is not `start_time`).

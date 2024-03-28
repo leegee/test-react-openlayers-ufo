@@ -19,7 +19,6 @@ ALTER TABLE sightings
   ALTER COLUMN longitude TYPE double precision USING longitude::double precision;
 
 UPDATE sightings SET location_text = city || ' ' || COALESCE(state, '') || ' ' || COALESCE(country, '');
-UPDATE sightings SET "address" = location_text;
 UPDATE sightings SET datetime_original = datetime;
 
 UPDATE sightings
@@ -30,6 +29,8 @@ UPDATE sightings
     ST_SetSRID( ST_MakePoint(longitude, latitude ), 4326),
     3857
   );
+
+CREATE INDEX spatial_index_point ON sightings USING GIST (point);
 
 ALTER TABLE sightings 
   DROP COLUMN longitude,
@@ -51,8 +52,8 @@ SELECT COUNT(*) AS no_lat_lng FROM sightings WHERE point IS NULL;
 CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
 RETURNS TEXT AS $$
 DECLARE
-    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&oslash;'];
-    utf8_map TEXT[] := ARRAY['&', '<', '>', '"', '''', '''', 'å', 'ø'];
+    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&oslash;', '&#39', '&#9;', '&#44', '&#160;', '&#180;', '&Oslash;', '&Auml;', '&auml;', '&ouml;', '&#246;', '&euml;', '&#235;',  '&Ouml;', '&#214;', '&Euml;', '&#203;', '&szlig;', '&#223;'];
+    utf8_map TEXT[]   := ARRAY['&',     '<',     '>',   '"',      '''',     '''',      'å',      'ø',         '''',  ' ',    ',',    ',',      '''',      'Ø',       'Ä',      'ä',      'ö',      'ö',      'ë',      'ë',       'Ö',      'Ö',      'Ë',      'Ë',      'ß',       'ß'      ];
     i INTEGER;
 BEGIN
     FOR i IN 1..array_length(entity_map, 1) LOOP
@@ -63,11 +64,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-UPDATE sightings
-SET report_text = decode_html_entities(report_text);
+UPDATE sightings SET report_text = decode_html_entities(report_text);
+UPDATE sightings SET report_text = decode_html_entities(location_text);
 
-UPDATE sightings SET report_text = regexp_replace(report_text, '&#39', '''', 'g');
-UPDATE sightings SET report_text = regexp_replace(report_text, '&#9;', ' ', 'g');
-UPDATE sightings SET report_text = regexp_replace(report_text, '&#44', ', ', 'g');
-UPDATE sightings SET report_text = regexp_replace(report_text, '&#160;', ', ', 'g');
-UPDATE sightings SET report_text = regexp_replace(report_text, '&#180;', '''', 'g');
+UPDATE sightings SET "address" = location_text;

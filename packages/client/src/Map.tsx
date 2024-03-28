@@ -5,8 +5,9 @@ import { Map, type MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
 import TileLayer from 'ol/layer/Tile';
+import type Layer from 'ol/layer/Layer';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
@@ -20,27 +21,24 @@ import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
-import { type UnknownAction } from '@reduxjs/toolkit';
 
 import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-export type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
+export type MapLayerKeyType = 'clusterOnly' | 'points';
 export type MapBaseLayersType = {
-  [key in MapBaseLayerKeyType]: VectorLayer<VectorSource<any>> | TileLayer<any>;
+  [key in MapBaseLayerKeyType]: Layer<VectorSource<any>> | TileLayer<any>;
 }
 
 type MapLayersType = {
-  [key in MapLayerKeyType]: VectorLayer<VectorSource<any>>;
+  [key in MapLayerKeyType]: Layer<VectorSource<any>>;
 }
 
 const mapLayers: MapLayersType = {
   clusterOnly: clusterOnlyLayer,
-  mixedSearchResults: mixedSearchResultsLayer,
   points: pointsLayer,
 }
 
@@ -185,8 +183,6 @@ const OpenLayersMap: React.FC = () => {
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
-      // updateMixedSearchResultsLayer(featureCollection);
-      // setVisibleDataLayer('mixedSearchResults');
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     } else if (!pointsCount && zoom < config.zoomLevelForPoints) {

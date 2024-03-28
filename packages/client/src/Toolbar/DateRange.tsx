@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-import { fetchFeatures, setFromDate, setToDate, selectPointsCount } from '../redux/mapSlice';
+import { fetchFeatures, setFromDate, setToDate, selectPointsCount, setUpdateMap } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 
 import './DateRange.css';
@@ -36,7 +36,8 @@ const DateRange: React.FC = () => {
         if (!localFromDate || !localToDate || localFromDate < localToDate) {
             dispatch(setFromDate(localFromDate));
             dispatch(setToDate(localToDate));
-            dispatch(fetchFeatures() as any)
+            // dispatch(fetchFeatures() as any)
+            dispatch((setUpdateMap(true)));
         }
     }
 

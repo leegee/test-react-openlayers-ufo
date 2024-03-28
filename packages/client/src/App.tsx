@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
-import Map from './Map';
+import Map from './MvtMap';
 import ResultsPanel from './ResultsPanel';
 import Toolbar from './Toolbar';
 import Modal from './Modal';

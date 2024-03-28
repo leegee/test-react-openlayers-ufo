@@ -32,7 +32,7 @@ export async function errorHandler(ctx: Koa.Context, next: Koa.Next) {
         }
     }
     catch (error) {
-        console.error(error);
+        console.error(new Date(), error);
         if (process.env.NODE_ENV === 'production') {
             error.error = '';
         }
