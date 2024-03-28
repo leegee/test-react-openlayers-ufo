@@ -140,19 +140,20 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
         console.log(`POINTS because z${userArgs.z} >= ${config.zoomLevelForPoints}`);
         sql = `SELECT ST_AsMVT(q, 'sighting_points', 4096, 'geom')
             FROM (
-                SELECT ${sqlBits.selectColumns.join(', ')},
+                SELECT
+                    ${sqlBits.selectColumns.join(', ')},
                     ST_AsMvtGeom(
-                    point,
-                    BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-                    4096,
-                    256,
-                    true
+                        point,
+                        BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+                        4096,
+                        256,
+                        true
                     ) AS geom
                 FROM sightings
                 WHERE 
                 ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
                 ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-                
+                GROUP BY id
             ) AS q;`;
         // point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
     }
