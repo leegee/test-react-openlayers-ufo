@@ -31,6 +31,8 @@ UPDATE sightings
     3857
   );
 
+CREATE INDEX spatial_index_point ON sightings USING GIST (point);
+
 ALTER TABLE sightings 
   DROP COLUMN longitude,
   DROP COLUMN latitude;
