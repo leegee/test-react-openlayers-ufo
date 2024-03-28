@@ -52,8 +52,8 @@ SELECT COUNT(*) AS no_lat_lng FROM sightings WHERE point IS NULL;
 CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
 RETURNS TEXT AS $$
 DECLARE
-    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&oslash;', '&#39', '&#9;', '&#44', '&#160;', '&#180;', '&Oslash;'];
-    utf8_map TEXT[]   := ARRAY['&',     '<',     '>',   '"',      '''',     '''',      'å',      'ø',         '''',  ' ',    ',',    ',',      '''', 'ø'  ];
+    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&oslash;', '&#39', '&#9;', '&#44', '&#160;', '&#180;', '&Oslash;', '&Auml;', '&auml;', '&ouml;', '&#246;', '&euml;', '&#235;',  '&Ouml;', '&#214;', '&Euml;', '&#203;', '&szlig;', '&#223;'];
+    utf8_map TEXT[]   := ARRAY['&',     '<',     '>',   '"',      '''',     '''',      'å',      'ø',         '''',  ' ',    ',',    ',',      '''',      'Ø',       'Ä',      'ä',      'ö',      'ö',      'ë',      'ë',       'Ö',      'Ö',      'Ë',      'Ë',      'ß',       'ß'      ];
     i INTEGER;
 BEGIN
     FOR i IN 1..array_length(entity_map, 1) LOOP
