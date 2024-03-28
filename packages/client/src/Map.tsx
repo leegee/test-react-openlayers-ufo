@@ -175,7 +175,7 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch]);
 
   const debouncedMapChanged = debounce(() => {
-    // dispatch((fetchFeatures() as any));
+    dispatch((fetchFeatures() as any));
   }, 750);
 
   useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
