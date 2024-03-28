@@ -1,14 +1,5 @@
 # Norwegian UFO Database
 
-## Branch Description
-
-For larger datasets, implementing a performant MVT layer with clustering, which is now done, but at 
-the expense of a the textual summary of the results, which came from GeoJSON.
-
-Deciding what to do to replace that.
-
-## Synopsis
-
 * npm Typescript Monorepo
 * Koa
 * React (hooks)
@@ -19,6 +10,7 @@ Deciding what to do to replace that.
 * PostGIS
 * UFOs
 
+## Synopsis
 
 ```bash
   # After installing the DB and editing the config:
