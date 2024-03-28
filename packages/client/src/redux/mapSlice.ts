@@ -11,9 +11,8 @@ import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-import type { MapBaseLayerKeyType } from '../Map';
+import type { MapBaseLayerKeyType } from '../Map.tsx_old';
 import { RootState } from './store';
-import { FeatureLike } from 'ol/Feature';
 
 export interface UfoJsonFeature {
   properties: {
@@ -152,7 +151,7 @@ export const {
   setLoading, setLoadingPc
 } = mapSlice.actions;
 
-export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
+export const selectBasemapSource = (state: RootState):MapBaseLayerKeyType => state.map.basemapSource as MapBaseLayerKeyType;
 
 export const selectPointsCount = createSelector(
   (state: RootState) => state.map.featureCollection,

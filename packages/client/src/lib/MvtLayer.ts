@@ -9,7 +9,7 @@ import { VectorTile } from 'ol';
 
 import config from '@ufo-monorepo-test/config/src';
 import { store } from "../redux/store";
-import { selectMvtQueryString, addPropretiesToFeatureCollection, setLoading, setLoadingPc, type UfoFeatureCollection, UfoJsonFeature, resetFeatureCollection, finaliseFeatureCollection } from '../redux/mapSlice';
+import { selectMvtQueryString, addPropretiesToFeatureCollection, setLoading, setLoadingPc,  UfoJsonFeature, resetFeatureCollection, finaliseFeatureCollection } from '../redux/mapSlice';
 import { sightingsStyleFunction } from './sightings-styles';
 
 const customTileUrlFunction = (tileCoord: TileCoord) => {

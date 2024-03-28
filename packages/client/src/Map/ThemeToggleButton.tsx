@@ -1,4 +1,4 @@
-import { MapBaseLayerKeyType } from '../Map';
+import { MapBaseLayerKeyType } from '../Map.tsx_old';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectBasemapSource, setBasemapSource } from '../redux/mapSlice';

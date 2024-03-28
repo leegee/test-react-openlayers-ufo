@@ -14,6 +14,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: [ 'react-refresh' ],
   rules: {
+    '@typescript-eslint/no-confusing-void-expression': 'off',
     'react-refresh/only-export-components': [
       'warn',
       {
@@ -24,7 +25,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: [ './tsconfig.json', './tsconfig.node.json' ],
+    project: [ './packages/client/tsconfig.json', './packages/client/tsconfig.node.json' ],
     tsconfigRootDir: __dirname,
   },
 }

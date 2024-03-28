@@ -1,13 +1,12 @@
 import React, { type Dispatch, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'debounce';
-import { Map, type MapBrowserEvent, View } from 'ol';
+import { Map, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
-import VectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
-import type Layer from 'ol/layer/Layer';
 import { type UnknownAction } from '@reduxjs/toolkit';
+import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
@@ -25,12 +24,14 @@ import type VectorTileLayer from 'ol/layer/VectorTile';
 
 import 'ol/ol.css';
 import './Map.css';
+import TileSource from 'ol/source/Tile';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'all';
 export type MapBaseLayersType = {
-    [key in MapBaseLayerKeyType]: Layer<VectorSource<any>> | TileLayer<any>;
+    [key in MapBaseLayerKeyType]: TileLayer<TileSource>;
 }
+
 
 const mapBaseLayers: MapBaseLayersType = {
     dark: baseLayerDark,
@@ -39,20 +40,21 @@ const mapBaseLayers: MapBaseLayersType = {
 };
 
 function setTheme(baseLayerName: MapBaseLayerKeyType) {
-    for (let l of Object.keys(mapBaseLayers)) {
-        (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
+    for (const l of Object.keys(mapBaseLayers)) {
+        mapBaseLayers[l as MapBaseLayerKeyType].setVisible(l === baseLayerName);
     }
 }
 
 // Zoom to the cluster or point on click
-function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<UnknownAction>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownAction>) {
     let didOneFeature = false;
-    map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-        if (clickedFeature && !didOneFeature) {
+    map.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
+        if (!didOneFeature) {
             // Clicked a clsuter
             if (clickedFeature.get('cluster_id')) {
                 dispatch(setSelectionId(undefined));
-                map!.getView().animate({
+                map.getView().animate({
                     center: e.coordinate,
                     zoom: config.zoomLevelForPoints,
                     duration: 500,
@@ -61,7 +63,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
             }
             else {
                 // Clicked a point
-                const id = clickedFeature.get('id');
+                const id = clickedFeature.get('id') as string;
                 dispatch(resetDates());
                 dispatch(setSelectionId(id));
                 // showPoint(id);
@@ -75,15 +77,18 @@ const OpenLayersMap: React.FC = () => {
     const dispatch = useDispatch();
     const { center, zoom, updateMap } = useSelector((state: RootState) => state.map);
     const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
-    const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
+    const basemapSource  = useSelector(selectBasemapSource) as MapBaseLayerKeyType;
     const mapElementRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<Map | null>(null);
     const mvtLayerRef = useRef<VectorTileLayer | null>(null);
 
+    const { mvtLayer, useProgressBar } = useMvtLayer(dispatch);
+    const { mvtLayerLoadStart, mvtLayerLoadEnd } = useProgressBar(dispatch);
+
     const handleMoveEnd = () => {
         if (!mapRef.current) return;
         const center = mapRef.current.getView().getCenter() as [number, number];
-        const zoom = mapRef.current.getView().getZoom() as number;
+        const zoom = mapRef.current.getView().getZoom() ?? 0;
         const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
         const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
         dispatch(setMapParams({ center, zoom, bounds }));
@@ -99,12 +104,10 @@ const OpenLayersMap: React.FC = () => {
             const source = mvtLayerRef.current.getSource();
             source?.changed();
         }
-    }, [mapRef.current, selectionId]);
+    }, [selectionId]);
 
     useEffect(() => {
         let map: Map | null = null;
-
-        const { mvtLayer, useProgressBar } = useMvtLayer(dispatch);
 
         if (mapElementRef.current) {
             map = new Map({
@@ -125,7 +128,6 @@ const OpenLayersMap: React.FC = () => {
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
 
-            const { mvtLayerLoadStart, mvtLayerLoadEnd } = useProgressBar(dispatch);
             map.on('loadstart', () => {
                 document.body.classList.add('loading');
                 mvtLayerLoadStart();
@@ -137,11 +139,12 @@ const OpenLayersMap: React.FC = () => {
         }
 
         return () => map?.dispose();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         if (!mapElementRef.current || !mvtLayerRef.current) return;
-        if (updateMap === true) {
+        if (updateMap) {
             mvtLayerRef.current.getSource()?.refresh();
             dispatch(setUpdateMap(false));
         }
@@ -158,7 +161,7 @@ const OpenLayersMap: React.FC = () => {
                 <ThemeToggleButton />
                 <LocaleManager />
             </div>
-            {mapRef.current && <Tooltip map={mapRef.current as Map} />}
+            {mapRef.current && <Tooltip map={mapRef.current} />}
         </section>
     );
 };

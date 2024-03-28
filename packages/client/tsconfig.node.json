@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    "types": [
+      "node",
+      "@types/jest"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@types/node"
+    ],
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
@@ -7,5 +15,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts"
+  ]
 }

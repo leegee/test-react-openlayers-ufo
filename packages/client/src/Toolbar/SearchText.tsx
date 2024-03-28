@@ -4,7 +4,7 @@ import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
-import { fetchFeatures, setQ, setUpdateMap } from '../redux/mapSlice';
+import { setQ, setUpdateMap } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 
 import './SearchText.css';
@@ -19,7 +19,6 @@ const SearchText: React.FC = () => {
     const debouncedFetchRequest = debounce((value: string) => {
         if (value.trim().length === 0 || value.length > config.minQLength) {
             dispatch(setQ(value));
-            // dispatch((fetchFeatures() as any));
             dispatch((setUpdateMap(true)));
         }
     }, DEBOUNCE_INPUT_MS);

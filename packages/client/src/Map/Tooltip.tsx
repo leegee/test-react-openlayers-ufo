@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
 import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
-import Feature, { FeatureLike } from 'ol/Feature';
+import  { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
 import config from '@ufo-monorepo-test/config/src';
 import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
