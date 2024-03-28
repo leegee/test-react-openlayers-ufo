@@ -77,10 +77,9 @@ const config: ConfigType = {
       cluster_eps_metres: 50000, // The distance between clusters
     }
   },
-  zoomLevelForPoints: 8,
+  zoomLevelForPoints: 7,
   zoomLevelForPointDetails: 11,
   minQLength: 3,
-  TESTING_GL: true,
 };
 
 if (isMysql) {
