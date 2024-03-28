@@ -15,6 +15,18 @@ type SqlBitsType = {
     orderByClause?: string[],
 };
 
+const epsMapping = [
+    400000,
+    200000,
+    100000,
+    50000,
+    25000,
+    12500,
+    10000,
+    7000,
+    5000,
+];
+
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
         msg: 'OK',
@@ -120,11 +132,12 @@ export async function mvt(ctx: Context) {
 
 // @see https://blog.jawg.io/how-to-make-mvt-with-postgis/
 function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
-    const eps = epsFromZoom(userArgs.zoom);
+    const eps = epsFromZoom(userArgs.z);
     let sql = '';
 
     // No clustering when zoomed in
     if (userArgs.z >= config.zoomLevelForPoints) {
+        console.log(`POINTS because z${userArgs.z} >= ${config.zoomLevelForPoints}`);
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
             FROM (
                 SELECT ${sqlBits.selectColumns.join(', ')},
@@ -146,35 +159,32 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
 
     else {
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-            FROM (
-              SELECT 
-                cluster_id,
-                COUNT(*) as num_points,
-                ST_AsMVTGeom(
-                  CASE
-                    WHEN COUNT(*) = 1 THEN ST_Collect(point)
-                    ELSE ST_Centroid(ST_Collect(point))
-                  END,
-                  BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-                  4096,
-                  256,
-                  true
-                ) AS geom,
-                MAX(id) as id,
-                MAX(datetime) as datetime,
-                MAX(location_text) as location_text
-              FROM (
-                SELECT 
-                  ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
-                  point,
-                  ${sqlBits.selectColumns.join(', ')}
-                FROM sightings
-                WHERE 
-                  ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-                  ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-              ) AS clusters
-              GROUP BY cluster_id
-            ) AS q`;
+        FROM (
+          SELECT 
+            clusters.cluster_id,
+            COUNT(*) as num_points,
+            ST_AsMVTGeom(
+              ST_Centroid(ST_Collect(clusters.point)),
+              BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+              4096, 256, true
+            ) AS geom,
+            MAX(sightings.id) as id,
+            MAX(sightings.datetime) as datetime,
+            MAX(sightings.location_text) as location_text
+          FROM (
+            SELECT 
+              ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
+              point,
+              ${sqlBits.selectColumns.join(', ')}
+            FROM sightings
+            WHERE 
+              ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+              ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+          ) AS clusters
+          INNER JOIN sightings ON clusters.point = sightings.point
+          GROUP BY clusters.cluster_id
+        ) AS q`;
+
     }
     //                   -- point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}) AND
 
@@ -474,15 +484,6 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 }
 
 
-function epsFromZoom(zoom: number): number {
-    return zoom < 3 ? config.gui.map.cluster_eps_metres * 4
-        : zoom < 5 ? config.gui.map.cluster_eps_metres * 2
-            : zoom < 6 ? config.gui.map.cluster_eps_metres
-                : zoom < 7 ? config.gui.map.cluster_eps_metres
-                    : zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
-                        : config.gui.map.cluster_eps_metres / 2;
-}
-
 function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
     // const eps = config.gui.map.cluster_eps_metres;
     const eps = epsFromZoom(userArgs.zoom);
@@ -588,4 +589,11 @@ function formatQueryForLogging(sql: string, sqlBits: SqlBitsType) {
         const param = sqlBits.whereParams ? sqlBits.whereParams[index - 1] : undefined;
         return typeof param === 'string' ? `'${param}'` : '';
     })
+}
+
+
+function epsFromZoom(zoomLevel: number): number {
+    const eps = epsMapping[Math.min(Math.max(zoomLevel, 1), config.zoomLevelForPoints)];
+    console.info({ zoomLevel, eps });
+    return eps;
 }
