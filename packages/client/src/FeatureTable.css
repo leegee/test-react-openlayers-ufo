@@ -101,11 +101,11 @@
         display: none;
         position: absolute;
         top: 50%;
-        transform: translateY(-50%) translateX(-50%);
+        transform: translateY(-50%) translateX(0%);
         background: var(--ufo-primary-bg-highlight);
         border-radius: 4pt;
         right: unset;
-        left: 50%;
+        right: 1pt;
         width: 6em;
         align-items: center;
         justify-content: space-evenly
@@ -220,7 +220,6 @@
     .td.ctrls {
         padding: 4pt;
         border: 2pt solid var(--ufo-brand-clr);
-        right: 2em;
     }
 
     .td.ctrls * {
