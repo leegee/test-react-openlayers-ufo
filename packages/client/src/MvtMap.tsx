@@ -129,7 +129,7 @@ const OpenLayersMap: React.FC = () => {
 
             mapRef.current = map;
 
-            useFeatureHighlighting(map);
+            // useFeatureHighlighting(map);
 
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
