@@ -5,13 +5,12 @@ import { VectorTile as VectorTileLayer } from 'ol/layer';
 import { MVT } from 'ol/format';
 import type { TileCoord } from 'ol/tilecoord';
 import type { Dispatch, UnknownAction } from '@reduxjs/toolkit';
+import { VectorTile } from 'ol';
 
 import config from '@ufo-monorepo-test/config/src';
 import { store } from "../redux/store";
-import { selectMvtQueryString, setLoading, setLoadingPc } from '../redux/mapSlice';
+import { selectMvtQueryString, addPropretiesToFeatureCollection, setLoading, setLoadingPc, type UfoFeatureCollection, UfoJsonFeature, resetFeatureCollection, finaliseFeatureCollection } from '../redux/mapSlice';
 import { sightingsStyleFunction } from './sightings-styles';
-import { Feature, VectorTile } from 'ol';
-import { FeatureLike } from 'ol/Feature';
 
 const customTileUrlFunction = (tileCoord: TileCoord) => {
     const z = tileCoord[0];
@@ -27,17 +26,6 @@ const mvtSource = new VectorTileSource({
     // tileGrid: createXYZ({ maxZoom: 19 }),
     tileUrlFunction: customTileUrlFunction,
 });
-
-mvtSource.on('tileloadend', function (event) {
-    const features = (event.tile as VectorTile).getFeatures();
-    const allProperties: any[] = [];
-    features.forEach((feature: FeatureLike) => {
-        const properties = feature.getProperties();
-        allProperties.push(properties);
-    });
-    console.log('Feature properties:', allProperties);
-});
-
 
 export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
     let loading = 0;
@@ -62,23 +50,38 @@ export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
     mvtSource.on(['tileloadend', 'tileloaderror'], () => addLoaded());
 
     return {
-        mvtLoadStart: () => {
+        mvtLayerLoadStart: () => {
             loading = 0;
             loaded = 0;
             dispatch(setLoading(true));
+            dispatch(resetFeatureCollection());
         },
-        mvtLoadEnd: () => {
+        mvtLayerLoadEnd: () => {
             loading = 0;
             loaded = 0;
             dispatch(setLoading(false));
+            dispatch(finaliseFeatureCollection());
         }
     }
 }
 
 
-export const mvtLayer = new VectorTileLayer({
-    declutter: true,
-    source: mvtSource,
-    renderMode: 'vector',
-    style: sightingsStyleFunction
-});
+export function useMvtLayer(dispatch: Dispatch<UnknownAction>) {
+    const mvtLayer = new VectorTileLayer({
+        declutter: true,
+        source: mvtSource,
+        renderMode: 'vector',
+        style: sightingsStyleFunction
+    });
+
+    mvtSource.on('tileloadend', function (event) {
+        const features = (event.tile as VectorTile).getFeatures().map(feature => {
+            return { properties: feature.getProperties() } as UfoJsonFeature
+        });
+        console.log('tileloadend:', event.tile, features);
+
+        dispatch(addPropretiesToFeatureCollection(features));
+    });
+
+    return { mvtLayer, useProgressBar };
+}

@@ -13,28 +13,18 @@ import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
+import { FeatureLike } from 'ol/Feature';
 
-export interface GeoJSONFeature {
-  type: "Feature";
-  geometry: {
-    type: string;
-    coordinates: number[] | number[][] | number[][][];
-  };
+export interface UfoJsonFeature {
   properties: {
     [key: string]: any;
   };
 }
 
 export interface UfoFeatureCollection {
-  type: "FeatureCollection";
   clusterCount: number;
   pointsCount: number;
-  features: GeoJSONFeature[];
-}
-
-export interface FetchFeaturesResposneType {
-  results: UfoFeatureCollection;
-  dictionary: MapDictionary | undefined;
+  features: UfoJsonFeature[];
 }
 
 // Extend QueryParams 
@@ -84,10 +74,29 @@ const mapSlice = createSlice({
       state.zoom = action.payload.zoom;
       state.bounds = action.payload.bounds;
     },
-    setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
-      state.featureCollection = (action.payload.results || []) as UfoFeatureCollection;
-      state.dictionary = action.payload.dictionary as MapDictionary;
+    resetFeatureCollection(state) {
+      state.featureCollection = {
+        clusterCount: 0,
+        pointsCount: 0,
+        features: []
+      };
+      console.log('init');
     },
+
+    addPropretiesToFeatureCollection(state, action: PayloadAction<UfoJsonFeature[]>) {
+      state.featureCollection?.features.push(...action.payload);
+      console.log('added', [...action.payload].length, [...action.payload])
+    },
+
+    finaliseFeatureCollection(state) {
+      state.featureCollection = {
+        clusterCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties && feature.properties.layer === 'sighting_clusters').length : 0,
+        pointsCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties && feature.properties.layer === 'sighting_points').length : 0,
+        features: state.featureCollection?.features ?? []
+      };
+      console.log('fin', state.featureCollection)
+    },
+
     resetDates(state) {
       state.from_date = undefined;
       state.to_date = undefined;
@@ -135,6 +144,7 @@ const mapSlice = createSlice({
 });
 
 export const {
+  addPropretiesToFeatureCollection, resetFeatureCollection, finaliseFeatureCollection,
   setPreviousQueryString, setMapParams,
   resetDates, setFromDate, setToDate,
   setQ, setBasemapSource,
@@ -186,47 +196,9 @@ export const selectMvtQueryString = (mapState: MapState): string | undefined => 
   return new URLSearchParams(queryObject).toString();
 };
 
-const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { state: RootState }>(
-  'data/fetchData',
-  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
-    alert("CALLED OLD CODE");
-    const mapState = getState().map;
-    const queryString: string | undefined = selectQueryString(mapState);
-    const { previousQueryString } = mapState;
-
-    if (!queryString) return;
-
-    if (previousQueryString === queryString) {
-      console.log('fetchFeatures - bail, this request query same as last request query');
-      return undefined;
-    }
-    dispatch(setPreviousQueryString(queryString));
-
-    let response;
-    try {
-      response = await fetch(`${searchEndpoint}?${queryString}`, {
-        headers: { accept: 'application/geo+json' }
-      });
-      const data = await response.json();
-      dispatch(mapSlice.actions.setFeatureCollection(data));
-    }
-    catch (error) {
-      console.error(error);
-      dispatch(mapSlice.actions.failedRequest());
-    }
-  }
-);
-
-export const fetchFeatures = debounce(
-  _fetchFeatures,
-  config.gui.apiRequests.debounceMs,
-  { immediate: true }
-);
-
-
 const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
-  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+  async (_, { dispatch, getState }): Promise<any | any> => {
     const mapState = getState().map;
 
     dispatch(mapSlice.actions.setCsvRequesting());

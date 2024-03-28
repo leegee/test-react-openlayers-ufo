@@ -18,9 +18,10 @@ import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
-import { mvtLayer, useProgressBar } from './lib/MvtLayer';
+import { useMvtLayer } from './lib/MvtLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
+import type VectorTileLayer from 'ol/layer/VectorTile';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -29,14 +30,6 @@ export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'all';
 export type MapBaseLayersType = {
     [key in MapBaseLayerKeyType]: Layer<VectorSource<any>> | TileLayer<any>;
-}
-
-type MapLayersType = {
-    [key in MapLayerKeyType]: Layer;
-}
-
-const mapLayers: MapLayersType = {
-    all: mvtLayer,
 }
 
 const mapBaseLayers: MapBaseLayersType = {
@@ -85,6 +78,7 @@ const OpenLayersMap: React.FC = () => {
     const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
     const mapElementRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<Map | null>(null);
+    const mvtLayerRef = useRef<VectorTileLayer | null>(null);
 
     const handleMoveEnd = () => {
         if (!mapRef.current) return;
@@ -101,16 +95,16 @@ const OpenLayersMap: React.FC = () => {
 
     // Re-render visible layers when user selects a point to show highlighted selection
     useEffect(() => {
-        Object.values(mapLayers).forEach((layer) => {
-            if (layer.getVisible()) {
-                const source = layer.getSource();
-                source?.changed();
-            }
-        });
+        if (mvtLayerRef.current && mvtLayerRef.current.getVisible()) {
+            const source = mvtLayerRef.current.getSource();
+            source?.changed();
+        }
     }, [mapRef.current, selectionId]);
 
     useEffect(() => {
         let map: Map | null = null;
+
+        const { mvtLayer, useProgressBar } = useMvtLayer(dispatch);
 
         if (mapElementRef.current) {
             map = new Map({
@@ -122,7 +116,7 @@ const OpenLayersMap: React.FC = () => {
                 layers: [
                     ...Object.values(mapBaseLayers),
                     labelsLayer,
-                    ...Object.values(mapLayers)
+                    mvtLayer
                 ],
             });
 
@@ -131,24 +125,24 @@ const OpenLayersMap: React.FC = () => {
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
 
-            const { mvtLoadStart, mvtLoadEnd } = useProgressBar(dispatch);
+            const { mvtLayerLoadStart, mvtLayerLoadEnd } = useProgressBar(dispatch);
             map.on('loadstart', () => {
                 document.body.classList.add('loading');
-                mvtLoadStart();
+                mvtLayerLoadStart();
             });
             map.on('loadend', () => {
                 document.body.classList.remove('loading');
-                mvtLoadEnd();
+                mvtLayerLoadEnd();
             });
         }
 
         return () => map?.dispose();
-    }, [dispatch]);
+    }, []);
 
     useEffect(() => {
-        if (!mapElementRef.current) return;
+        if (!mapElementRef.current || !mvtLayerRef.current) return;
         if (updateMap === true) {
-            mapLayers.all.getSource()?.refresh();
+            mvtLayerRef.current.getSource()?.refresh();
             dispatch(setUpdateMap(false));
         }
     }, [updateMap, dispatch]);
