@@ -1,5 +1,7 @@
 # Norwegian UFO Database
 
+See 'no-clusters' for a version that covers only Norge UFO: this version is working towards the MUFON data as well.
+
 * npm Typescript Monorepo
 * Koa
 * React (hooks)
