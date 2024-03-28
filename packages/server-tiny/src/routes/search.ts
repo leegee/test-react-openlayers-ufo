@@ -158,32 +158,94 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
     }
 
     else {
+        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        // FROM (
+        //   SELECT
+        //     clusters.cluster_id,
+        //     COUNT(*) as num_points,
+        //     ST_AsMVTGeom(
+        //       ST_Centroid(ST_Collect(clusters.point)),
+        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+        //       4096, 256, true
+        //     ) AS geom,
+        //     MAX(sightings.id) as id,
+        //     MAX(sightings.datetime) as datetime,
+        //     MAX(sightings.location_text) as location_text
+        //   FROM (
+        //     SELECT
+        //       ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
+        //       point,
+        //       ${sqlBits.selectColumns.join(', ')}
+        //     FROM sightings
+        //     WHERE
+        //       ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+        //       ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+        //   ) AS clusters
+        //   INNER JOIN sightings ON clusters.point = sightings.point
+        //   GROUP BY clusters.cluster_id
+        // ) AS q`;
+
+        // One convex hull per tile:
+        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        // FROM (
+        //   SELECT
+        //     1 as id,
+        //     COUNT(*) as num_points,
+        //     ST_AsMVTGeom(
+        //       ST_ConvexHull(ST_Collect(sightings.point)),
+        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
+        //       4096, 256, true
+        //     ) AS geom
+        //   FROM sightings
+        //   WHERE
+        //     ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+        //     ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+        // ) AS q`;
+
+        // Four hulls per tile:
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
         FROM (
           SELECT 
-            clusters.cluster_id,
+            1 as id,
+            quadrant,
             COUNT(*) as num_points,
             ST_AsMVTGeom(
-              ST_Centroid(ST_Collect(clusters.point)),
+              ST_ConvexHull(ST_Collect(point)),
               BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
               4096, 256, true
-            ) AS geom,
-            MAX(sightings.id) as id,
-            MAX(sightings.datetime) as datetime,
-            MAX(sightings.location_text) as location_text
+            ) AS geom
           FROM (
             SELECT 
-              ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
-              point,
-              ${sqlBits.selectColumns.join(', ')}
-            FROM sightings
-            WHERE 
-              ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-              ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-          ) AS clusters
-          INNER JOIN sightings ON clusters.point = sightings.point
-          GROUP BY clusters.cluster_id
+              CASE 
+                WHEN ST_Intersects(point, quadrant1) THEN 'quadrant1'
+                WHEN ST_Intersects(point, quadrant2) THEN 'quadrant2'
+                WHEN ST_Intersects(point, quadrant3) THEN 'quadrant3'
+                ELSE 'quadrant4'
+              END AS quadrant,
+              point
+            FROM (
+              SELECT 
+                *,
+                ST_SetSRID(ST_MakeLine(
+                  ST_MakePoint(${userArgs.x}, ${userArgs.y}),
+                  ST_MakePoint(${userArgs.x} + (${userArgs.z} - ${userArgs.x}) / 2, ${userArgs.y})
+                ), 3857) AS quadrant1,
+                ST_SetSRID(ST_MakeLine(
+                  ST_MakePoint(${userArgs.x}, ${userArgs.y}),
+                  ST_MakePoint(${userArgs.x}, ${userArgs.y} + (${userArgs.z} - ${userArgs.y}) / 2)
+                ), 3857) AS quadrant2,
+                ST_SetSRID(ST_MakeLine(
+                  ST_MakePoint(${userArgs.x}, ${userArgs.z}),
+                  ST_MakePoint(${userArgs.x} + (${userArgs.z} - ${userArgs.x}) / 2, ${userArgs.z})
+                ), 3857) AS quadrant3
+              FROM sightings
+              WHERE 
+                ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+            ) AS s
+          ) AS q
+          GROUP BY quadrant
         ) AS q`;
+
 
     }
     //                   -- point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}) AND

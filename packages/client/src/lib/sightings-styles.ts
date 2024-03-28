@@ -29,6 +29,13 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
 
     if (clusterSizeFromServer && clusterSizeFromServer > 1) {
         style = new Style({
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.2)'
+            }),
+            stroke: new Stroke({
+                color: 'blue',
+                width: 2
+            }),
             image: new Circle({
                 radius: 15,
                 fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
@@ -36,7 +43,8 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
             }),
             text: new Text({
                 text: clusterSizeFromServer.toString(),
-                fill: new Fill({ color: 'white' })
+                fill: new Fill({ color: 'white' }),
+                scale: 2
             })
         });
     }
