@@ -20,7 +20,7 @@
         "duration_seconds": "Duration (seconds)"
     },
     "search_text": {
-        "title": "Search for three characters or more",
+        "title": "Search for {maxChars} characters or more",
         "placeholder": "Search here"
     },
     "histogram": {
