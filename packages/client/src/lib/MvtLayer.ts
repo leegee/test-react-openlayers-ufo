@@ -3,7 +3,6 @@
 import { VectorTile as VectorTileSource } from 'ol/source';
 import { VectorTile as VectorTileLayer } from 'ol/layer';
 import { MVT } from 'ol/format';
-import { createXYZ } from 'ol/tilegrid';
 import type { TileCoord } from 'ol/tilecoord';
 import type { Dispatch, UnknownAction } from '@reduxjs/toolkit';
 
