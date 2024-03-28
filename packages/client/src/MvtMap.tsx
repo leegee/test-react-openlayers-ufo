@@ -1,12 +1,13 @@
 import React, { type Dispatch, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import debounce from 'debounce';
-import { Map, View } from 'ol';
+import { Map, type MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
-import TileLayer from 'ol/layer/Tile';
+import type TileLayer from 'ol/layer/Tile';
+import type VectorTileLayer from 'ol/layer/VectorTile';
+import type TileSource from 'ol/source/Tile';
 import { type UnknownAction } from '@reduxjs/toolkit';
-import type MapBrowserEvent from 'ol/MapBrowserEvent';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
@@ -17,21 +18,18 @@ import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
-import { useMvtLayer } from './lib/MvtLayer';
+import { mvtLayer, useProgressBar } from './lib/MvtLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
-import type VectorTileLayer from 'ol/layer/VectorTile';
 
 import 'ol/ol.css';
 import './Map.css';
-import TileSource from 'ol/source/Tile';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'all';
 export type MapBaseLayersType = {
     [key in MapBaseLayerKeyType]: TileLayer<TileSource>;
 }
-
 
 const mapBaseLayers: MapBaseLayersType = {
     dark: baseLayerDark,
@@ -46,12 +44,11 @@ function setTheme(baseLayerName: MapBaseLayerKeyType) {
 }
 
 // Zoom to the cluster or point on click
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownAction>) {
     let didOneFeature = false;
     map.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-        if (!didOneFeature) {
-            // Clicked a clsuter
+        if ( !didOneFeature) {
+            // Clicked a cluster
             if (clickedFeature.get('cluster_id')) {
                 dispatch(setSelectionId(undefined));
                 map.getView().animate({
@@ -77,13 +74,10 @@ const OpenLayersMap: React.FC = () => {
     const dispatch = useDispatch();
     const { center, zoom, updateMap } = useSelector((state: RootState) => state.map);
     const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
-    const basemapSource  = useSelector(selectBasemapSource) as MapBaseLayerKeyType;
+    const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
     const mapElementRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<Map | null>(null);
     const mvtLayerRef = useRef<VectorTileLayer | null>(null);
-
-    const { mvtLayer, useProgressBar } = useMvtLayer(dispatch);
-    const { mvtLayerLoadStart, mvtLayerLoadEnd } = useProgressBar(dispatch);
 
     const handleMoveEnd = () => {
         if (!mapRef.current) return;
@@ -107,7 +101,7 @@ const OpenLayersMap: React.FC = () => {
     }, [selectionId]);
 
     useEffect(() => {
-        let map: Map | null = null;
+        let map: Map;
 
         if (mapElementRef.current) {
             map = new Map({
@@ -128,6 +122,8 @@ const OpenLayersMap: React.FC = () => {
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { mvtLayerLoadStart, mvtLayerLoadEnd } = useProgressBar(dispatch);
             map.on('loadstart', () => {
                 document.body.classList.add('loading');
                 mvtLayerLoadStart();
@@ -138,7 +134,7 @@ const OpenLayersMap: React.FC = () => {
             });
         }
 
-        return () => map?.dispose();
+        return () => map.dispose();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

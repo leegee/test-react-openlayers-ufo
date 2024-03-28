@@ -4,30 +4,29 @@ import { VectorTile as VectorTileSource } from 'ol/source';
 import { VectorTile as VectorTileLayer } from 'ol/layer';
 import { MVT } from 'ol/format';
 import type { TileCoord } from 'ol/tilecoord';
-import type { Dispatch, UnknownAction } from '@reduxjs/toolkit';
-import { VectorTile } from 'ol';
+import type { Dispatch } from '@reduxjs/toolkit';
 
 import config from '@ufo-monorepo-test/config/src';
 import { store } from "../redux/store";
-import { selectMvtQueryString, addPropretiesToFeatureCollection, setLoading, setLoadingPc,  UfoJsonFeature, resetFeatureCollection, finaliseFeatureCollection } from '../redux/mapSlice';
+import { selectMvtQueryString, addPropretiesToFeatureCollection, setLoading, setLoadingPc, UfoJsonFeature, resetFeatureCollection, finaliseFeatureCollection } from '../redux/mapSlice';
 import { sightingsStyleFunction } from './sightings-styles';
+import { createXYZ } from 'ol/tilegrid';
 
 const customTileUrlFunction = (tileCoord: TileCoord) => {
     const z = tileCoord[0];
     const x = tileCoord[1];
     const y = tileCoord[2];
     const queryString: string | undefined = selectMvtQueryString(store.getState().map);
-    return `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?` + (queryString || '');
+    return `${config.api.host}:${config.api.port}${config.api.endopoints.pointsMvt.url}/${z}/${x}/${y}.mvt?` + (queryString ?? '');
 };
 
-// Create VectorTileSource
 const mvtSource = new VectorTileSource({
     format: new MVT(),
-    // tileGrid: createXYZ({ maxZoom: 19 }),
+    tileGrid: createXYZ({ maxZoom: 20 }),
     tileUrlFunction: customTileUrlFunction,
 });
 
-export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
+export function useProgressBar(dispatch: Dispatch) {
     let loading = 0;
     let loaded = 0;
 
@@ -65,16 +64,17 @@ export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
     }
 }
 
+export const mvtLayer = new VectorTileLayer({
+    declutter: true,
+    source: mvtSource,
+    renderMode: 'vector',
+    style: sightingsStyleFunction
+});
 
-export function useMvtLayer(dispatch: Dispatch<UnknownAction>) {
-    const mvtLayer = new VectorTileLayer({
-        declutter: true,
-        source: mvtSource,
-        renderMode: 'vector',
-        style: sightingsStyleFunction
-    });
 
-    mvtSource.on('tileloadend', function (event) {
+
+/*
+   mvtSource.on('tileloadend', function (event) {
         const features = (event.tile as VectorTile).getFeatures().map(feature => {
             return { properties: feature.getProperties() } as UfoJsonFeature
         });
@@ -82,6 +82,4 @@ export function useMvtLayer(dispatch: Dispatch<UnknownAction>) {
 
         dispatch(addPropretiesToFeatureCollection(features));
     });
-
-    return { mvtLayer, useProgressBar };
-}
+*/

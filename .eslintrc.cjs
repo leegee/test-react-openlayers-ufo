@@ -15,6 +15,7 @@ module.exports = {
   plugins: [ 'react-refresh' ],
   rules: {
     '@typescript-eslint/no-confusing-void-expression': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
     'react-refresh/only-export-components': [
       'warn',
       {

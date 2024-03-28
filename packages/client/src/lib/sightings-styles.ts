@@ -21,10 +21,10 @@ function mapLocalClusterToColor(): string {
     return 'blue';
 }
 
-export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number): Style => {
-    const features = feature.get('features');
-    const clusterSizeFromServer = feature.get('num_points');
-    const clusterSizeMadeLocally = features ? features.length : undefined;
+export const sightingsStyleFunction = (feature: FeatureLike): Style => {
+    const features: FeatureLike[] | null = feature.get('features') as FeatureLike[] | null;
+    const clusterSizeFromServer = Number(feature.get('num_points'));
+    const clusterSizeMadeLocally = features ? features.length : 0;
     let style;
 
     if (clusterSizeFromServer && clusterSizeFromServer > 1) {
@@ -42,7 +42,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
             text: new Text({
-                text: clusterSizeFromServer.toString(),
+                text: String(clusterSizeFromServer),
                 fill: new Fill({ color: 'white' }),
                 scale: 2
             })
@@ -58,7 +58,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
             text: new Text({
-                text: clusterSizeMadeLocally.toString(),
+                text: String(clusterSizeMadeLocally),
                 fill: new Fill({ color: 'white' })
             })
         });
@@ -68,7 +68,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         const selectionId = store.getState().gui.selectionId;
         const selected = selectionId && selectionId === feature.get('id');
 
-        const score = parseFloat(feature.get('search_score'));
+        const score = parseFloat(String(feature.get('search_score')));
         const hue = 180;
         let alpha = 1;
         if (score) {

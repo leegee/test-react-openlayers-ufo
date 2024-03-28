@@ -11,13 +11,11 @@ import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
 import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
-import type { MapBaseLayerKeyType } from '../Map.tsx_old';
+import type { MapBaseLayerKeyType } from '../MvtMap';
 import { RootState } from './store';
 
 export interface UfoJsonFeature {
-  properties: {
-    [key: string]: any;
-  };
+  properties:  Record<string, number | string | Date>;
 }
 
 export interface UfoFeatureCollection {
@@ -55,7 +53,7 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   q: '',
-  basemapSource: localStorage.getItem('basemap_source') || 'geo',
+  basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
   requestingCsv: false,
   updateMap: false,
@@ -89,8 +87,8 @@ const mapSlice = createSlice({
 
     finaliseFeatureCollection(state) {
       state.featureCollection = {
-        clusterCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties && feature.properties.layer === 'sighting_clusters').length : 0,
-        pointsCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties && feature.properties.layer === 'sighting_points').length : 0,
+        clusterCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties.layer === 'sighting_clusters').length : 0,
+        pointsCount: state.featureCollection ? state.featureCollection.features.filter(feature => feature.properties.layer === 'sighting_points').length : 0,
         features: state.featureCollection?.features ?? []
       };
       console.log('fin', state.featureCollection)
@@ -110,11 +108,11 @@ const mapSlice = createSlice({
     setQ(state, action: PayloadAction<string | undefined>) {
       state.q = action.payload ? action.payload.trim() : '';
     },
-    setBasemapSource: (state, action) => {
+    setBasemapSource: (state, action: PayloadAction<MapBaseLayerKeyType>) => {
       state.basemapSource = action.payload;
       localStorage.setItem('basemap_source', state.basemapSource);
     },
-    setPreviousQueryString: (state, action) => {
+    setPreviousQueryString: (state, action: PayloadAction<string>) => {
       state.previousQueryString = action.payload;
     },
     setCsvRequesting: (state) => {
@@ -197,7 +195,7 @@ export const selectMvtQueryString = (mapState: MapState): string | undefined => 
 
 const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
-  async (_, { dispatch, getState }): Promise<any | any> => {
+  async (_, { dispatch, getState }): Promise<any> => {
     const mapState = getState().map;
 
     dispatch(mapSlice.actions.setCsvRequesting());
