@@ -7,3 +7,16 @@
     font-size: 12pt;
     color: #eee;
 }
+
+.tooltip {
+    h3 {
+        text-transform: capitalize;
+        font-size: 100%;
+        padding: 0;
+        margin: 2pt 0;
+    }
+
+    small {
+        font-weight: light
+    }
+}

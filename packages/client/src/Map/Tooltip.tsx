@@ -55,14 +55,14 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                         tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
                     }
                 }
-                tooltipContent += '<b font-style="font-size:120%">' + location_text + '</b>';
+                tooltipContent += '<h3>' + location_text + '</h3>';
                 const num_points = feature.get('num_points') || features.length;
                 if (num_points > 1) {
                     tooltipContent += ' x' + num_points;
                 }
                 const score = (feature as FeatureLike).get('search_score');
                 if (score) {
-                    tooltipContent += '<br/><small style="font-weight:light">Search score: ' + score + '</small>';
+                    tooltipContent += '<br/><small>Search score: ' + score + '</small>';
                 }
             }
             else {
