@@ -13,7 +13,6 @@ import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, selectBasemapSource, resetDates, setUpdateMap } from './redux/mapSlice';
 import { setSelectionId } from './redux/guiSlice';
-import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
@@ -128,8 +127,6 @@ const OpenLayersMap: React.FC = () => {
             });
 
             mapRef.current = map;
-
-            // useFeatureHighlighting(map);
 
             map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
             map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
