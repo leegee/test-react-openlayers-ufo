@@ -206,7 +206,6 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
         sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
         FROM (
           SELECT 
-            1 as id,
             quadrant,
             COUNT(*) as num_points,
             ST_AsMVTGeom(
@@ -217,32 +216,23 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
           FROM (
             SELECT 
               CASE 
-                WHEN ST_Intersects(point, quadrant1) THEN 'quadrant1'
-                WHEN ST_Intersects(point, quadrant2) THEN 'quadrant2'
-                WHEN ST_Intersects(point, quadrant3) THEN 'quadrant3'
+                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin, bbox.ymin, bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymin + (bbox.ymax-bbox.ymin)/2), 3857)) THEN 'quadrant1'
+                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymin, bbox.xmax, bbox.ymin + (bbox.ymax-bbox.ymin)/2), 3857)) THEN 'quadrant2'
+                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin, bbox.ymin + (bbox.ymax-bbox.ymin)/2, bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymax), 3857)) THEN 'quadrant3'
                 ELSE 'quadrant4'
               END AS quadrant,
               point
-            FROM (
-              SELECT 
-                *,
-                ST_SetSRID(ST_MakeLine(
-                  ST_MakePoint(${userArgs.x}, ${userArgs.y}),
-                  ST_MakePoint(${userArgs.x} + (${userArgs.z} - ${userArgs.x}) / 2, ${userArgs.y})
-                ), 3857) AS quadrant1,
-                ST_SetSRID(ST_MakeLine(
-                  ST_MakePoint(${userArgs.x}, ${userArgs.y}),
-                  ST_MakePoint(${userArgs.x}, ${userArgs.y} + (${userArgs.z} - ${userArgs.y}) / 2)
-                ), 3857) AS quadrant2,
-                ST_SetSRID(ST_MakeLine(
-                  ST_MakePoint(${userArgs.x}, ${userArgs.z}),
-                  ST_MakePoint(${userArgs.x} + (${userArgs.z} - ${userArgs.x}) / 2, ${userArgs.z})
-                ), 3857) AS quadrant3
-              FROM sightings
-              WHERE 
-                ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-            ) AS s
-          ) AS q
+            FROM sightings,
+                 (SELECT 
+                    ST_XMin(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as xmin,
+                    ST_YMin(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as ymin,
+                    ST_XMax(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as xmax,
+                    ST_YMax(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as ymax
+                 ) as bbox
+            WHERE 
+              ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
+              ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
+          ) AS s
           GROUP BY quadrant
         ) AS q`;
 
