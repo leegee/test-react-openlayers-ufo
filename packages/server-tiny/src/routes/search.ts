@@ -138,7 +138,7 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
     // No clustering when zoomed in
     if (userArgs.z >= config.zoomLevelForPoints) {
         console.log(`POINTS because z${userArgs.z} >= ${config.zoomLevelForPoints}`);
-        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        sql = `SELECT ST_AsMVT(q, 'sighting_points', 4096, 'geom')
             FROM (
                 SELECT ${sqlBits.selectColumns.join(', ')},
                     ST_AsMvtGeom(
@@ -203,7 +203,7 @@ function sqlForMvt(sqlBits: SqlBitsType, userArgs): string {
         // ) AS q`;
 
         // Four hulls per tile:
-        sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
+        sql = `SELECT ST_AsMVT(q, 'sighting_clusters', 4096, 'geom')
         FROM (
           SELECT 
             quadrant,

@@ -10,6 +10,8 @@ import config from '@ufo-monorepo-test/config/src';
 import { store } from "../redux/store";
 import { selectMvtQueryString, setLoading, setLoadingPc } from '../redux/mapSlice';
 import { sightingsStyleFunction } from './sightings-styles';
+import { Feature, VectorTile } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 
 const customTileUrlFunction = (tileCoord: TileCoord) => {
     const z = tileCoord[0];
@@ -25,6 +27,17 @@ const mvtSource = new VectorTileSource({
     // tileGrid: createXYZ({ maxZoom: 19 }),
     tileUrlFunction: customTileUrlFunction,
 });
+
+mvtSource.on('tileloadend', function (event) {
+    const features = (event.tile as VectorTile).getFeatures();
+    const allProperties: any[] = [];
+    features.forEach((feature: FeatureLike) => {
+        const properties = feature.getProperties();
+        allProperties.push(properties);
+    });
+    console.log('Feature properties:', allProperties);
+});
+
 
 export function useProgressBar(dispatch: Dispatch<UnknownAction>) {
     let loading = 0;
