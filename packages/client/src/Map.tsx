@@ -156,6 +156,7 @@ const OpenLayersMap: React.FC = () => {
         view: new View({
           center: fromLonLat(center),
           zoom,
+          minZoom: 5,
         }),
         layers: [
           ...Object.values(mapBaseLayers),
