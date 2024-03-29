@@ -71,9 +71,10 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style => {
     }
 
     else {
+        // Points
+        const rgb = feature.get('rgb') as string;
         const selectionId = store.getState().gui.selectionId;
         const selected = selectionId && selectionId === feature.get('id');
-
         const score = parseFloat(feature.get('search_score') as string);
         // const hue = score ? mapScoreToHue(score) : '180';
         const hue = 180;
@@ -84,11 +85,16 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style => {
             if (alpha < 0.55) alpha = 0.55;
             console.log(alpha);
         }
+        let colour = rgb;
+        if (typeof rgb === 'undefined' || rgb === 'Unknown'){
+            colour = `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`;
+        }
+
         style = new Style({
             image: new Circle({
                 radius: 10,
                 fill: new Fill({
-                    color: selected ? 'hsl(40,100%,70%)' : `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`
+                    color: selected ? 'hsl(40,100%,70%)' : colour
                 }),
                 stroke: new Stroke(
                     selected ? {

@@ -130,7 +130,7 @@ async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
-        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point',
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point', 'rgb',
     ];
     const whereParams: string[] = [];
     const orderByClause: string[] = [];
