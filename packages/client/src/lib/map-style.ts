@@ -30,10 +30,12 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
     if (clusterSizeFromServer) {
         style = new Style({
             stroke: new Stroke({
-                color: '#3399CC',
-                width: 2
+                color: 'rgba(25, 25, 255, 0.9)',
+                width: 1
             }),
-            fill: new Fill({ color: '#3399CC' }),
+            fill: new Fill({
+                color: 'rgba(78, 197, 215, 0.7)'
+            }),
             image: new Circle({
                 radius: 14,
                 fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
