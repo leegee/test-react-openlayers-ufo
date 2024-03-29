@@ -20,7 +20,7 @@ import baseLayerGeo from './lib/map-base-layer/layer-geo';
 // import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/HeatmapLayer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
-import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
+// import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
 
@@ -28,7 +28,7 @@ import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-export type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
+export type MapLayerKeyType = 'clusterOnly' |  'points'; // | 'mixedSearchResults'
 export type MapBaseLayersType = {
   [key in MapBaseLayerKeyType]: Layer
 }
@@ -39,7 +39,7 @@ type MapLayersType = {
 
 const mapLayers: MapLayersType = {
   clusterOnly: clusterOnlyLayer,
-  mixedSearchResults: mixedSearchResultsLayer,
+  // mixedSearchResults: mixedSearchResultsLayer,
   points: pointsLayer,
 }
 
