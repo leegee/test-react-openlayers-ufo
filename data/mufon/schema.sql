@@ -4,17 +4,22 @@
 DROP TABLE IF EXISTS sightings;
 
 CREATE TABLE sightings (
-    datetime VARCHAR(25),
-    city VARCHAR(255),
-    state VARCHAR(255),
-    country CHAR(2),
+    datetime TIMESTAMP,
     shape VARCHAR(25),
     colour VARCHAR(50),
-    duration_seconds VARCHAR(255),
-    duration_hours_min VARCHAR(50),
+    duration_seconds INTEGER,
     comments TEXT,
-    date_posted VARCHAR(255),
-    latitude VARCHAR(255),
-    longitude VARCHAR(255)
+    city VARCHAR(100),
+    state VARCHAR(100),
+    country CHAR(2),
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
 );
+
+ALTER TABLE sightings ADD COLUMN id SERIAL PRIMARY KEY;
+UPDATE sightings SET id = nextval(pg_get_serial_sequence('sightings', 'id'));
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_ops);
+CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);
 
