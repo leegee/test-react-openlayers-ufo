@@ -138,4 +138,15 @@ mark {
   animation: flash 1s;
 }
 
-/* @media (prefers-color-scheme: light) { */
+::-webkit-scrollbar {
+  background: var(--ufo-primary-bg);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ufo-primary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ufo-primary-border-clr);
+  border-radius: 4pt;
+}

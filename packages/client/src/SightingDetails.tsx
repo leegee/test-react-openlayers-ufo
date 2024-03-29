@@ -7,6 +7,8 @@ import Modal from './Modal';
 import { RootState } from './redux/store';
 import { fetchSightingDetails } from './redux/details';
 
+import './SightingDetails.css';
+
 const SightingDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch = useDispatch();
@@ -27,14 +29,13 @@ const SightingDetails: React.FC = () => {
     return (
         <Modal title={get('sighting_details.title') + ' ' + id}>
             <section id='sighting-details'>
-                <h2></h2>
                 <table>
                     <tbody>
                         {Object.keys(details)
                             .filter((column: string) => column !== 'point' && details[column] !== null)
                             .map((column: string, index: number) => (
                                 <tr key={index}>
-                                    <td>{column}</td>
+                                    <th>{column}</th>
                                     <td>{details[column]?.toString()}</td>
                                 </tr>
                             ))}

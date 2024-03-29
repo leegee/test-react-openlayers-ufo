@@ -15,25 +15,47 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-}
 
-#modal {
-    h2 {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1em;
+    ::-webkit-scrollbar {
+        background: var(--ufo-modal-bg);
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--ufo-modal-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--ufo-modal-border-clr);
     }
 
     #modal-content {
         position: relative;
         background: var(--ufo-modal-bg);
         color: var(--ufo-modal-fg);
-        width: 80vw;
-        height: 80vh;
+        width: clamp(20rem, 50em, 80vw);
+        height: clamp(30rem, 50em, 80vh);
         border: 1pt solid var(--ufo-modal-border-clr);
         border-radius: 4pt;
-        overflow: hidden;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h2 {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1em;
+        }
+    }
+
+
+    #modal-inner {
+        flex-grow: 1;
+        height: 10rem;
+        overflow: auto;
     }
 
     #modal-close:after {
@@ -58,9 +80,4 @@
         border-color: var(--ufo-brand-clr)
     }
 
-    #modal-inner {
-        padding: 0 2em;
-        height: 100%;
-        overflow: auto;
-    }
 }
