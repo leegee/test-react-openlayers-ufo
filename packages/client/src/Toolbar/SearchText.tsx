@@ -33,8 +33,8 @@ const SearchText: React.FC = () => {
         <nav className='search-text component highlightable'>
             <span className='grey search-icon' />
             <input
-                title={get('search_text.title')}
-                aria-label={get('search_text.title')}
+                title={get('search_text.title', { minChars: config.minQLength })}
+                aria-label={get('search_text.title', { minChars: config.minQLength })}
                 type='search'
                 id='q'
                 name='q'

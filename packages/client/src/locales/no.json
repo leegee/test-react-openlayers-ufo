@@ -19,7 +19,7 @@
         "duration_seconds": "Varighet (sekunder)"
     },
     "search_text": {
-        "title": "Søk etter tre tegn eller malm",
+        "title": "Søk etter {minChars} tegn eller malm",
         "placeholder": "Søk her"
     },
     "histogram": {
