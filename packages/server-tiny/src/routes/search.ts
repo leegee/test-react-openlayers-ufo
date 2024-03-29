@@ -1,7 +1,7 @@
 import { PassThrough, Writable } from 'stream';
-import { Context } from 'koa';
+import type { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
-import { ParsedUrlQuery } from "querystring";
+import type { ParsedUrlQuery } from "querystring";
 
 import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
@@ -80,7 +80,7 @@ export async function search(ctx: Context) {
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         if (sendCsv) {
-            await sendCsvResponse(ctx);
+            await sendCsvResponse(ctx, sql, sqlBits);
         }
 
         else {
@@ -102,7 +102,7 @@ export async function search(ctx: Context) {
     }
 }
 
-async function sendCsvResponse(ctx) {
+async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) {
     ctx.type = 'text/csv';
     ctx.attachment('ufo-sightings.csv');
 
