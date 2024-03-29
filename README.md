@@ -42,6 +42,11 @@ If zoomed out by a configurable amount, the server clusters the points that repr
 
 Please fix anything you can or suggest a better way of doing things.
 
+## Limitations
+
+* Much of the Norge UFO data is yet to be processed. Any advice on reading the schema much appreciated.
+* The map's minimum zoom level is set to avoid over-taxing the server and the client: hopefully will find time to produce density maps for such zoom levels.
+
 ## User Journey
 
 Sightings are clustered when zoomed out:
