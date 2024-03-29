@@ -51,7 +51,7 @@ UPDATE sightings SET duration_seconds_unsigned = ROUND(CAST(duration_seconds AS 
 ALTER TABLE sightings DROP COLUMN duration_seconds;
 ALTER TABLE sightings RENAME COLUMN duration_seconds_unsigned TO duration_seconds;
 
--- HTML entity conversion:
+-- HTML entity conversion: 
 CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
 RETURNS TEXT AS $$
 DECLARE
