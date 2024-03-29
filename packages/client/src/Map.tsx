@@ -176,12 +176,14 @@ const OpenLayersMap: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+useEffect(() => { 
+  const debouncedFetchFeatures = debounce(() => {
+    dispatch(fetchFeatures());
+  }, 750);
 
-  useEffect(() => { 
-    debounce(() => {
-      dispatch((fetchFeatures()));
-    }, 750);
-  }, [dispatch, bounds, zoom]);
+  debouncedFetchFeatures();
+
+}, [dispatch, bounds, zoom]);
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
