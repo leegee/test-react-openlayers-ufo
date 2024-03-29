@@ -111,7 +111,8 @@
         justify-content: space-evenly
     }
 
-    .tr:hover .td.ctrls {
+    .tr:hover .td.ctrls,
+    .tr.selected .td.ctrls {
         display: flex;
     }
 
