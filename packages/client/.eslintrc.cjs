@@ -12,13 +12,15 @@ module.exports = {
   ],
   ignorePatterns: [ 'dist', '.eslintrc.cjs' ],
   parser: '@typescript-eslint/parser',
-  plugins: [ 'react-refresh' ],
+  plugins: [
+  ],
   rules: {
     'react-refresh/only-export-components': 'off',
-    'react/jsx-uses-react': 'off',
-    'react/react-in-jsx-scope': 'off',
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off",
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-confusing-void-expression': 'off',
   },
   parserOptions: {
     ecmaVersion: 'latest',
