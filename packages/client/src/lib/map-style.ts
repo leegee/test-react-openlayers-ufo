@@ -21,9 +21,10 @@ function mapLocalClusterToColor(): string {
     return 'blue';
 }
 
-export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number): Style => {
-    const features = feature.get('features');
-    const clusterSizeFromServer = feature.get('num_points');
+export const sightingsStyleFunction = (feature: FeatureLike): Style => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const features = feature.get('features') as any[] | undefined;
+    const clusterSizeFromServer = Number(feature.get('num_points'));
     const clusterSizeMadeLocally = features ? features.length : undefined;
     let style;
 
@@ -74,7 +75,7 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
         const selectionId = store.getState().gui.selectionId;
         const selected = selectionId && selectionId === feature.get('id');
 
-        const score = parseFloat(feature.get('search_score'));
+        const score = parseFloat(feature.get('search_score') as string);
         // const hue = score ? mapScoreToHue(score) : '180';
         const hue = 180;
         let alpha = 1;

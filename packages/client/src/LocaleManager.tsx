@@ -8,7 +8,7 @@ import { setLocale } from './redux/guiSlice';
 
 import './LocaleManager.css';
 
-export const translations: { [key: string]: Promise<any> } = {
+export const translations: Record<string, Promise<any>> = {
     'en': import('./locales/en.json'),
     'no': import('./locales/no.json'),
 };
@@ -16,19 +16,19 @@ export const translations: { [key: string]: Promise<any> } = {
 type LocaleKey = keyof typeof translations;
 
 export const useLocale = async (locale?: LocaleKey) => {
-    locale = locale || config.locale;
+    locale = locale ?? config.locale;
     await loadLocale(locale);
 }
 
 export const getTranslation = async (locale: LocaleKey) => {
-    const translation = await translations[locale];
+    const translation = await translations[locale] as Record<string, any>;
     return translation;
 }
 
 export const loadLocale = async (locale: LocaleKey) => {
     const translation = await getTranslation(locale);
-    init({
-        currentLocale: locale as string,
+    await init({
+        currentLocale: locale,
         locales: { [locale]: translation },
     });
 }
@@ -38,7 +38,7 @@ const LocaleManager = () => {
     const { locale } = useSelector((state: RootState) => state.gui);
 
     useEffect(() => {
-        loadLocale(locale);
+        void loadLocale(locale);
     }, [locale]);
 
     const handleClick = (locale: LocaleKey) => {
