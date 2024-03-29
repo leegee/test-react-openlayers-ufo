@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
-import { setLocale } from './redux/guiSlice';
+import { setLocaleKey } from './redux/guiSlice';
 
 import './LocaleManager.css';
 
@@ -15,7 +15,7 @@ export const translations: Record<string, Promise<any>> = {
 
 type LocaleKey = keyof typeof translations;
 
-export const useLocale = async (locale?: LocaleKey) => {
+export const setupLocale = async (locale?: LocaleKey): Promise<void> => {
     locale = locale ?? config.locale;
     await loadLocale(locale);
 }
@@ -42,7 +42,7 @@ const LocaleManager = () => {
     }, [locale]);
 
     const handleClick = (locale: LocaleKey) => {
-        dispatch(setLocale(locale));
+        dispatch(setLocaleKey(locale));
     };
 
     return (

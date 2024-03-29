@@ -21,6 +21,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-confusing-void-expression': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
   },
   parserOptions: {
     ecmaVersion: 'latest',

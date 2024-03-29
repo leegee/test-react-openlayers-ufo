@@ -3,11 +3,11 @@ import config from '@ufo-monorepo-test/config/src';
 
 export type PanelStateTypes = 'hidden' | 'narrow' | 'full';
 
-export type GuiSliceType = {
+export interface GuiSliceType {
     locale: string,
     panel: PanelStateTypes,
-    selectionId: number | undefined,
-};
+    selectionId: string | number | undefined,
+}
 
 const initialState: GuiSliceType = {
     locale: config.locale,
@@ -19,7 +19,7 @@ const localeSlice = createSlice({
     name: 'gui',
     initialState,
     reducers: {
-        setLocale: (state, action) => {
+        setLocaleKey: (state, action: PayloadAction<string>) => {
             state.locale = action.payload;
         },
         setPanel: (state, action: PayloadAction<PanelStateTypes>) => {
@@ -29,12 +29,12 @@ const localeSlice = createSlice({
                 console.trace('Set panel received an invalid value');
             }
         },
-        setSelectionId: (state, action) => {
+        setSelectionId: (state, action: PayloadAction<string|number|undefined>) => {
             state.selectionId = action.payload;
         }
     },
 });
 
-export const { setLocale, setPanel, setSelectionId } = localeSlice.actions;
+export const { setLocaleKey, setPanel, setSelectionId } = localeSlice.actions;
 
 export default localeSlice.reducer;

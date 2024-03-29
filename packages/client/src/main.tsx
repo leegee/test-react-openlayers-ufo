@@ -3,21 +3,23 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import { store } from './redux/store';
-import { useLocale } from './LocaleManager';
+import { setupLocale } from './LocaleManager';
 import App from './App';
 
 import './index.css';
 import './App.css';
 
-await useLocale();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+await setupLocale();
 
 const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
-);
-// });
-
-
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+} else {
+  console.error('Could not find #root');
+}

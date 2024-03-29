@@ -5,16 +5,18 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 // import type { RootState } from 'redux/store';
 
-import { useLocale } from '../LocaleManager';
+import { setupLocale } from '../LocaleManager';
 import FeaturesTable from '../FeaturesTable';
 
 const mockStore = configureStore([]);
 
 describe('FeaturesTable', () => {
     beforeAll(async () => {
-        await useLocale('en');
+        await setupLocale('en');
     });
-    let store: any;  // RootState;
+
+    let store: any;
+
     beforeEach(() => {
         store = mockStore({
             gui: {

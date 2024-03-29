@@ -11,7 +11,7 @@ import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from './redux/mapSlice';
 import { setSelectionId } from './redux/guiSlice';
-import { useFeatureHighlighting } from './Map/VectorLayerHighlight';
+import { setupFeatureHighlighting } from './Map/VectorLayerHighlight';
 import Tooltip from './Map/Tooltip';
 import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
@@ -50,20 +50,20 @@ const mapBaseLayers: MapBaseLayersType = {
 };
 
 function setTheme(baseLayerName: MapBaseLayerKeyType) {
-  for (let l of Object.keys(mapBaseLayers)) {
-    (mapBaseLayers as any)[l].setVisible(l === baseLayerName);
+  for (const l of Object.keys(mapBaseLayers)) {
+    mapBaseLayers[l as MapBaseLayerKeyType].setVisible(l === baseLayerName);
   }
 }
 
 // Zoom to the cluster or point on click
-function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<UnknownAction>) {
+function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownAction>) {
   let didOneFeature = false;
-  map!.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-    if (clickedFeature && !didOneFeature) {
+  map.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
+    if ( !didOneFeature) {
       // Clicked a clsuter
       if (clickedFeature.get('cluster_id')) {
         dispatch(setSelectionId(undefined));
-        map!.getView().animate({
+        map.getView().animate({
           center: e.coordinate,
           zoom: config.zoomLevelForPoints,
           duration: 500,
@@ -72,10 +72,9 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
       }
       else {
         // Clicked a point
-        const id = clickedFeature.get('id');
+        const id = String(clickedFeature.get('id'));
         dispatch(resetDates());
         dispatch(setSelectionId(id));
-        // showPoint(id);
       }
       didOneFeature = true;
     }
@@ -83,8 +82,8 @@ function clickMap(e: MapBrowserEvent<any>, map: Map | null, dispatch: Dispatch<U
 }
 
 function setVisibleDataLayer(layerName: MapLayerKeyType) {
-  for (let l of Object.keys(mapLayers)) {
-    (mapLayers as any)[l].setVisible(l === layerName);
+  for (const l of Object.keys(mapLayers)) {
+    mapLayers[l as MapLayerKeyType].setVisible(l === layerName);
   }
 }
 
@@ -124,7 +123,7 @@ const OpenLayersMap: React.FC = () => {
   const handleMoveEnd = () => {
     if (!mapRef.current) return;
     const center = mapRef.current.getView().getCenter() as [number, number];
-    const zoom = mapRef.current.getView().getZoom() as number;
+    const zoom = Number(mapRef.current.getView().getZoom()) || 1;
     const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
     const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
     dispatch(setMapParams({ center, zoom, bounds }));
@@ -142,15 +141,13 @@ const OpenLayersMap: React.FC = () => {
         source?.changed();
       }
     });
-  }, [mapRef.current, selectionId]);
+  }, [selectionId]);
 
   useEffect(() => {
-    let map: Map | null = null;
-
     if (mapElementRef.current) {
       setVisibleDataLayer('clusterOnly');
 
-      map = new Map({
+      const map = new Map({
         target: mapElementRef.current,
         view: new View({
           center: fromLonLat(center),
@@ -166,21 +163,25 @@ const OpenLayersMap: React.FC = () => {
 
       mapRef.current = map;
 
-      useFeatureHighlighting(map);
+      setupFeatureHighlighting(map);
 
       map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
 
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
     }
 
-    return () => map?.dispose();
+    return () => mapRef.current?.dispose();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  const debouncedMapChanged = debounce(() => {
-    dispatch((fetchFeatures() as any));
-  }, 750);
 
-  useEffect(debouncedMapChanged, [dispatch, bounds, zoom]);
+  useEffect(() => { 
+    debounce(() => {
+      dispatch((fetchFeatures()));
+    }, 750);
+  }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
     if (!mapElementRef.current || featureCollection === null) return;
@@ -196,6 +197,7 @@ const OpenLayersMap: React.FC = () => {
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureCollection]);
 
   useEffect(() => {
@@ -209,7 +211,7 @@ const OpenLayersMap: React.FC = () => {
         <ThemeToggleButton />
         <LocaleManager />
       </div>
-      {mapRef.current && <Tooltip map={mapRef.current as Map} />}
+      {mapRef.current && <Tooltip map={mapRef.current} />}
     </section>
   );
 };

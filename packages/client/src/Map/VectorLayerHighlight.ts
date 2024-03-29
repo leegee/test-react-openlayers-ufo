@@ -2,7 +2,6 @@
 
 import type { Map } from 'ol';
 import Feature from 'ol/Feature';
-import { Geometry } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Circle, Style, Stroke, Fill } from 'ol/style';
@@ -13,7 +12,7 @@ const featureSource = new VectorSource();
 
 const featureOverlay = new VectorLayer({
     source: featureSource,
-    style: (_feature) => {
+    style: () => {
         return [
             new Style({
                 image: new Circle({
@@ -39,15 +38,16 @@ const featureOverlay = new VectorLayer({
     },
 });
 
-let highlight: Feature<Geometry>;
+let highlight: Feature;
 
-export function useFeatureHighlighting(map: Map) {
+export function setupFeatureHighlighting(map: Map) {
     featureOverlay.setVisible(true);
     featureOverlay.setZIndex(100);
     map.addLayer(featureOverlay);
 
     map.on('pointermove', function (evt) {
         if (evt.dragging) return;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const pixel = map.getEventPixel(evt.originalEvent);
         highlightFeature(map, pixel);
     });
@@ -59,13 +59,13 @@ function highlightFeature(map: Map, pixel: number[]) {
     });
 
     if (feature !== highlight) {
-        if (highlight) {
+        if (typeof highlight !== 'undefined') {
             featureSource.removeFeature(highlight);
         }
         if (feature) {
             (feature as Feature).set(FEATURE_IS_HIGHLIGHT_PROP, true);
-            featureSource.addFeature(feature as Feature<Geometry>);
+            featureSource.addFeature(feature as Feature);
         }
-        highlight = feature as Feature<Geometry>;
+        highlight = feature as Feature;
     }
 }
