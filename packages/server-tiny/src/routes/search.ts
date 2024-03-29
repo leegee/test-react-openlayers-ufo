@@ -16,11 +16,11 @@ type SqlBitsType = {
 };
 
 const epsMapping = [
-    400000,
     200000,
-    100000,
-    80000,
-    50000,
+    200000,
+    200000,
+    160000,
+    90000,
     25000,
     10000,
     7000,
@@ -363,15 +363,6 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 
 
 function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
-    // const eps = config.gui.map.cluster_eps_metres;
-    // const eps: number =
-    //     userArgs.zoom < 3 ? config.gui.map.cluster_eps_metres * 4
-    //         : userArgs.zoom < 5 ? config.gui.map.cluster_eps_metres * 2
-    //             : userArgs.zoom < 6 ? config.gui.map.cluster_eps_metres
-    //                 : userArgs.zoom < 7 ? config.gui.map.cluster_eps_metres
-    //                     : userArgs.zoom < 8 ? config.gui.map.cluster_eps_metres / 1.2
-    //                         : config.gui.map.cluster_eps_metres / 2;
-
     const eps = epsFromZoom(userArgs.zoom);
 
     return config.db.engine === 'postgis' ?
