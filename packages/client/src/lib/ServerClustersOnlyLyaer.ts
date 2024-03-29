@@ -6,7 +6,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
 import type { UfoFeatureCollection } from '../redux/mapSlice';
-import { sightingsStyleFunction } from "./sightings-styles";
+import { sightingsStyleFunction } from "./map-style";
 
 const vectorSource = new VectorSource({
     strategy: bbox,
