@@ -1,12 +1,11 @@
 import React, { type Dispatch, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
 import debounce from 'debounce';
 import { Map, type MapBrowserEvent, View } from 'ol';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import TileLayer from 'ol/layer/Tile';
+import type Layer from 'ol/layer/Layer';
 
 import config from '@ufo-monorepo-test/config/src';
 import { RootState } from './redux/store';
@@ -18,12 +17,12 @@ import labelsLayer from './lib/map-base-layer/layer-labels';
 import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
-import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
+// import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
+import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/HeatmapLayer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LocaleManager from './LocaleManager';
-import { type UnknownAction } from '@reduxjs/toolkit';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -31,11 +30,11 @@ import './Map.css';
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'clusterOnly' | 'mixedSearchResults' | 'points';
 export type MapBaseLayersType = {
-  [key in MapBaseLayerKeyType]: VectorLayer<VectorSource<any>> | TileLayer<any>;
+  [key in MapBaseLayerKeyType]: Layer
 }
 
 type MapLayersType = {
-  [key in MapLayerKeyType]: VectorLayer<VectorSource<any>>;
+  [key in MapLayerKeyType]: Layer;
 }
 
 const mapLayers: MapLayersType = {
@@ -156,7 +155,7 @@ const OpenLayersMap: React.FC = () => {
         view: new View({
           center: fromLonLat(center),
           zoom,
-          minZoom: 5,
+          minZoom: 4,
         }),
         layers: [
           ...Object.values(mapBaseLayers),

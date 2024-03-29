@@ -363,7 +363,11 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 
 
 function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
-    const eps = epsFromZoom(userArgs.zoom);
+    // For cluster boudnaries
+    // const eps = epsFromZoom(userArgs.zoom);
+
+    // For heatmaps
+    const eps = 1000 * 10;
 
     return config.db.engine === 'postgis' ?
         `SELECT jsonb_build_object(
