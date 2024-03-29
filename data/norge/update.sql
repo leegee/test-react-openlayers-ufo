@@ -208,6 +208,7 @@ ALTER TABLE sightings RENAME COLUMN "Hvis ja, hvilke lydforandringer(72)" TO "so
 ALTER TABLE sightings RENAME COLUMN "Annet(81)" TO "size_other";
 ALTER TABLE sightings RENAME COLUMN "Antall cm pÕ linjalen(82)" TO "size_cm";
 ALTER TABLE sightings RENAME COLUMN "Avgrenset form(8,3)" TO "bounds";
+ALTER TABLE sightings RENAME COLUMN "bounds" TO "shape";
 ALTER TABLE sightings RENAME COLUMN "Fenomenets st°rrelse i meter(84)" TO "size_m";
 ALTER TABLE sightings RENAME COLUMN "Nedsatt syn(8,5)" TO "imparied_vision";
 ALTER TABLE sightings RENAME COLUMN "Fargeblind(8,6)" TO "colour_blind";
