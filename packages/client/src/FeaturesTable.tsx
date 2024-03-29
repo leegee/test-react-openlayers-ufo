@@ -38,8 +38,8 @@ const FeatureTable: React.FC = () => {
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const selectedRowRef = useRef<HTMLDivElement>(null);
 
-    function handleClickRow(id: string) {
-        dispatch(setSelectionId(id));
+    function handleClickRow(id: number) {
+        dispatch(setSelectionId(Number(id)));
     }
 
     // Scroll the selected row into view when user selectionchanges, if it is not already visible
@@ -58,13 +58,13 @@ const FeatureTable: React.FC = () => {
         }
     }, [featureCollection]);
 
-    function getRowClass(id: number | string) {
+    function getRowClass(id: number) {
         return selectionId && selectionId === Number(id) ? 'tr selected' : 'tr';
     }
 
-    function showPointOnMap(feature: any /* GeoJSON Feature */) {
+    function showPointOnMap(feature: any ) {
         dispatch(setPanel('narrow'));
-        dispatch(setSelectionId(feature.properties.id as string));
+        dispatch(setSelectionId(Number(feature.properties.id)));
     }
 
     return (

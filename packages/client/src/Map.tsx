@@ -72,7 +72,7 @@ function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownA
       }
       else {
         // Clicked a point
-        const id = String(clickedFeature.get('id'));
+        const id = Number(clickedFeature.get('id'));
         dispatch(resetDates());
         dispatch(setSelectionId(id));
       }
@@ -166,7 +166,6 @@ const OpenLayersMap: React.FC = () => {
       setupFeatureHighlighting(map);
 
       map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
-
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));

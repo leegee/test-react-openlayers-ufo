@@ -29,7 +29,7 @@ const localeSlice = createSlice({
                 console.trace('Set panel received an invalid value');
             }
         },
-        setSelectionId: (state, action: PayloadAction<string|number|undefined>) => {
+        setSelectionId: (state, action: PayloadAction<number | undefined>) => {
             state.selectionId = action.payload;
         }
     },
