@@ -15,7 +15,7 @@ const SightingDetails: React.FC = () => {
     const { loading, error, details } = useSelector((state: RootState) => state.details);
 
     useEffect(() => {
-        dispatch(fetchSightingDetails(id!));
+        dispatch(fetchSightingDetails(id));
     }, [dispatch, id]);
 
     if (loading) {

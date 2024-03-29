@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { Bar } from 'react-chartjs-2';
@@ -19,12 +20,12 @@ ChartJS.register(
     Legend
 );
 
-
 const Histogram: React.FC = () => {
     const pointsCount = useSelector(selectPointsCount);
     const { featureCollection } = useSelector((state: RootState) => state.map);
-    const [data, setData] = useState<any>(null);
     const [yearOneCount, setYearOneCount] = useState(0);
+    
+    const [data, setData] = useState<any>(null);
     const [options, setOptions] = useState<any>(null);
 
     if (!pointsCount) {
@@ -32,10 +33,10 @@ const Histogram: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!featureCollection || !featureCollection.features) return;
+        if (!featureCollection?.features) return;
 
         const yearValues: number[] = featureCollection.features
-            .map((feature: any) => new Date(feature.properties.datetime).getFullYear())
+            .map((feature: any) => new Date(feature.properties.datetime as string).getFullYear())
             .filter(year => {
                 // Filter out year 1, which currently represents bad dates
                 if (year === 1) {
@@ -47,7 +48,7 @@ const Histogram: React.FC = () => {
         const lowestYear = Math.min(...yearValues);
         const highestYear = Math.max(...yearValues);
 
-        const yearCount: { [year: number]: number } = {};
+        const yearCount: Record<number, number> = {};
 
         yearValues.forEach(year => {
             yearCount[year] = (yearCount[year] || 0) + 1;
@@ -85,7 +86,7 @@ const Histogram: React.FC = () => {
 
         setData(newData);
         setOptions(newOptions);
-    }, [featureCollection]);
+    }, [featureCollection, yearOneCount]);
 
 
     return pointsCount ? (

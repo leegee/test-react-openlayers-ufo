@@ -14,12 +14,12 @@ const DEBOUNCE_INPUT_MS = 500;
 const SearchText: React.FC = () => {
     const dispatch = useDispatch();
     const { q } = useSelector((state: RootState) => state.map);
-    const [localQ, setLocalQ] = useState<string>(q!);
+    const [localQ, setLocalQ] = useState<string>(String(q));
 
     const debouncedFetchRequest = debounce((value: string) => {
         if (value.trim().length === 0 || value.length > config.minQLength) {
             dispatch(setQ(value));
-            dispatch((fetchFeatures() as any));
+            dispatch((fetchFeatures()));
         }
     }, DEBOUNCE_INPUT_MS);
 

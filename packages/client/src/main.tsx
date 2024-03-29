@@ -9,7 +9,6 @@ import App from './App';
 import './index.css';
 import './App.css';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 await setupLocale();
 
 const container = document.getElementById('root');

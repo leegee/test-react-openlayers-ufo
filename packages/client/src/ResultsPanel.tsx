@@ -20,7 +20,7 @@ const Panel: React.FC = () => {
     useEffect(() => {
         document.addEventListener('keyup', onEscCloseFullReport);
         return () => document.removeEventListener('keyup', onEscCloseFullReport)
-    }, [])
+    });
 
     return (
         <section className='panel'>

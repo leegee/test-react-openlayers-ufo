@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-// import type { RootState } from 'redux/store';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 
 import { setupLocale } from '../LocaleManager';
 import FeaturesTable from '../FeaturesTable';
@@ -15,7 +15,7 @@ describe('FeaturesTable', () => {
         await setupLocale('en');
     });
 
-    let store: any;
+    let store: EnhancedStore;
 
     beforeEach(() => {
         store = mockStore({
@@ -48,7 +48,7 @@ describe('FeaturesTable', () => {
 
     test('renders feature table with correct data', () => {
         render(
-            <Provider store={store}>
+            <Provider store={store }>
                 <FeaturesTable />
             </Provider>
         );

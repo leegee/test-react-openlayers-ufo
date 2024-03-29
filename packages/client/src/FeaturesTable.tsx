@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* Create the interface for feature.properties */
 import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
@@ -62,7 +64,7 @@ const FeatureTable: React.FC = () => {
 
     function showPointOnMap(feature: any /* GeoJSON Feature */) {
         dispatch(setPanel('narrow'));
-        dispatch(setSelectionId(feature.properties.id));
+        dispatch(setSelectionId(feature.properties.id as string));
     }
 
     return (

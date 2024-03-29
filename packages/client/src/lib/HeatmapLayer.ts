@@ -15,7 +15,7 @@ export const vectorLayer = new HeatmapLayer({
     radius: 7,
     blur: 10,
     weight: (feature) => {
-        return feature.get('num_points') + 1;
+        return Number(feature.get('num_points')) + 1;
     },
 });
 
@@ -23,7 +23,7 @@ vectorLayer.set('name', 'server-clusters-only');
 
 export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
     vectorSource.clear();
-    if (featureCollection.features) {
+    if (featureCollection.features.length) {
         vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
     }
     vectorSource.changed();
