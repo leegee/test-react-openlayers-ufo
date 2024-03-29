@@ -8,7 +8,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,
   unknown,
-  Action<string>
+  Action
 >;
 
 export const store = configureStore({

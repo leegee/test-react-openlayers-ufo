@@ -126,10 +126,8 @@ See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as 
 ## Todo:
 
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
-* Clean the start time column and add to the dateitme column: (which was `Obs  startet kl (32)` but is not `start_time`).
+* Tighten linting.
 * Tests.
 * Logger transports/etc
-* Store bounds and filter settings in the URI (4h)
-* Highlight on map feature chosen in report or click on
+* Store bounds and filter settings in the URI? (4h)
 * Initialise with map extent rather than center
-* Server should infer cluster size (`cluster_eps`) from zoom level.

@@ -20,9 +20,7 @@ export interface GeoJSONFeature {
     type: string;
     coordinates: number[] | number[][] | number[][][];
   };
-  properties: {
-    [key: string]: any;
-  };
+  properties: Record<string, number|string|Date> ;
 }
 
 export interface UfoFeatureCollection {
@@ -63,7 +61,7 @@ const initialState: MapState = {
   from_date: undefined,
   to_date: undefined,
   q: '',
-  basemapSource: localStorage.getItem('basemap_source') || 'geo',
+  basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
   requestingCsv: false,
 };
@@ -78,8 +76,8 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
-      state.featureCollection = (action.payload.results || []) as UfoFeatureCollection;
-      state.dictionary = action.payload.dictionary as MapDictionary;
+      state.featureCollection = (action.payload.results ) ;
+      state.dictionary = action.payload.dictionary;
     },
     resetDates(state) {
       state.from_date = undefined;
@@ -95,11 +93,11 @@ const mapSlice = createSlice({
     setQ(state, action: PayloadAction<string | undefined>) {
       state.q = action.payload ? action.payload.trim() : '';
     },
-    setBasemapSource: (state, action) => {
+    setBasemapSource: (state, action: PayloadAction<MapBaseLayerKeyType>) => {
       state.basemapSource = action.payload;
       localStorage.setItem('basemap_source', state.basemapSource);
     },
-    setPreviousQueryString: (state, action) => {
+    setPreviousQueryString: (state, action: PayloadAction<string>) => {
       state.previousQueryString = action.payload;
     },
     setCsvRequesting: (state) => {
@@ -159,7 +157,8 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
 
 const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { state: RootState }>(
   'data/fetchData',
-  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType|any> => {
     const mapState = getState().map;
     const queryString: string | undefined = selectQueryString(mapState);
     const { previousQueryString } = mapState;
@@ -175,7 +174,7 @@ const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { s
     let response;
     try {
       response = await fetch(`${searchEndpoint}?${queryString}`);
-      const data = await response.json();
+      const data = await response.json() as FetchFeaturesResposneType;
       dispatch(mapSlice.actions.setFeatureCollection(data));
     }
     catch (error) {
@@ -193,6 +192,7 @@ export const fetchFeatures = debounce(
 
 export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
     const mapState = getState().map;
 

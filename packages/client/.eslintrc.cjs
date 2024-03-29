@@ -14,12 +14,11 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: [ 'react-refresh' ],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-      { 'react/jsx-uses-react': 'off' },
-      { 'react/react-in-jsx-scope': 'off' }
-    ],
+    'react-refresh/only-export-components': 'off',
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
   parserOptions: {
     ecmaVersion: 'latest',
