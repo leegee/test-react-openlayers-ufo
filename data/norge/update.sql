@@ -27,6 +27,12 @@ ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 ALTER TABLE sightings ADD COLUMN source VARCHAR(25) CHECK (source IN ('mufon-kaggle', 'norge-ufo'));
 UPDATE sightings SET source = 'norge-ufo';
 
+ALTER TABLE sightings ADD COLUMN state VARCHAR(255);
+UPDATE sightings
+SET state = fylke.fylke
+FROM fylke
+WHERE sightings.fylke = fylke.id;
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_ops);
 CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);
@@ -756,3 +762,286 @@ SET rgb =
         WHEN colour = 'Clearly luminous' THEN '#FFFF00'
         ELSE 'Unknown'
     END;
+
+
+UPDATE sightings SET duration = NULL WHERE duration = 'sek.';
+
+ALTER TABLE sightings ADD COLUMN duration_seconds INTEGER;
+
+-- 1. Minutes Format (e.g., 270 min, 39 min)
+UPDATE sightings
+SET duration_seconds = (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+ min$';
+
+-- 2. Minutes Format with Period (e.g., 27 min., 15 min.)
+UPDATE sightings
+SET duration_seconds = (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+ min\.$';
+
+-- 3. Seconds Format (e.g., 15-20sek)
+UPDATE sightings
+SET duration_seconds = ((CAST(split_part(duration, '-', 1) AS INTEGER) + CAST(split_part(split_part(duration, '-', 2), 'sek', 1) AS INTEGER)) / 2)
+WHERE duration ~ '^[0-9]+-[0-9]+sek$';
+
+-- 4. Minutes and Seconds Format (e.g., 9 m. 37 s.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' m. ', 1) AS INTEGER) * 60) + 
+    CAST(split_part(split_part(duration, ' m. ', 2), ' s.', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+ m\. [0-9]+ s\.$';
+
+-- 5. hours and Minutes Format (e.g., 1 t. 45 m.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' t. ', 1) AS INTEGER)  * 60 * 60) + 
+    (CAST(split_part(split_part(duration, ' t. ', 2), ' m.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+ t\. [0-9]+ m\.$';
+
+-- 6. Hours Format (e.g., 3 timer.)
+UPDATE sightings
+SET duration_seconds = (CAST(split_part(duration, ' timer.', 1) AS INTEGER) * 60 * 60)
+WHERE duration ~ '^[0-9]+ timer\.$';
+
+-- 7. Fraction of a Second Format (e.g., 1/2 sek.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, '/', 2), ' sek.', 1) AS FLOAT))
+WHERE duration ~ '^[0-9]+/[0-9]+ sek\.$';
+
+-- 8. Seconds Format (e.g., 10 sek.)
+UPDATE sightings
+SET duration_seconds = (CAST(split_part(duration, ' ', 1) AS INTEGER))
+WHERE duration ~ '^[0-9]+ sek\.$';
+
+-- 9. hours and Minutes Format (e.g., 1t. 15min.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't. ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't. ', 2), 'min.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t\. [0-9]+min\.$';
+
+-- 10. Convert remaining values to seconds
+
+-- a. hours and Minutes Format (e.g., 1 t 45 min)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' t ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, ' t ', 2), ' min', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+ t [0-9]+ min$';
+
+-- b. Seconds Format with Dash (e.g., 2 sek-)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' sek-', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+ sek-$';
+
+-- c. Minutes Format with Fraction (e.g., 1 1/2 min.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60) +
+    (CAST(split_part(split_part(duration, ' ', 2), '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, ' ', 2), '/', 2) AS FLOAT) * 60)
+WHERE duration ~ '^[0-9]+ [0-9]+/[0-9]+ min\.$';
+
+-- d. Seconds Format with Fraction (e.g., 3 1/2 sek.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' ', 1) AS INTEGER)) +
+    (CAST(split_part(split_part(duration, ' ', 2), '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, ' ', 2), '/', 2) AS FLOAT))
+WHERE duration ~ '^[0-9]+ [0-9]+/[0-9]+ sek\.$';
+
+-- e. Seconds Format with Decimal (e.g., 2,5 sek.)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, ',', '.') AS FLOAT)
+WHERE duration ~ '^[0-9]+,[0-9]+ sek\.$';
+
+-- f. Seconds Format (e.g., 5 sek)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' ', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+ sek$';
+
+-- g. Minutes and Seconds Format (e.g., 1 min 20 s)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' min ', 1) AS INTEGER) * 60) +
+    CAST(split_part(split_part(duration, ' min ', 2), ' s', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+ min [0-9]+ s$';
+
+-- h. Hours Format (e.g., 2 1/2 time)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, ' 1/2', '.5') AS FLOAT) * 60 * 60
+WHERE duration ~ '^[0-9]+ 1/2 time$';
+
+-- i. Minutes and Seconds Format (e.g., 2min 30 se)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 'min ', 1) AS INTEGER) * 60) +
+    CAST(split_part(split_part(duration, 'min ', 2), ' se', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+min [0-9]+ se$';
+
+-- j. Minutes Format with Dash (e.g., 2-3min)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '-', 1) AS INTEGER) + CAST(split_part(split_part(duration, '-', 2), 'min', 1) AS INTEGER)) * 60
+WHERE duration ~ '^[0-9]+-[0-9]+min$';
+
+-- k. Minutes Format (e.g., 4 minutter)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' minutter', 1) AS INTEGER) * 60
+WHERE duration ~ '^[0-9]+ minutter$';
+
+-- l. Hours and Minutes Format (e.g., 1t 20 min.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't ', 2), 'min.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t [0-9]+min\.$';
+
+-- m. Hours and Minutes Format (e.g., 2t 10m.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't ', 2), 'm.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t [0-9]+m\.$';
+
+-- n. Hours and Minutes Format (e.g., 1t. 20 m.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't. ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't. ', 2), 'm.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t\. [0-9]+m\.$';
+
+-- o. Seconds Format (e.g., 15sek.)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, 'sek.', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+sek\.$';
+
+-- p. Hours Format (e.g., 2 timer)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' timer', 1) AS INTEGER) * 60 * 60
+WHERE duration ~ '^[0-9]+ timer$';
+
+-- q. Hours and Minutes Format (e.g., 6 t.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' t.', 1) AS INTEGER) * 60 * 60)
+WHERE duration ~ '^[0-9]+ t\.$';
+
+-- r. Minutes Format (e.g., 10min)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, 'min', 1) AS INTEGER) * 60
+WHERE duration ~ '^[0-9]+min$';
+
+-- s. Hours and Minutes Format (e.g., 1t 45 min)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't ', 2), 'min', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t [0-9]+min\.$';
+
+-- t. Hours Format (e.g., 4 timer)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' timer', 1) AS INTEGER) * 60 * 60
+WHERE duration ~ '^[0-9]+ timer$';
+
+-- u. Seconds Format (e.g., 30 sek)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' ', 1) AS INTEGER)
+WHERE duration ~ '^[0-9]+ sek$';
+
+-- v. Minutes Format (e.g., 3min)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, 'min', 1) AS INTEGER) * 60
+WHERE duration ~ '^[0-9]+min$';
+
+-- w. Hours and Minutes Format (e.g., 3t. 5 min.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, 't. ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, 't. ', 2), 'min.', 1) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+t\. [0-9]+min\.$';
+
+-- x. Hours Format (e.g., 3 timer)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' timer', 1) AS INTEGER) * 60 * 60
+WHERE duration ~ '^[0-9]+ timer$';
+
+-- y. Minutes Format (e.g., 1/2 min.)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, '/', '.') AS FLOAT) * 60
+WHERE duration ~ '^[0-9]+/[0-9]+ min\.$';
+
+-- z. Hours Format (e.g., 1 time)
+UPDATE sightings
+SET duration_seconds = CAST(split_part(duration, ' time', 1) AS INTEGER) * 60 * 60
+WHERE duration ~ '^[0-9]+ time$';
+
+-- aa. Hours and Minutes Format (e.g., 03.45)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '.', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(duration, '.', 2) AS INTEGER) * 60)
+WHERE duration ~ '^[0-9]+\\.[0-9]+$';
+
+
+
+
+
+
+-- a. Seconds Format with Decimal (e.g., 2,5 sek.)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, ',', '.') AS FLOAT)
+WHERE duration ~ '^[0-9]+,[0-9]+ sek\\.$';
+
+-- b. Minutes Format with Decimal (e.g., 2,5 min.)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, ',', '.') AS FLOAT) * 60
+WHERE duration ~ '^[0-9]+,[0-9]+ min\\.$';
+
+-- c. Hours Format (e.g., 2 1/2 time)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, ' ', 2), '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, ' ', 2), '/', 2) AS FLOAT) * 60 * 60)
+WHERE duration ~ '^[0-9]+ [0-9]/[0-9] time$';
+
+-- d. Hours Format (e.g., 4 1/2 time)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, ' ', 2), '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, ' ', 2), '/', 2) AS FLOAT) * 60 * 60)
+WHERE duration ~ '^[0-9]+ [0-9]/[0-9] time$';
+
+-- e. Hours Format (e.g., 1 1/2 time)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, ' ', 1) AS INTEGER) * 60 * 60) + 
+    (CAST(split_part(split_part(duration, ' ', 2), '/', 1) AS FLOAT) / CAST(split_part(split_part(duration, ' ', 2), '/', 2) AS FLOAT) * 60 * 60)
+WHERE duration ~ '^[0-9]+ [0-9]/[0-9] time$';
+
+-- f. Seconds Format with Decimal (e.g., 0,5 sek.)
+UPDATE sightings
+SET duration_seconds = CAST(REPLACE(duration, ',', '.') AS FLOAT)
+WHERE duration ~ '^[0-9]+,[0-9]+ sek\\.$';
+
+-- g. Hours Format (e.g., 22.42)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '.', 1) AS INTEGER) * 60 * 60) + 
+    CAST(split_part(duration, '.', 2) AS INTEGER) * 60
+WHERE duration ~ '^[0-9]+\\.[0-9]+$';
+
+-- h. Minutes Format (e.g., 1/2 min.)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '/', 1) AS FLOAT) / CAST(split_part(duration, '/', 2) AS FLOAT) * 60)
+WHERE duration ~ '^[0-9]+/[0-9]+ min\\.$';
+
+-- i. Hours Format (e.g., 03.45)
+UPDATE sightings
+SET duration_seconds = 
+    (CAST(split_part(duration, '.', 1) AS INTEGER) * 60 * 60) + 
+    CAST(split_part(duration, '.', 2) AS INTEGER) * 60
+WHERE duration ~ '^[0-9]+\\.[0-9]+$';
+
+
+-- select distinct duration from sightings where duration_seconds is null;
+
