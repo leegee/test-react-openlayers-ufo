@@ -11,7 +11,7 @@
     .thead {
         position: sticky;
         top: 0;
-        background-color: var(--ufo-primary-bg-highlight);
+        background-color: var(--ufo-primary-bg);
         border-bottom: 1pt solid var(--ufo-primary-border-clr);
         z-index: 1;
     }
