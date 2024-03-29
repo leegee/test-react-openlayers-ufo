@@ -63,10 +63,9 @@ export async function search(ctx: Context) {
         let sqlBits = constructSqlBits(userArgs);
 
         if (sendCsv) {
-            ctx.type = 'text/csv';
             sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
         }
-        else if (userArgs.q || userArgs.zoom >= config.zoomLevelForPoints) {
+        else if (userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
         }
         else {
@@ -81,27 +80,7 @@ export async function search(ctx: Context) {
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
         if (sendCsv) {
-            ctx.attachment('ufo-sightings.csv');
-
-            const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
-            type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
-            let bodyStream: ResponseBody = ctx.body as ResponseBody;
-            if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
-                bodyStream = new PassThrough();
-                ctx.body = bodyStream;
-            }
-
-            // Should enforce order. Map?
-            let firstLine = true;
-            for (const row of results.rows) {
-                if (firstLine) {
-                    listToCsvLine(Object.keys(row), bodyStream);
-                    firstLine = false;
-                }
-                listToCsvLine(Object.values(row), bodyStream);
-            }
-
-            bodyStream.end();
+            await sendCsvResponse(ctx);
         }
 
         else {
@@ -121,7 +100,31 @@ export async function search(ctx: Context) {
             error: e as Error
         });
     }
+}
 
+async function sendCsvResponse(ctx) {
+    ctx.type = 'text/csv';
+    ctx.attachment('ufo-sightings.csv');
+
+    const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+    type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
+    let bodyStream: ResponseBody = ctx.body as ResponseBody;
+    if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
+        bodyStream = new PassThrough();
+        ctx.body = bodyStream;
+    }
+
+    // Should enforce order. Map?
+    let firstLine = true;
+    for (const row of results.rows) {
+        if (firstLine) {
+            listToCsvLine(Object.keys(row), bodyStream);
+            firstLine = false;
+        }
+        listToCsvLine(Object.values(row), bodyStream);
+    }
+
+    bodyStream.end();
 }
 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {
