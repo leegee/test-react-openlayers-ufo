@@ -10,6 +10,9 @@ ALTER TABLE sightings
  ADD COLUMN datetime TIMESTAMP
 ;
 
+ALTER TABLE sightings ADD COLUMN country VARCHAR(2);
+UPDATE sightings SET country='no';
+
 -- Create a auto-incrementing primary key from 'datarapp nr':
 ALTER TABLE sightings DROP CONSTRAINT IF EXISTS sightings_pkey;
 ALTER TABLE sightings RENAME COLUMN "Datarapp nr" TO id;

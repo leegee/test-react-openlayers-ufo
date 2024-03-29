@@ -7,7 +7,7 @@ CREATE TABLE sightings (
     datetime VARCHAR(25),
     city VARCHAR(255),
     state VARCHAR(255),
-    country VARCHAR(255),
+    country CHAR(2),
     shape VARCHAR(25),
     colour VARCHAR(50),
     duration_seconds VARCHAR(255),
