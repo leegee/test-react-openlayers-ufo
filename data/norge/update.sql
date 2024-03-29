@@ -73,6 +73,16 @@ SET datetime =
   ELSE datetime
  END;
 
+UPDATE sightings SET start_time = '12:00' WHERE start_time = 'Middag';
+UPDATE sightings SET start_time = REPLACE(REPLACE(start_time, 'ca. ', ''), 'ca ', '') WHERE start_time LIKE 'ca.%' OR start_time LIKE 'ca %';
+UPDATE sightings SET start_time = '18.15' WHERE start_time = '118.15';
+UPDATE sightings SET start_time = '21.00' WHERE start_time = '21-22.00';
+UPDATE sightings SET start_time = '02.50' WHERE start_time = '02.50-55';
+UPDATE sightings SET start_time = REPLACE(start_time, '.', ':');
+
+UPDATE sightings SET datetime = datetime::date + (start_time::time);
+
+
 -- UPDATE sightings SET datetime = datetime + start_time::time WHERE start_time IS NOT NULL AND datetime IS NOT NULL;
 
 -- County of sighting: Key (fylke)=(20) is not present in table "fylke". Vest-Agder, Troms, and others are absent.
@@ -431,3 +441,17 @@ ALTER TABLE sightings RENAME COLUMN "Annet(12,8)" TO "moonlight_other";
 ALTER TABLE sightings RENAME COLUMN "Hva tror de selv at de sÕ(131)" TO "observers_thoughts";
 ALTER TABLE sightings RENAME COLUMN "MÕnefasen(12,8B)" TO "moon_phase";
 
+
+-- UPDATE fylke
+-- SET fylke = 
+--     CASE 
+--         WHEN fylke = 'M°re og Romsdal' THEN 'Møre og Romsdal'
+--         WHEN fylke = 'Nord-Tr°ndelag' THEN 'Nord-Trøndelag'
+--         WHEN fylke = 'S°r-Tr°ndelag' THEN 'Sør-Trøndelag'
+--         WHEN fylke = 'Ïstfold' THEN 'Østfold'
+--         ELSE fylke
+--     END;
+
+SELECT fylke.fylke
+FROM sightings
+JOIN fylke ON sightings.fylke = fylke.id;

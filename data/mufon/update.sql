@@ -11,6 +11,12 @@ ALTER TABLE sightings
 
 ALTER TABLE sightings RENAME COLUMN comments TO report_text;
 
+ALTER TABLE sightings ADD COLUMN state VARCHAR(255);
+UPDATE sightings
+SET state = fylke.fylke
+FROM fylke
+WHERE sightings.fylke = fylke.id;
+
 ALTER TABLE sightings ADD COLUMN id SERIAL PRIMARY KEY;
 UPDATE sightings SET id = nextval(pg_get_serial_sequence('sightings', 'id'));
 
@@ -87,3 +93,4 @@ UPDATE sightings SET report_text = regexp_replace(report_text, '&#9;', ' ', 'g')
 UPDATE sightings SET report_text = regexp_replace(report_text, '&#44', ', ', 'g');
 UPDATE sightings SET report_text = regexp_replace(report_text, '&#160;', ', ', 'g');
 UPDATE sightings SET report_text = regexp_replace(report_text, '&#180;', '''', 'g');
+
