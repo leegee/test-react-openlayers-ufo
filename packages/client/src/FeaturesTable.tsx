@@ -67,9 +67,9 @@ const FeatureTable: React.FC = () => {
                 <div className='tr'>
                     <div className='th datetime'>{get('feature_table.date')}</div>
                     <div className='th location_text'>{get('feature_table.location')}</div>
-                    <div className='th report_text hideable'>{get('feature_table.report')}</div>
-                    <div className='th shape hideable'>{get('feature_table.shape')}</div>
-                    <div className='th shape duration_seconds'>{get('feature_table.duration_seconds')}</div>
+                    <div className='th hideable report_text'>{get('feature_table.report')}</div>
+                    <div className='th hideable shape'>{get('feature_table.shape')}</div>
+                    <div className='th hideable duration_seconds'>{get('feature_table.duration_seconds')}</div>
                     <div className='th ctrls'>
                         <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
                         <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />

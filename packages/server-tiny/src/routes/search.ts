@@ -19,9 +19,9 @@ const epsMapping = [
     400000,
     200000,
     100000,
+    80000,
     50000,
     25000,
-    12500,
     10000,
     7000,
     5000,
@@ -394,7 +394,7 @@ function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
                     COUNT(*) AS num_points
                 FROM (
                     SELECT 
-                        ST_ClusterDBSCAN(point, eps := ${config.gui.map.cluster_eps_metres}, minpoints := 1) OVER() AS cluster_id,
+                        ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
                         point
                     FROM sightings
                     WHERE ${sqlBits.whereColumns.join(' AND ')}
@@ -437,7 +437,7 @@ function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
 }
 
 function epsFromZoom(zoomLevel: number): number {
-    const eps = epsMapping[Math.min(Math.max(zoomLevel, 1), config.zoomLevelForPoints)];
+    const eps = epsMapping[Math.min(Math.max(zoomLevel - 1, 1), config.zoomLevelForPoints)];
     console.info({ zoomLevel, eps });
     return eps;
 }
