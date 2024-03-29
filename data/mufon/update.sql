@@ -51,8 +51,20 @@ SELECT COUNT(*) AS no_lat_lng FROM sightings WHERE point IS NULL;
 CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
 RETURNS TEXT AS $$
 DECLARE
-    entity_map TEXT[] := ARRAY['&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&oslash;'];
-    utf8_map TEXT[] := ARRAY['&', '<', '>', '"', '''', '''', 'å', 'ø'];
+   entity_map TEXT[] := ARRAY[
+        '&amp;', '&lt;', '&gt;', '&quot;', '&#180;', '&apos;', '&aring;', '&Aring;', '&aelig;', '&AElig;',
+        '&oslash;', '&Oslash;', '&ccedil;', '&Ccedil;', '&auml;', '&Auml;', '&euml;', '&Euml;',
+        '&iuml;', '&Iuml;', '&ouml;', '&Ouml;', '&uuml;', '&Uuml;', '&szlig;', '&ntilde;', '&Ntilde;',
+        '&yuml;', '&Yuml;', '&Acirc;', '&acirc;', '&Ecirc;', '&ecirc;', '&Icirc;', '&icirc;', '&Ocirc;', '&ocirc;',
+        '&Ucirc;', '&ucirc;'
+    ];
+    utf8_map TEXT[] := ARRAY[
+        '&', '<', '>', '"', '''', '''', 'å', 'Å', 'æ', 'Æ',
+        'ø', 'Ø', 'ç', 'Ç', 'ä', 'Ä', 'ë', 'Ë',
+        'ï', 'Ï', 'ö', 'Ö', 'ü', 'Ü', 'ß', 'ñ', 'Ñ',
+        'ÿ', 'Ÿ', 'Â', 'â', 'Ê', 'ê', 'Î', 'î', 'Ô', 'ô',
+        'Û', 'û'
+    ];
     i INTEGER;
 BEGIN
     FOR i IN 1..array_length(entity_map, 1) LOOP
@@ -63,8 +75,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-UPDATE sightings
-SET report_text = decode_html_entities(report_text);
+UPDATE sightings SET report_text = decode_html_entities(report_text);
+UPDATE sightings SET location_text = decode_html_entities(report_text);
 
 UPDATE sightings SET report_text = regexp_replace(report_text, '&#39', '''', 'g');
 UPDATE sightings SET report_text = regexp_replace(report_text, '&#9;', ' ', 'g');
