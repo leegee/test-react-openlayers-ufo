@@ -71,8 +71,8 @@ const FeatureTable: React.FC = () => {
                     <div className='th hideable shape'>{get('feature_table.shape')}</div>
                     <div className='th hideable duration_seconds'>{get('feature_table.duration_seconds')}</div>
                     <div className='th ctrls'>
-                        <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('feature_table.close')} aria-label={get('feature_table.close')} />
-                        <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('feature_table.open')} aria-label={get('feature_table.open')} />
+                        <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('close')} aria-label={get('close')} />
+                        <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('open')} aria-label={get('open')} />
                     </div>
                 </div>
             </div>

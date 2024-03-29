@@ -1,4 +1,6 @@
 {
+    "open": "Åpne",
+    "close": "Lukke",
     "panel": {
         "results_count": "observasjoner",
         "cluster_count": "grupper av observasjoner",
@@ -13,8 +15,6 @@
         "location": "Sted",
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området",
-        "open": "Åpne",
-        "close": "Lukke",
         "shape": "Form",
         "duration_seconds": "Varighet (sekunder)"
     },

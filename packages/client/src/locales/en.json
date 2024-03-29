@@ -1,4 +1,6 @@
 {
+    "open": "Open",
+    "close": "Close",
     "panel": {
         "results_count": "sightings",
         "cluster_count": "clusters of sightings",
@@ -13,8 +15,6 @@
         "location": "Location",
         "report": "Report",
         "no_data": "No data for the visible area",
-        "open": "Open",
-        "close": "Close",
         "shape": "Shape",
         "duration_seconds": "Duration (seconds)"
     },
