@@ -21,6 +21,9 @@ ALTER TABLE sightings ALTER COLUMN id SET DEFAULT nextval('sightings_id_seq');
 ALTER TABLE sightings RENAME COLUMN "Beskrivelse(21)" TO report_text;
 ALTER TABLE sightings RENAME COLUMN observasjonssted TO location_text;
 
+ALTER TABLE sightings ADD COLUMN source VARCHAR(25) CHECK (source IN ('mufon-kaggle', 'norge-ufo'));
+UPDATE sightings SET source = 'norge-ufo';
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_ops);
 CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);

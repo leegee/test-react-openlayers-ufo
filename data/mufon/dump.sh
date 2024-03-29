@@ -10,7 +10,7 @@ if [[ ${#files[@]} -gt 0 ]]; then
     rm *.sql*
 fi
 
-pg_dump -d ufo | split -b 50m - ufo_part.sql
+pg_dump -d mufon | split -b 50m - mufon_part.sql
 
 
 # For MySQL: all good up until the need to convert the columns.

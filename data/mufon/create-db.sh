@@ -11,9 +11,9 @@ INPUT_CSV="$PWD_WIN\\kaggle_scrubbed.csv"
 echo $INPUT_CSV
 
 
-# psql -c "DROP DATABASE IF EXISTS ufo"
-# psql -c "CREATE DATABASE ufo;"
+# psql -c "DROP DATABASE IF EXISTS mufon"
+# psql -c "CREATE DATABASE mufon;"
 
-psql -d ufo < schema.sql
-psql -d ufo -c "COPY sightings FROM '$INPUT_CSV' WITH (FORMAT CSV, HEADER);"
-psql -d ufo < update.sql
+psql -d mufon < schema.sql
+psql -d mufon -c "COPY sightings FROM '$INPUT_CSV' WITH (FORMAT CSV, HEADER);"
+psql -d mufon < update.sql
