@@ -37,14 +37,20 @@ export const sightingsStyleFunction = (feature: FeatureLike, _resolution: number
                 color: 'rgba(78, 197, 215, 0.7)'
             }),
             image: new Circle({
-                radius: 14,
+                radius: 12,
                 fill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
                 stroke: new Stroke({ color: '#3399CC', width: 2 })
             }),
             text: new Text({
                 text: clusterSizeFromServer.toString(),
                 fill: new Fill({ color: 'white' }),
-                scale: 2,
+                backgroundFill: new Fill({ color: 'rgba(25, 25, 255, 0.7)' }),
+                stroke: new Stroke({ color: '#3399CC', width: 1 }),
+                scale: 1.5,
+                overflow: true,
+                textAlign: 'center',
+                textBaseline: 'middle',
+                maxAngle: Math.PI / 4,
             })
         });
     }
