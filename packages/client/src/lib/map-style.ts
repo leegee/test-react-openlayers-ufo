@@ -22,7 +22,6 @@ function mapLocalClusterToColor(): string {
 }
 
 export const sightingsStyleFunction = (feature: FeatureLike): Style => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const features = feature.get('features') as any[] | undefined;
     const clusterSizeFromServer = Number(feature.get('num_points'));
     const clusterSizeMadeLocally = features ? features.length : undefined;

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { FetchSightingDetailsResponse, SightingRecordType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 
@@ -31,8 +31,8 @@ export const fetchSightingDetails: any = createAsyncThunk<
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
-            const data = await response.json();
-            return data;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return await response.json();
         }
         catch (error) {
             return thunkAPI.rejectWithValue((error as Error).message);
@@ -44,7 +44,7 @@ const detailsSlice = createSlice({
     name: 'sightingDetails',
     initialState,
     reducers: {
-        setId: (state, action) => {
+        setId: (state, action: PayloadAction<string|undefined>) => {
             state.id = action.payload;
         },
     },
@@ -54,9 +54,9 @@ const detailsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchSightingDetails.fulfilled, (state, action) => {
+            .addCase(fetchSightingDetails.fulfilled, (state, action: PayloadAction<Record<string, any>>) => {
                 state.loading = false;
-                state.details = action.payload.details;
+                state.details = action.payload.details as SightingRecordType;
             })
             .addCase(fetchSightingDetails.rejected, (state, action) => {
                 state.loading = false;

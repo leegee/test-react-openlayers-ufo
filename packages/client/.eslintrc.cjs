@@ -10,7 +10,11 @@ module.exports = {
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:react/jsx-runtime',
   ],
-  ignorePatterns: [ 'dist', '.eslintrc.cjs' ],
+  ignorePatterns: [
+    'dist',
+    '.eslintrc.cjs',
+    '*.d.ts',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: [
   ],
@@ -22,6 +26,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-confusing-void-expression': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unused-vars': 'off', /* React is defined by never used...fixed once, now back */
   },
   parserOptions: {
     ecmaVersion: 'latest',

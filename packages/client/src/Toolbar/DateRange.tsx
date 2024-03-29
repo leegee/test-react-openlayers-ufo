@@ -14,34 +14,34 @@ const DateRange: React.FC = () => {
     const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
     const pointsCount = useSelector(selectPointsCount);
     const { from_date, to_date } = useSelector((state: RootState) => state.map);
-    const [localFromDate, setLocalFromDate] = useState<any>(from_date!);
-    const [localToDate, setLocalToDate] = useState<any>(to_date!);
+    const [localFromDate, setLocalFromDate] = useState(from_date);
+    const [localToDate, setLocalToDate] = useState(to_date);
 
     useEffect(() => {
-        if (dictionary && dictionary.datetime) {
-            setLocalFromDate(dictionary.datetime.min || undefined);
-            setLocalToDate(dictionary.datetime.max || undefined);
+        if (dictionary?.datetime) {
+            setLocalFromDate(dictionary.datetime.min ?? undefined);
+            setLocalToDate(dictionary.datetime.max ?? undefined);
         }
     }, [dispatch, dictionary]);
 
     function handleSubmit() {
         // TODO restore the checks from history
-        if (isNaN(localFromDate)) {
+        if (isNaN(Number(localFromDate))) {
             setLocalFromDate(undefined);
         }
-        if (isNaN(localToDate)) {
+        if (isNaN(Number(localToDate))) {
             setLocalToDate(undefined);
         }
 
         if (!localFromDate || !localToDate || localFromDate < localToDate) {
             dispatch(setFromDate(localFromDate));
             dispatch(setToDate(localToDate));
-            dispatch(fetchFeatures() as any)
+            dispatch(fetchFeatures());
         }
     }
 
     function handleFromDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-        let value: string | number = parseInt(e.target.value);
+        const value: string | number = parseInt(e.target.value);
         // if (isNaN(value)) {
         //     value = '';
         // }
@@ -49,9 +49,9 @@ const DateRange: React.FC = () => {
     }
 
     function handleToDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-        let value: string | number = parseInt(e.target.value);
+        let value: number | undefined = Number(parseInt(e.target.value));
         if (isNaN(value)) {
-            value = '';
+            value = undefined;
         }
         setLocalToDate(value);
     }
@@ -71,7 +71,7 @@ const DateRange: React.FC = () => {
                 type='number'
                 id='minYear'
                 name='minYear'
-                value={localFromDate === undefined ? '' : localFromDate}
+                value={localFromDate ?? ''}
                 onChange={handleFromDateChange}
             />
             -
@@ -81,7 +81,7 @@ const DateRange: React.FC = () => {
                 type='number'
                 id='maxYear'
                 name='maxYear'
-                value={localToDate === undefined ? '' : localToDate}
+                value={localToDate ?? ''}
                 onChange={handleToDateChange}
             />
 

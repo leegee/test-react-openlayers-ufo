@@ -14,11 +14,11 @@ interface TooltipComponentProps {
 }
 
 const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
-    const [overlay, setOverlay] = useState<Overlay | null>(null);
+    const [overlay, setOverlay] = useState<Overlay>();
     const tooltipElementRef = useRef<HTMLDivElement>(null);
 
     const handleMapHover = (event: MapBrowserEvent<MouseEvent>) => {
-        if (!overlay || !event.map || !event.pixel) {
+        if (!overlay) {
             return;
         }
 
@@ -42,34 +42,32 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             feature = features[0];
         }
 
-        if (!feature) {
+        if (typeof feature === 'undefined') {
             overlay.setPosition(undefined);
         }
         else {
             let tooltipContent = '';
-            const location_text = (feature as FeatureLike).get('location_text');
+            const location_text = feature.get('location_text') as string;
             if (location_text) {
                 if (features.length === 1) {
-                    const date = new Date((feature as FeatureLike).get('datetime'));
-                    if (date) {
-                        tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
-                    }
+                    const date = new Date(feature.get('datetime') as string);
+                    tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
                 }
-                tooltipContent += '<b font-style="font-size:120%">' + (feature as FeatureLike).get('location_text') + '</b>';
+                tooltipContent += '<b font-style="font-size:120%">' + feature.get('location_text') + '</b>';
                 if (features.length > 1) {
                     tooltipContent += ' x' + features.length;
                 }
-                const score = (feature as FeatureLike).get('search_score');
+                const score = feature.get('search_score') as number;
                 if (score) {
                     tooltipContent += '<br/><small style="font-weight:light">Search score: ' + score + '</small>';
                 }
             }
             else {
-                tooltipContent = (feature as FeatureLike).get('num_points') + ' ' + get('panel.cluster_count');
+                tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
             }
 
-            if (tooltipContent) {
-                tooltipElementRef.current!.innerHTML = tooltipContent;
+            if (tooltipContent && tooltipElementRef.current !== null) {
+                tooltipElementRef.current.innerHTML = tooltipContent;
                 overlay.setPosition(event.coordinate);
             } else {
                 overlay.setPosition(undefined);
@@ -78,9 +76,8 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
     };
 
     useEffect(() => {
-        if (!map) return;
         const newOverlay = new Overlay({
-            element: tooltipElementRef.current!,
+            element: tooltipElementRef.current as HTMLElement,
             offset: [10, 0],
             positioning: 'bottom-left',
             stopEvent: false,
@@ -94,15 +91,18 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         return () => {
             map.removeOverlay(newOverlay);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
 
     useEffect(() => {
-        if (!map || !overlay) return;
         map.on('pointermove', handleMapHover);
         return () => {
-            map.removeOverlay(overlay);
+            if (overlay) {
+                map.removeOverlay(overlay);
+            }
             map.un('pointermove', handleMapHover);
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, overlay]);
 
     return <aside ref={tooltipElementRef} className="tooltip" />;
