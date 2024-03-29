@@ -43,9 +43,13 @@ CREATE INDEX ON sightings USING GIST (point);
 
 -- Check the results
 SELECT COUNT(*) AS total_in_table FROM sightings;
-
 SELECT COUNT(*) AS no_lat_lng FROM sightings WHERE point IS NULL;
 
+-- Convert to unsigned int
+ALTER TABLE sightings ADD COLUMN duration_seconds_unsigned integer;
+UPDATE sightings SET duration_seconds_unsigned = ROUND(CAST(duration_seconds AS numeric));
+ALTER TABLE sightings DROP COLUMN duration_seconds;
+ALTER TABLE sightings RENAME COLUMN duration_seconds_unsigned TO duration_seconds;
 
 -- HTML entity conversion:
 CREATE OR REPLACE FUNCTION decode_html_entities(input_text TEXT)
