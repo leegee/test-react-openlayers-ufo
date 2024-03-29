@@ -36,6 +36,10 @@ const FeatureTable: React.FC = () => {
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
     const selectedRowRef = useRef<HTMLDivElement>(null);
 
+    function handleClickRow(id: string) {
+        dispatch(setSelectionId(id));
+    }
+
     // Scroll the selected row into view when user selectionchanges, if it is not already visible
     useEffect(() => {
         if (selectedRowRef.current) {
@@ -93,7 +97,9 @@ const FeatureTable: React.FC = () => {
 
                         <div className={getRowClass(feature.properties.id)}
                             ref={feature.properties.id === selectionId ? selectedRowRef : null}
-                            key={index} id={getRowId(feature.properties.id)}>
+                            key={index} id={getRowId(feature.properties.id)}
+                            onClick={() => handleClickRow(feature.properties.id)}
+                        >
                             <div className='td datetime'>
                                 {feature.properties.datetime_original}
                                 <span className='our-datetime'>{
