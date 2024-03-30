@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
-import config from '@ufo-monorepo-test/config/src';
 import { type RootState } from '../redux/store';
 import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
 
@@ -24,15 +23,11 @@ const Panel: React.FC = () => {
                     <>{get('panel.no_results')}</>
                 ) : showPoints ? (
                     <>
-                        {new Intl.NumberFormat(config.locale).format(pointsCount)}
-                        {' '}
-                        {get('panel.results_count')}
+                        {get('panel.points_count', { count: pointsCount })}
                     </>
                 ) : (
                     <>
-                        {new Intl.NumberFormat(config.locale).format(clusterCount)}
-                        {' '}
-                        {get('panel.cluster_count')}
+                        {get('panel.cluster_count', { count: clusterCount })}
                     </>
                 )}
             </span>

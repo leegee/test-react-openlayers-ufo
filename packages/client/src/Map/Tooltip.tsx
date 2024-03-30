@@ -63,7 +63,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                 }
             }
             else {
-                tooltipContent = feature.get('num_points') + ' ' + get('panel.cluster_count');
+                tooltipContent = get('panel.cluster_count', {count: Number(feature.get('num_points'))});
             }
 
             if (tooltipContent && tooltipElementRef.current !== null) {
