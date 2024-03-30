@@ -29,7 +29,6 @@ describe('FeaturesTable', () => {
                         {
                             properties: {
                                 id: 1,
-                                datetime_original: '2023-01-01',
                                 datetime: '2023-01-01T00:00:00Z',
                                 location_text: 'Test Location',
                                 report_text: 'Test Report',
@@ -60,7 +59,7 @@ describe('FeaturesTable', () => {
         expect(screen.getByText('Report')).toBeInTheDocument();
 
         // Verify if feature data is rendered correctly
-        expect(screen.getByText('2023-01-01')).toBeInTheDocument(); // Check datetime_original
+        expect(screen.getByText('2023-01-01')).toBeInTheDocument(); // Check datetime
         expect(screen.getByText('Test Location')).toBeInTheDocument(); // Check location_text
         expect(screen.getByText('Test Report')).toBeInTheDocument(); // Check report_text
     });

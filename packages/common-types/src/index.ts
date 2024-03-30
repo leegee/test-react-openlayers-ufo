@@ -8,8 +8,6 @@ export interface QueryParams {
   zoom: number;
   to_date?: string | undefined;
   from_date?: string | undefined;
-  show_undated?: boolean;
-  show_invalid_dates?: boolean;
   q?: string;
   q_subject?: string;
   sort_order?: 'ASC' | 'DESC'

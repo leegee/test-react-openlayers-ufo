@@ -130,7 +130,7 @@ async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
-        'id', 'location_text', 'address', 'report_text', 'datetime', 'datetime_invalid', 'datetime_original', 'point', 'rgb',
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'point', 'rgb',
     ];
     const whereParams: string[] = [];
     const orderByClause: string[] = [];
@@ -202,14 +202,6 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
         whereParams.push(userArgs.to_date);
         orderByClause.push('datetime ' + userArgs.sort_order);
     }
-    else if (!userArgs.show_undated) {
-        whereColumns.push("(datetime IS NOT NULL)");
-        orderByClause.push('datetime ' + userArgs.sort_order);
-    }
-
-    // if (!userArgs.show_invalid_dates) {
-    //     whereColumns.push("datetime_invalid IS NOT true");
-    // }
 
     if (config.db.database === 'ufo') {
         selectColumns.push('shape', 'duration_seconds')
@@ -278,9 +270,6 @@ function getCleanArgs(args: ParsedUrlQuery) {
 
         to_date: args.to_date ? (Array.isArray(args.to_date) ? args.to_date[0] : args.to_date) : undefined,
         from_date: args.from_date ? (Array.isArray(args.from_date) ? args.from_date[0] : args.from_date) : undefined,
-
-        show_undated: args.show_undated === 'true',
-        show_invalid_dates: args.show_invalid_dates === 'true',
 
         // Potentially the subject of a text search:
         q: args.q ? String(args.q).trim() : undefined,

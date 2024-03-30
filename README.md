@@ -1,4 +1,4 @@
-# Norwegian UFO Database
+# Combined Mufon/Norwegian UFO Database
 
 * npm Typescript Monorepo
 * Koa
@@ -13,7 +13,9 @@
 ## Synopsis
 
 ```bash
-  # After installing the DB and editing the config:
+  # After editing the config and/or setting env vars:
+  psql -c 'CREATE DATABASE ufo'
+  psql -d ufo < data/merged/ufo-combined.sql
   npm install
 
   # For dev, either
@@ -92,11 +94,11 @@ The service layer is provided by Koa for simplicity, but could use any Express-t
 
 ### Installing and Accessing the DB
 
-There is a dump of the current state of the PostGIS database: [./data/norge/pg-dump/](./data/norge/pg-dump/) - install the usual way with `psql < dump.sh`.
+There is a dump of the current state of the PostGIS databases: see [./data](./data)
 
-Configuration access options in hard-coded  in [the global config](./packages/config/): PG access tries the usual PG environment varirables, but of course this should (and will) be upgraded to use `.env` files.
+Configuration of access options via env vars, defaults hard-coded in [the global config](./packages/config/): PG access tries the usual PG environment varirables, but of course this should (and will) be upgraded to use `.env` files.
 
-Soem work has been done to port to MySQL, but the big `update.sql` has yet to be tackled.
+Some work has been done to port to MySQL, but the big `update.sql` has yet to be tackled.
 
 Location data is stored in EPSG:3857 for speed, with the API accepting EPSG:4326/WGS84 for legibility.
 
@@ -123,8 +125,11 @@ Some kind soul has done most of the above for the [MUFON dataset](data\mufon\dat
 
 See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as verbose, but does cover quite a large area. The text had some HTML entities good and bad (soem of tabs and commas, presumably from others' ingestion), which are tidied by the SQL ingestion scripts.
 
+MUFON has much less detail, but much more data.
+
 ## Todo:
 
+* Choose datatest: norge, mufon, both (1h)
 * Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Tighten linting.
 * Tests.

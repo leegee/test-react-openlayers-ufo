@@ -103,10 +103,7 @@ const FeatureTable: React.FC = () => {
                             onClick={() => handleClickRow(feature.properties.id)}
                         >
                             <div className='td datetime'>
-                                {feature.properties.datetime_original}
-                                <span className='our-datetime'>{
-                                    new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime))
-                                }</span>
+                                {new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime))}
                             </div>
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
                             <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text)}</div>

@@ -145,8 +145,6 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
     minlat: String(bounds[1]),
     maxlng: String(bounds[2]),
     maxlat: String(bounds[3]),
-    show_undated: String(true),
-    show_invalid_dates: String(true),
     ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
     ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
     ...(q !== '' ? { q: q } : {}),
