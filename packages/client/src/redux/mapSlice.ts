@@ -10,7 +10,7 @@ import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@r
 import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
-import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
+import { FeatureSourceAttributeType, MapDictionary } from '@ufo-monorepo-test/common-types/src';
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
@@ -35,8 +35,6 @@ export interface FetchFeaturesResposneType {
   dictionary: MapDictionary | undefined;
 }
 
-export type FeatureSourceAttribute =  'norge-ufo' | 'mufon-kaggle' | 'not-specified';
-
 // Extend QueryParams 
 export interface MapState {
   center: [number, number];
@@ -50,7 +48,7 @@ export interface MapState {
   basemapSource: string;
   previousQueryString: string;
   requestingCsv: boolean;
-  source: FeatureSourceAttribute; 
+  source: FeatureSourceAttributeType;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
@@ -140,6 +138,7 @@ export const selectClusterCount = createSelector(
 );
 
 export const selectQueryString = (mapState: MapState): string | undefined => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { zoom, bounds, from_date, to_date, q, source } = mapState;
   if (!zoom || !bounds) return;
 

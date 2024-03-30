@@ -3,7 +3,7 @@ import type { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import type { ParsedUrlQuery } from "querystring";
 
-import { MapDictionary, QueryParams, QueryResponseType } from '@ufo-monorepo-test/common-types/src';
+import { FeatureSourceAttributeType, MapDictionary, QueryParams, QueryResponseType, isFeatureSourceAttributeType } from '@ufo-monorepo-test/common-types/src';
 import config from '@ufo-monorepo-test/config/src';
 import { CustomError } from '../middleware/errors';
 import { listToCsvLine } from '../lib/csv';
@@ -130,7 +130,7 @@ async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) 
 function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
-        'id', 'location_text', 'address', 'report_text', 'datetime', 'point', 'rgb',
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'point',
     ];
     const whereParams: string[] = [];
     const orderByClause: string[] = [];
@@ -204,7 +204,11 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
     }
 
     if (config.db.database === 'ufo') {
-        selectColumns.push('shape', 'duration_seconds')
+        selectColumns.push('shape', 'duration_seconds', 'rgb', 'colour', 'source');
+        if (userArgs.source) {
+            whereColumns.push(`(source=$${whereParams.length + 1})`);
+            whereParams.push(userArgs.source);
+        }
     }
 
     const rv: SqlBitsType = {
@@ -281,11 +285,19 @@ function getCleanArgs(args: ParsedUrlQuery) {
         ) ? String(args.q_subject) : undefined,
 
         sort_order: String(args.sort_order) === 'ASC' || String(args.sort_order) === 'DESC' ? String(args.sort_order) as 'ASC' | 'DESC' : undefined,
+
+        ... (
+            isFeatureSourceAttributeType(args.source)
+                ? { source: args.source as FeatureSourceAttributeType }
+                : {}
+        )
     };
 
-    if (userArgs.from_date && Number(userArgs.from_date) === 1) {
-        delete userArgs.from_date;
-    }
+    if (args.source)
+
+        if (userArgs.from_date && Number(userArgs.from_date) === 1) {
+            delete userArgs.from_date;
+        }
     if (userArgs.to_date && Number(userArgs.to_date) === 1) {
         delete userArgs.to_date;
     }

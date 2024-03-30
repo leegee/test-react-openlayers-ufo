@@ -1,5 +1,16 @@
 import type { FeatureCollection } from "geojson";
 
+export type AllowedFeatureSourceAttributeType = [
+  'norge-ufo' | 'mufon-kaggle' | 'not-specified' | undefined
+];
+
+export type FeatureSourceAttributeType = AllowedFeatureSourceAttributeType[0];
+
+export function isFeatureSourceAttributeType(value: any): value is FeatureSourceAttributeType {
+  const strValue = String(value);
+  return ['norge-ufo', 'mufon-kaggle', 'not-specified', '', undefined].includes(strValue);
+}
+
 export interface QueryParams {
   minlng: number;
   minlat: number;
@@ -10,7 +21,8 @@ export interface QueryParams {
   from_date?: string | undefined;
   q?: string;
   q_subject?: string;
-  sort_order?: 'ASC' | 'DESC'
+  sort_order?: 'ASC' | 'DESC';
+  source?: FeatureSourceAttributeType
 }
 
 export interface DateTimeMinMax {
