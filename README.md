@@ -54,7 +54,9 @@ Please fix anything you can or suggest a better way of doing things.
 
 Sightings are clustered when zoomed out:
 
-![Initial view](./docs/images/init.png)
+![Initial view, theme a](./docs/images/init.png)
+![Initial view, theme b](./docs/images/init-2.png)
+![Initial view, theme c](./docs/images/init-3.png)
 
 When the map is zoomed in or searched, sightings are displayed on the map and in an abbreviated table:
 
