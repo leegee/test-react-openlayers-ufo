@@ -35,6 +35,8 @@ export interface FetchFeaturesResposneType {
   dictionary: MapDictionary | undefined;
 }
 
+export type FeatureSourceAttribute =  'norge-ufo' | 'mufon-kaggle' | 'not-specified';
+
 // Extend QueryParams 
 export interface MapState {
   center: [number, number];
@@ -48,6 +50,7 @@ export interface MapState {
   basemapSource: string;
   previousQueryString: string;
   requestingCsv: boolean;
+  source: FeatureSourceAttribute; 
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
@@ -64,6 +67,7 @@ const initialState: MapState = {
   basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
   requestingCsv: false,
+  source: 'not-specified',
 };
 
 const mapSlice = createSlice({
@@ -136,7 +140,7 @@ export const selectClusterCount = createSelector(
 );
 
 export const selectQueryString = (mapState: MapState): string | undefined => {
-  const { zoom, bounds, from_date, to_date, q } = mapState;
+  const { zoom, bounds, from_date, to_date, q, source } = mapState;
   if (!zoom || !bounds) return;
 
   const queryObject = {
@@ -145,6 +149,7 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
     minlat: String(bounds[1]),
     maxlng: String(bounds[2]),
     maxlat: String(bounds[3]),
+    source: String(source),
     ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
     ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
     ...(q !== '' ? { q: q } : {}),
