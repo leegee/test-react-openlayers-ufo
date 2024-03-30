@@ -22,7 +22,7 @@ vectorLayer.set('name', 'points');
 
 export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
     vectorSource.clear();
-    if (featureCollection.features.length) {
+    if (featureCollection.features !== null) {
         vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
     }
     vectorSource.changed();

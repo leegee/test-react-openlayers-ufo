@@ -27,7 +27,7 @@ export interface UfoFeatureCollection {
   type: "FeatureCollection";
   clusterCount: number;
   pointsCount: number;
-  features: GeoJSONFeature[];
+  features: GeoJSONFeature[] | null;
 }
 
 export interface FetchFeaturesResposneType {
