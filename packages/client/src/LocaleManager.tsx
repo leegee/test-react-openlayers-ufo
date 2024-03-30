@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { init } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,45 +18,62 @@ type LocaleKey = keyof typeof translations;
 export const setupLocale = async (locale?: LocaleKey): Promise<void> => {
     locale = locale ?? config.locale;
     await loadLocale(locale);
-}
+};
 
 export const getTranslation = async (locale: LocaleKey) => {
     const translation = await translations[locale] as Record<string, any>;
     return translation;
-}
+};
 
-export const loadLocale = async (locale: LocaleKey) => {
+export const loadLocale = async (locale: LocaleKey): Promise<void> => {
     const translation = await getTranslation(locale);
     await init({
         currentLocale: locale,
         locales: { [locale]: translation },
     });
-}
+};
 
 const LocaleManager = () => {
     const dispatch = useDispatch();
     const { locale } = useSelector((state: RootState) => state.gui);
 
-    useEffect(() => {
-        void loadLocale(locale);
-    }, [locale]);
+    const [loading, setLoading] = useState(true);
 
-    const handleClick = (locale: LocaleKey) => {
-        dispatch(setLocaleKey(locale));
-    };
+    function handleClick (newLocale: LocaleKey)  {
+        setLoading(true);
+        try {
+            void loadLocale(newLocale).then(() => {
+                dispatch(setLocaleKey(newLocale));
+                setLoading(false);
+            });
+        } catch (err) {
+            console.error('Failed to load translations');
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        setLoading(true);
+        loadLocale(locale)
+            .then(() => setLoading(false))
+            .catch(() => {
+                console.error('Failed to load translations');
+                setLoading(false);
+            });
+    }, [locale]);
 
     return (
         <nav>
             {locale ? (
                 <>
                     {locale === 'no' ? (
-                        <button className='map-ctrl locale-ctrl' onClick={() => handleClick('en')}>🇬🇧</button>
+                        <button disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('en')}>🇬🇧</button>
                     ) : (
-                        <button className='map-ctrl locale-ctrl' onClick={() => handleClick('no')}>🇳🇴</button>
+                        <button disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('no')}>🇳🇴</button>
                     )}
                 </>
             ) : (
-                <span>Loading...</span>
+                <span>Locale not available</span>
             )}
         </nav>
     );
