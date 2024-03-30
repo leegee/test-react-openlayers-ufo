@@ -5,6 +5,11 @@
         "points_count": "{count} observasjoner",
         "cluster_count": "{count} grupper av observasjoner",
         "only_clusters_not_points": "Vennligst zoom inn for detaljer om observasjoner.",
+        "no_results": "Det var ingen treff for søket ditt på gjeldende kart. Prøv kanskje å panorere og zoome ut."
+    },
+    "status": {
+        "points_count": "{count} observasjoner",
+        "cluster_count": "{count} grupper av observasjoner",
         "no_results": "Prøv å zoome ut/endre søket."
     },
     "sighting_details": {

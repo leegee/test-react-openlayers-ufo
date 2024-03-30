@@ -37,7 +37,7 @@
     top: var(--ufo-toolbar-height);
 }
 
-.only_clusters_not_points {
+.panel .message {
     margin: 3em 1em;
     text-align: center;
 }

@@ -1,10 +1,15 @@
 {
     "open": "Open",
     "close": "Close",
+    "status": {
+        "points_count": "{count} sightings",
+        "cluster_count": "{count} clusters of sightings",
+        "only_clusters_not_points": "Please zoom to for details of sightings.",
+        "no_results": "There were no matches for your search on the current map. Perhaps try panning and zooming out."
+    },
     "panel": {
         "points_count": "{count} sightings",
-        "cluster_count": "cluster of {count} sightings",
-        "only_clusters_not_points": "Please zoom to for details of sightings.",
+        "cluster_count": "{count} clusters of sightings",
         "no_results": "No results: try zooming out or changing your terms"
     },
     "sighting_details": {

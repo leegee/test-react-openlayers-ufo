@@ -2,18 +2,20 @@
  * This chap handles the positioning of the results table, which is always set to fill avialable space
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectPointsCount } from './redux/mapSlice';
+import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
 import { setPanel } from './redux/guiSlice';
 import FeatureTable from './FeaturesTable';
 
 import './ResultsPanel.css';
 
 const Panel: React.FC = () => {
-    const pointsCount = useSelector(selectPointsCount);
     const dispatch = useDispatch();
+    const pointsCount = useSelector(selectPointsCount);
+    const clusterCount = useSelector(selectClusterCount);
+    const [nothingToShow, setNothingToShow] = useState<boolean>(true);
 
     const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('hidden')) } };
 
@@ -22,11 +24,20 @@ const Panel: React.FC = () => {
         return () => document.removeEventListener('keyup', onEscCloseFullReport)
     });
 
+    useEffect(() => {
+        setNothingToShow(!clusterCount && !pointsCount);
+    }, [pointsCount, clusterCount, nothingToShow]);
+
     return (
         <section className='panel'>
-            {pointsCount ?
+            {nothingToShow ? (
+                <p className='message'>
+                    {get('panel.no_results')}
+                </p>
+            ) : 
+            pointsCount ?
                 <FeatureTable />
-                : <p className='only_clusters_not_points'>
+                : <p className='message'>
                     {get('panel.only_clusters_not_points')}
                 </p>
             }

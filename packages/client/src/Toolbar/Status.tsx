@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
@@ -8,26 +8,27 @@ import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
 import './Status.css';
 
 const Panel: React.FC = () => {
-    const { locale } = useSelector((state: RootState) => state.gui);
     const pointsCount = useSelector(selectPointsCount);
     const clusterCount = useSelector(selectClusterCount);
-    const nothingToShow = !clusterCount && !pointsCount;
+    const [nothingToShow, setNothingToShow] = useState<boolean>(true);
     const showPoints = !clusterCount && pointsCount && pointsCount > 0;
 
-    useEffect(() => void (0), [locale]);
+    useEffect(() => {
+        setNothingToShow(!clusterCount && !pointsCount);
+    }, [pointsCount, clusterCount, nothingToShow]);
 
     return (
         <header className='report-ctrl component'>
             <span className='inner'>
                 {nothingToShow ? (
-                    <>{get('panel.no_results')}</>
+                    <>{get('status.no_results')}</>
                 ) : showPoints ? (
                     <>
-                        {get('panel.points_count', { count: pointsCount })}
+                        {get('status.points_count', { count: pointsCount })}
                     </>
                 ) : (
                     <>
-                        {get('panel.cluster_count', { count: clusterCount })}
+                        {get('status.cluster_count', { count: clusterCount })}
                     </>
                 )}
             </span>
