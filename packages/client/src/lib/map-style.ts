@@ -102,7 +102,7 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style => {
                         width: 8
                     } : {
                         color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
-                        width: 2
+                        width: 3
                     }
                 )
             }),
