@@ -26,23 +26,16 @@ const rings = [
         image: new Circle({
             radius: 100,
             fill: new Fill({color: 'transparent'}),
-            stroke: new Stroke({ width: 4, color: '#0F09' }),
+            stroke: new Stroke({ width: 2, color: '#0F07' }),
         }),
     }),
     new Style({
         image: new Circle({
             radius: 50,
             fill: new Fill({color: 'transparent'}),
-            stroke: new Stroke({ width: 2, color: '#0F09' }),
+            stroke: new Stroke({ width: 2, color: '#0F08' }),
         }),
     }),
-    new Style({
-        image: new Circle({
-            radius: 30,
-            fill: new Fill({color: 'transparent'}),
-            stroke: new Stroke({ width: 2, color: '0F0D' }),
-        }),
-    })
 ];
 
 export const sightingsStyleFunction = (feature: FeatureLike): Style | Style[] => {

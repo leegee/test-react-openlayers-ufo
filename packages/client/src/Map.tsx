@@ -216,7 +216,7 @@ const OpenLayersMap: React.FC = () => {
   }, [featureCollection]);
 
   return (
-    <section id='map' ref={mapElementRef} >
+    <section id='map' ref={mapElementRef}>
       <div className='map-ctrls'>
         <ThemeToggleButton />
         <LocaleManager />

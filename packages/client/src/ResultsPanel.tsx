@@ -25,7 +25,11 @@ const Panel: React.FC = () => {
     });
 
     useEffect(() => {
+        if (pointsCount) {
+            setPanel(nothingToShow ? 'narrow' : 'hidden')
+        }
         setNothingToShow(!clusterCount && !pointsCount);
+
     }, [pointsCount, clusterCount, nothingToShow]);
 
     return (
@@ -34,12 +38,12 @@ const Panel: React.FC = () => {
                 <p className='message'>
                     {get('panel.no_results')}
                 </p>
-            ) : 
-            pointsCount ?
-                <FeatureTable />
-                : <p className='message'>
-                    {get('panel.only_clusters_not_points')}
-                </p>
+            ) :
+                pointsCount ?
+                    <FeatureTable />
+                    : <p className='message'>
+                        {get('panel.only_clusters_not_points')}
+                    </p>
             }
         </section>
     );
