@@ -205,7 +205,7 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
 
     if (config.db.database === 'ufo') {
         selectColumns.push('shape', 'duration_seconds', 'rgb', 'colour', 'source');
-        if (userArgs.source) {
+        if (userArgs.source && userArgs.source !== 'not-specified') {
             whereColumns.push(`(source=$${whereParams.length + 1})`);
             whereParams.push(userArgs.source);
         }

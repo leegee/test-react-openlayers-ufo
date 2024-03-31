@@ -126,7 +126,7 @@ const mapSlice = createSlice({
 export const {
   setPreviousQueryString, setMapParams,
   resetDates, setFromDate, setToDate,
-  setQ, setBasemapSource,
+  setQ, setBasemapSource, setSource,
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
