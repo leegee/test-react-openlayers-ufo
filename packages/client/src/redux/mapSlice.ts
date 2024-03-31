@@ -100,6 +100,9 @@ const mapSlice = createSlice({
       state.basemapSource = action.payload;
       localStorage.setItem('basemap_source', state.basemapSource);
     },
+    setSource: (state, action: PayloadAction<FeatureSourceAttributeType>) => {
+      state.source = action.payload;
+    },
     setPreviousQueryString: (state, action: PayloadAction<string>) => {
       state.previousQueryString = action.payload;
     },
