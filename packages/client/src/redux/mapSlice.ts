@@ -10,7 +10,7 @@ import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@r
 import debounce from 'debounce';
 
 import config from '@ufo-monorepo-test/config/src';
-import { FeatureSourceAttributeType, MapDictionary } from '@ufo-monorepo-test/common-types/src';
+import { FeatureSourceAttributeType, MapDictionaryType } from '@ufo-monorepo-test/common-types';
 import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
@@ -33,7 +33,7 @@ export interface UfoFeatureCollection {
 
 export interface FetchFeaturesResposneType {
   results: UfoFeatureCollection;
-  dictionary: MapDictionary | undefined;
+  dictionary: MapDictionaryType | undefined;
 }
 
 // Extend QueryParams 
@@ -42,7 +42,7 @@ export interface MapState {
   zoom: number;
   bounds: [number, number, number, number] | null;
   featureCollection: UfoFeatureCollection | null;
-  dictionary: MapDictionary | undefined;
+  dictionary: MapDictionaryType | undefined;
   from_date?: number;
   to_date?: number;
   q?: string;

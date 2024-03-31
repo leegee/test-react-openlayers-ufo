@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { MapDictionary } from '@ufo-monorepo-test/common-types/src';
+import { MapDictionaryType } from '@ufo-monorepo-test/common-types';
 import { fetchFeatures, setFromDate, setToDate, selectPointsCount } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 
@@ -11,7 +11,7 @@ import { get } from 'react-intl-universal';
 
 const DateRange: React.FC = () => {
     const dispatch = useDispatch();
-    const dictionary: MapDictionary | undefined = useSelector((state: RootState) => state.map.dictionary);
+    const dictionary: MapDictionaryType | undefined = useSelector((state: RootState) => state.map.dictionary);
     const pointsCount = useSelector(selectPointsCount);
     const { from_date, to_date } = useSelector((state: RootState) => state.map);
     const [localFromDate, setLocalFromDate] = useState(from_date);

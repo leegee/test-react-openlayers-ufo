@@ -37,13 +37,13 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    let widthClass = '';
     if (panel === 'full') {
-      setAppClasses('REPORT_FULL_WIDTH');
+      widthClass = 'REPORT_FULL_WIDTH';
     } else if (panel === 'narrow') {
-      setAppClasses('REPORT_NARROW_WIDTH');
-    } else {
-      setAppClasses('');
+      widthClass = 'REPORT_NARROW_WIDTH';
     }
+    setAppClasses(widthClass + 'panel-is-' + panel);
   }, [panel])
 
   return (

@@ -28,7 +28,7 @@ import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-export type MapLayerKeyType = 'clusterOnly' |  'points'; // | 'mixedSearchResults'
+export type MapLayerKeyType = 'clusterOnly' | 'points'; // | 'mixedSearchResults'
 export type MapBaseLayersType = {
   [key in MapBaseLayerKeyType]: Layer
 }
@@ -59,7 +59,7 @@ function setTheme(baseLayerName: MapBaseLayerKeyType) {
 function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownAction>) {
   let didOneFeature = false;
   map.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-    if ( !didOneFeature) {
+    if (!didOneFeature) {
       // Clicked a clsuter
       if (clickedFeature.get('cluster_id')) {
         dispatch(setSelectionId(undefined));
@@ -111,7 +111,7 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
 //   return null;
 // }
 
-function extentMinusPanel(bounds: [number, number, number, number]){
+function extentMinusPanel(bounds: [number, number, number, number]) {
   // Calculate the width of the extent
   const extentWidth = bounds[2] - bounds[0];
   // 30vw
@@ -123,7 +123,7 @@ const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const pointsCount = useSelector(selectPointsCount);
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
-  const { selectionId, panel: panelState } = useSelector((state: RootState) => state.gui);
+  const { selectionId } = useSelector((state: RootState) => state.gui);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -135,9 +135,9 @@ const OpenLayersMap: React.FC = () => {
     const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
     const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
 
-    dispatch(setMapParams({ 
-      center, 
-      zoom, 
+    dispatch(setMapParams({
+      center,
+      zoom,
       bounds: config.flags.USE_BOUNDS_WITHOUT_PANEL ? extentMinusPanel(bounds) : bounds
     }));
   };
@@ -185,21 +185,21 @@ const OpenLayersMap: React.FC = () => {
     }
 
     return () => mapRef.current?.dispose();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-useEffect(() => { 
-  const debouncedFetchFeatures = debounce(() => {
-    dispatch(fetchFeatures());
-  }, 750);
+  useEffect(() => {
+    const debouncedFetchFeatures = debounce(() => {
+      dispatch(fetchFeatures());
+    }, 750);
 
-  debouncedFetchFeatures();
+    debouncedFetchFeatures();
 
-}, [dispatch, bounds, zoom]);
+  }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
     // if (!mapElementRef.current || featureCollection === null) return;
-    if (!mapElementRef.current || !featureCollection ) return;
+    if (!mapElementRef.current || !featureCollection) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       // updateMixedSearchResultsLayer(featureCollection);
       // setVisibleDataLayer('mixedSearchResults');
@@ -212,16 +212,11 @@ useEffect(() => {
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureCollection]);
 
-  useEffect(() => {
-    console.log('Component re-rendered with panelState:', panelState);
-  }, [panelState]);
-
-  // NB The size of the map is controlled by the state of the panel (state.gui.panel, locally aka panelState)
   return (
-    <section id='map' className={'panel-is-' + panelState} ref={mapElementRef} >
+    <section id='map' ref={mapElementRef} >
       <div className='map-ctrls'>
         <ThemeToggleButton />
         <LocaleManager />

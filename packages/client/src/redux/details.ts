@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { FetchSightingDetailsResponse, SightingRecordType } from '@ufo-monorepo-test/common-types/src';
+import { FetchSightingDetailsResponseType, SightingRecordType } from '@ufo-monorepo-test/common-types';
 import config from '@ufo-monorepo-test/config/src';
 
 export interface SightingDetailsState {
@@ -20,7 +20,7 @@ const initialState: SightingDetailsState = {
 };
 
 export const fetchSightingDetails: any = createAsyncThunk<
-    FetchSightingDetailsResponse,
+    FetchSightingDetailsResponseType,
     string, // Type of the id param
     { rejectValue: string | Error }
 >(
