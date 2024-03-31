@@ -48,7 +48,7 @@ app.listen(config.api.port, () => {
     console.info({ 
         action: 'start-up', 
         port: config.api.port, 
-        taking_to: config.api.database,
+        taking_to: config.db.database,
 });
 });
 

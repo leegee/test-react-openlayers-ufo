@@ -74,7 +74,7 @@ const config: ConfigType = {
   zoomLevelForPointDetails: 11,
   minQLength: 3,
   flags: {
-    USE_BOUNDS_WITHOUT_PANEL: true,
+    USE_BOUNDS_WITHOUT_PANEL: false,
   },
 };
 

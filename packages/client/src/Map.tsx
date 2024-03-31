@@ -115,7 +115,7 @@ function extentMinusPanel(bounds: [number, number, number, number]){
   // Calculate the width of the extent
   const extentWidth = bounds[2] - bounds[0];
   // 30vw
-  const newMinx = bounds[0] + extentWidth * 0.3;
+  const newMinx = bounds[0] + (extentWidth * 0.3);
   return [newMinx, bounds[1], bounds[2], bounds[3]] as [number, number, number, number];
 }
 
