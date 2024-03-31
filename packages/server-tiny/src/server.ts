@@ -1,3 +1,19 @@
+/*
+
+GET /search
+
+    lat_min
+    lng_min
+    lat_max
+    lng_max
+    to_date?
+    from_date?
+
+GET /detail/:id
+
+  :id === sightings.id
+
+*/
 
 import Koa from "koa";
 import Router from 'koa-router';
@@ -16,8 +32,8 @@ if (!config.db.engine) {
     console.debug(`config.db.engine=${config.db.engine}`);
 }
 
-const app = new Koa();
 const router = new Router();
+const app = new Koa();
 
 app.use(cors({ origin: "*" }));
 app.use(errorHandler);
@@ -25,11 +41,14 @@ app.use(dbhMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// config.api.endopoints.search should update to use objects
 router.get('/search', searchRoute);
 router.get('/details/:id', detailsRoute);
 
 app.listen(config.api.port, () => {
-    console.info({ action: 'start-up', port: config.api.port });
+    console.info({ 
+        action: 'start-up', 
+        port: config.api.port, 
+        taking_to: config.api.database,
+});
 });
 

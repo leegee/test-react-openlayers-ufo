@@ -53,8 +53,10 @@ const FeatureTable: React.FC = () => {
     }, [selectionId]);
 
     useEffect(() => {
-        if (featureCollection) {
-            setLocalFeatures(featureCollection.features);
+        if (featureCollection){
+            if ( featureCollection.features !== null) {
+                setLocalFeatures(featureCollection.features);
+            }
         }
     }, [featureCollection]);
 

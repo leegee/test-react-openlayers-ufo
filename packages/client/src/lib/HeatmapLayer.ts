@@ -1,4 +1,4 @@
-import type { View } from 'ol';
+import type { Map,View } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { bbox } from "ol/loadingstrategy";
@@ -34,19 +34,20 @@ export function updateVectorLayer(featureCollection: UfoFeatureCollection|null) 
     }
 } 
 
-export function setupHeatmapListeners(map){
+export function setupHeatmapListeners(map: Map){
     map.on('moveend', () => updateLayerProperties(map) );
 }
 
-function updateLayerProperties(map) {
-    if (map) {
-        const view = map.getView() as View | undefined;
-        const zoom: number = view.getZoom();
-        const newRadius = zoom >= 6 ? 14 : 5; 
-        const newBlur = zoom >= 6 ? 18 : 7; 
-        console.log(zoom);
-        
-        vectorLayer.setBlur(newBlur);
-        vectorLayer.setRadius(newRadius);
+function updateLayerProperties(map: Map) {
+    const view = map.getView() as View | undefined;
+    if (!view) {
+        return;
     }
+    const zoom: number = view.getZoom() ?? 0;
+    const newRadius = zoom >= 6 ? 14 : 5; 
+    const newBlur = zoom >= 6 ? 18 : 7; 
+    console.log(zoom);
+    
+    vectorLayer.setBlur(newBlur);
+    vectorLayer.setRadius(newRadius);
 }

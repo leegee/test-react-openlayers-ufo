@@ -111,7 +111,7 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
 //   return null;
 // }
 
-function extentMinusPanel(bounds: [number,number, number]){
+function extentMinusPanel(bounds: [number, number, number, number]){
   // Calculate the width of the extent
   const extentWidth = bounds[2] - bounds[0];
   // 30vw
@@ -138,7 +138,7 @@ const OpenLayersMap: React.FC = () => {
     dispatch(setMapParams({ 
       center, 
       zoom, 
-      bounds: config.USE_BOUNDS_WITHOUT_PANEL ? extentMinusPanel(bounds) : bounds
+      bounds: config.flags.USE_BOUNDS_WITHOUT_PANEL ? extentMinusPanel(bounds) : bounds
     }));
   };
 
