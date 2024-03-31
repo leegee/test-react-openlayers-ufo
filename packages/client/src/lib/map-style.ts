@@ -100,17 +100,17 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style | Style[] =>
         const selectionId = store.getState().gui.selectionId;
         const selected = selectionId && selectionId === feature.get('id');
         const score = parseFloat(feature.get('search_score') as string);
-        // const hue = score ? mapScoreToHue(score) : '180';
         const hue = 180;
         let alpha = 1;
         if (score) {
             // (feature as Feature).set('zIndex', score * 2);
             alpha = score + 0.2;
-            if (alpha < 0.55) alpha = 0.55;
-            console.log(alpha);
+            if (alpha < 0.55) {
+                alpha = 0.55
+            }
         }
         let colour = rgb;
-        if (typeof rgb === 'undefined' || rgb === 'Unknown'){
+        if (!rgb || rgb === 'Unknown'){
             colour = `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`;
         }
 
