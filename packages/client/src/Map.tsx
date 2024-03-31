@@ -18,7 +18,7 @@ import baseLayerDark from './lib/map-base-layer/layer-dark';
 import baseLayerLight from './lib/map-base-layer/layer-osm';
 import baseLayerGeo from './lib/map-base-layer/layer-geo';
 // import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
-import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/HeatmapLayer';
+import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer, setupHeatmapListeners } from './lib/HeatmapLayer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 // import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
@@ -162,8 +162,8 @@ const OpenLayersMap: React.FC = () => {
       });
 
       mapRef.current = map;
-
-      setupFeatureHighlighting(map);
+      setupHeatmapListeners(mapRef.current);
+      setupFeatureHighlighting(mapRef.current);
 
       map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
 
@@ -185,7 +185,8 @@ useEffect(() => {
 }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
-    if (!mapElementRef.current || featureCollection === null) return;
+    // if (!mapElementRef.current || featureCollection === null) return;
+    if (!mapElementRef.current || !featureCollection ) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       // updateMixedSearchResultsLayer(featureCollection);
       // setVisibleDataLayer('mixedSearchResults');
