@@ -43,7 +43,7 @@ const App: React.FC = () => {
     } else if (panel === 'narrow') {
       widthClass = 'REPORT_NARROW_WIDTH';
     }
-    setAppClasses(widthClass + 'panel-is-' + panel);
+    setAppClasses(widthClass + ' panel-is-' + panel);
   }, [panel])
 
   return (
