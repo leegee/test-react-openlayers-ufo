@@ -1,5 +1,5 @@
 {
-    "name": "@ufo-monorepo-test/server-tiny",
+    "name": "@ufo-monorepo-test/api",
     "version": "1.0.0",
     "description": "Tiny KOA API, nothing nice yet",
     "main": "./build/index.js",

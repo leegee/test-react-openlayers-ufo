@@ -1,8 +1,8 @@
+import type { Map,View } from 'ol';
 import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { bbox } from "ol/loadingstrategy";
 import { Heatmap as HeatmapLayer } from 'ol/layer';
-
 import type { UfoFeatureCollection } from '../redux/mapSlice';
 
 const vectorSource = new VectorSource({
@@ -21,11 +21,33 @@ export const vectorLayer = new HeatmapLayer({
 
 vectorLayer.set('name', 'server-clusters-only');
 
-export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
-    vectorSource.clear();
-    if (featureCollection.features !== null) {
-        vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
+export function updateVectorLayer(featureCollection: UfoFeatureCollection|null) {
+    if (featureCollection) {
+        if (featureCollection.features) {
+            vectorSource.clear();
+            vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
+            vectorSource.changed();
+            console.debug("Number of features added:", vectorSource.getFeatures().length);
+        }
+    } else {
+        console.debug('No features to add');
     }
-    vectorSource.changed();
-    console.debug("Number of features added:", vectorSource.getFeatures().length);
+} 
+
+export function setupHeatmapListeners(map: Map){
+    map.on('moveend', () => updateLayerProperties(map) );
+}
+
+function updateLayerProperties(map: Map) {
+    const view = map.getView() as View | undefined;
+    if (!view) {
+        return;
+    }
+    const zoom: number = view.getZoom() ?? 0;
+    const newRadius = zoom >= 6 ? 14 : 5; 
+    const newBlur = zoom >= 6 ? 18 : 7; 
+    console.log(zoom);
+    
+    vectorLayer.setBlur(newBlur);
+    vectorLayer.setRadius(newRadius);
 }

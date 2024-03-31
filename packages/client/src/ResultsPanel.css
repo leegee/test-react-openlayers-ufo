@@ -1,6 +1,6 @@
 /* Panel.css */
 
-.panel {
+#panel {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -18,14 +18,25 @@
     border: 1pt solid var(--ufo-primary-border-clr);
     border-top: none;
     transition: all 0.5s ease;
+    opacity: 0.75;
+
+    .message {
+        margin: 3em 1em;
+        text-align: center;
+    }
 }
 
-.REPORT_FULL_WIDTH .panel {
+#panel.nothing-to-show {
+    opacity: 0.55;
+    height: auto;
+}
+
+.REPORT_FULL_WIDTH #panel {
     width: 100%;
     height: 100%;
 }
 
-.SMALL-SCREEN .panel {
+.SMALL-SCREEN #panel {
     width: 100%;
     top: calc(100vh - var(--ufo-panel-SMALL-SCREEN-height));
     left: 0;
@@ -33,11 +44,6 @@
     bottom: 0;
 }
 
-.SMALL-SCREEN.REPORT_FULL_WIDTH .panel {
+.SMALL-SCREEN.REPORT_FULL_WIDTH #panel {
     top: var(--ufo-toolbar-height);
-}
-
-.panel .message {
-    margin: 3em 1em;
-    text-align: center;
 }

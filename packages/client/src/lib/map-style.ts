@@ -21,7 +21,31 @@ function mapLocalClusterToColor(): string {
     return 'blue';
 }
 
-export const sightingsStyleFunction = (feature: FeatureLike): Style => {
+const rings = [
+    new Style({
+        image: new Circle({
+            radius: 100,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 4, color: '#0F09' }),
+        }),
+    }),
+    new Style({
+        image: new Circle({
+            radius: 50,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 2, color: '#0F09' }),
+        }),
+    }),
+    new Style({
+        image: new Circle({
+            radius: 30,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 2, color: '0F0D' }),
+        }),
+    })
+];
+
+export const sightingsStyleFunction = (feature: FeatureLike): Style | Style[] => {
     const features = feature.get('features') as any[] | undefined;
     const clusterSizeFromServer = Number(feature.get('num_points'));
     const clusterSizeMadeLocally = features ? features.length : undefined;
@@ -76,37 +100,40 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style => {
         const selectionId = store.getState().gui.selectionId;
         const selected = selectionId && selectionId === feature.get('id');
         const score = parseFloat(feature.get('search_score') as string);
-        // const hue = score ? mapScoreToHue(score) : '180';
         const hue = 180;
         let alpha = 1;
         if (score) {
             // (feature as Feature).set('zIndex', score * 2);
             alpha = score + 0.2;
-            if (alpha < 0.55) alpha = 0.55;
-            console.log(alpha);
+            if (alpha < 0.55) {
+                alpha = 0.55
+            }
         }
         let colour = rgb;
-        if (typeof rgb === 'undefined' || rgb === 'Unknown'){
+        if (!rgb || rgb === 'Unknown'){
             colour = `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`;
         }
 
-        style = new Style({
-            image: new Circle({
-                radius: 10,
-                fill: new Fill({
-                    color: selected ? 'hsl(40,100%,70%)' : colour
+        style = [
+            ...( selected? rings : []),
+            new Style({
+                image: new Circle({
+                    radius: 10,
+                    fill: new Fill({
+                        color: selected ? 'hsl(40,100%,70%)' : colour
+                    }),
+                    stroke: new Stroke(
+                        selected ? {
+                            color: 'hsl(40,100%,60%)',
+                            width: 8
+                        } : {
+                            color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
+                            width: 3
+                        }
+                    )
                 }),
-                stroke: new Stroke(
-                    selected ? {
-                        color: 'hsl(40,100%,60%)',
-                        width: 8
-                    } : {
-                        color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
-                        width: 3
-                    }
-                )
-            }),
-        });
+            })
+        ];
     }
 
     return style;

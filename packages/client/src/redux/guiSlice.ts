@@ -31,7 +31,7 @@ const localeSlice = createSlice({
         },
         setSelectionId: (state, action: PayloadAction<number | undefined>) => {
             state.selectionId = action.payload;
-        }
+        },
     },
 });
 

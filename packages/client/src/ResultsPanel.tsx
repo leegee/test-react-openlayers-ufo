@@ -29,7 +29,7 @@ const Panel: React.FC = () => {
     }, [pointsCount, clusterCount, nothingToShow]);
 
     return (
-        <section className='panel'>
+        <section id='panel' className={(nothingToShow || clusterCount) ? 'nothing-to-show' : ''}>
             {nothingToShow ? (
                 <p className='message'>
                     {get('panel.no_results')}

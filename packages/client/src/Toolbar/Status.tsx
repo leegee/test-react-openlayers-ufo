@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useSelector } from 'react-redux';
 
-import { type RootState } from '../redux/store';
 import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
 
 import './Status.css';

@@ -9,10 +9,14 @@
 #map {
     position: fixed;
     top: var(--ufo-toolbar-height);
+    bottom: 0;
     right: 0;
     height: 100%;
     margin: 0;
     padding: 0;
+
+    left: 0;
+    /* left: var(--ufo-panel-narrow-width); */
 }
 
 #map {
@@ -20,8 +24,8 @@
 }
 
 #map.panel-is-hidden {
-    /* width: 100%; */
-    width: calc(100% - var(--ufo-panel-narrow-width));
+    /* width: calc(100% - var(--ufo-panel-narrow-width)); */
+    width: calc(100%);
 }
 
 #map.panel-is-full {
@@ -29,7 +33,8 @@
 }
 
 .LARGER-SCREEN #map.panel-is-narrow {
-    width: calc(100% - var(--ufo-panel-narrow-width));
+    /* width: calc(100% - var(--ufo-panel-narrow-width)); */
+    width: calc(100%);
 }
 
 .SMALL-SCREEN #map.panel-is-narrow {
