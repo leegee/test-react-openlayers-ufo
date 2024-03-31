@@ -46,7 +46,7 @@ const config: ConfigType = {
     port: parseInt(env.PGPORT || '5432'),
     user: env.PGUSER || 'postgres',
     password: env.PGPASSWORD || 'password',
-    database: env.UFO_DATABASE || 'norge',
+    database: env.UFO_DATABASE || 'ufo',
     engine: 'postgis'
   },
   api: {
