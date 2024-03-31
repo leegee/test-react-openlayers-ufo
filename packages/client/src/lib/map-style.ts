@@ -21,7 +21,31 @@ function mapLocalClusterToColor(): string {
     return 'blue';
 }
 
-export const sightingsStyleFunction = (feature: FeatureLike): Style => {
+const rings = [
+    new Style({
+        image: new Circle({
+            radius: 100,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 4, color: '#0F09' }),
+        }),
+    }),
+    new Style({
+        image: new Circle({
+            radius: 50,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 2, color: '#0F09' }),
+        }),
+    }),
+    new Style({
+        image: new Circle({
+            radius: 30,
+            fill: new Fill({color: 'transparent'}),
+            stroke: new Stroke({ width: 2, color: '0F0D' }),
+        }),
+    })
+];
+
+export const sightingsStyleFunction = (feature: FeatureLike): Style | Style[] => {
     const features = feature.get('features') as any[] | undefined;
     const clusterSizeFromServer = Number(feature.get('num_points'));
     const clusterSizeMadeLocally = features ? features.length : undefined;
@@ -90,23 +114,26 @@ export const sightingsStyleFunction = (feature: FeatureLike): Style => {
             colour = `hsla(${hue}, ${bgSaturation}%, ${bgLightness}%, ${alpha})`;
         }
 
-        style = new Style({
-            image: new Circle({
-                radius: 10,
-                fill: new Fill({
-                    color: selected ? 'hsl(40,100%,70%)' : colour
+        style = [
+            ...( selected? rings : []),
+            new Style({
+                image: new Circle({
+                    radius: 10,
+                    fill: new Fill({
+                        color: selected ? 'hsl(40,100%,70%)' : colour
+                    }),
+                    stroke: new Stroke(
+                        selected ? {
+                            color: 'hsl(40,100%,60%)',
+                            width: 8
+                        } : {
+                            color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
+                            width: 3
+                        }
+                    )
                 }),
-                stroke: new Stroke(
-                    selected ? {
-                        color: 'hsl(40,100%,60%)',
-                        width: 8
-                    } : {
-                        color: `hsla(${hue}, ${borderSaturation}%, ${borderLightness}%, ${alpha})`,
-                        width: 3
-                    }
-                )
-            }),
-        });
+            })
+        ];
     }
 
     return style;

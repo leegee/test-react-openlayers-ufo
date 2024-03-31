@@ -15,6 +15,10 @@ function getRowId(id: number | string) {
     return 'fid_' + id;
 }
 
+function getIdFromRow_id(id: number | string) {
+    return Number(String(id).substring(4));
+}
+
 const highlightText = (q: string | undefined, text: string) => {
     if (!text) return;
     if (typeof q === 'undefined' || q.trim() === '') {
@@ -42,6 +46,43 @@ const FeatureTable: React.FC = () => {
         dispatch(setSelectionId(Number(id)));
     }
 
+    function handleKeyDown(event: KeyboardEvent) {
+        if (!selectionId || !featureCollection?.features) {
+            return;
+        }
+        const selectedRow = document.querySelector('#' + getRowId(selectionId));
+
+        if (event.key === 'ArrowUp') {
+            const previousRow = selectedRow ? selectedRow.previousElementSibling : null;
+            if (previousRow?.id) {
+                dispatch(setSelectionId(getIdFromRow_id(previousRow.id)));
+            }
+        } else if (event.key === 'ArrowDown') {
+            const nextRow = selectedRow ? selectedRow.nextElementSibling : null;
+            if (nextRow?.id) {
+                dispatch(setSelectionId(getIdFromRow_id(nextRow.id)));
+            }
+        } else if (event.key === 'PageUp') {
+            // Handle Page Up key
+        } else if (event.key === 'PageDown') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const lastRowId = featureCollection.features.length > 0 ? featureCollection.features[featureCollection.features.length - 1].id : null;
+            if (lastRowId) {
+                dispatch(setSelectionId(getIdFromRow_id(lastRowId)));
+            }
+
+        } else if (event.key === 'Home') {
+            // Handle Home key
+        } else if (event.key === 'End') {
+            // Handle End key
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    });
+
     // Scroll the selected row into view when user selectionchanges, if it is not already visible
     useEffect(() => {
         if (selectedRowRef.current) {
@@ -53,8 +94,8 @@ const FeatureTable: React.FC = () => {
     }, [selectionId]);
 
     useEffect(() => {
-        if (featureCollection){
-            if ( featureCollection.features !== null) {
+        if (featureCollection) {
+            if (featureCollection.features !== null) {
                 setLocalFeatures(featureCollection.features);
             }
         }
@@ -64,7 +105,7 @@ const FeatureTable: React.FC = () => {
         return selectionId && selectionId === Number(id) ? 'tr selected' : 'tr';
     }
 
-    function showPointOnMap(feature: any ) {
+    function showPointOnMap(feature: any) {
         dispatch(setPanel('narrow'));
         dispatch(setSelectionId(Number(feature.properties.id)));
     }

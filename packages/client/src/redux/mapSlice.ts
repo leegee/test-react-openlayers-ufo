@@ -15,6 +15,7 @@ import type { MapBaseLayerKeyType } from '../Map';
 import { RootState } from './store';
 
 export interface GeoJSONFeature {
+  id: any;
   type: "Feature";
   geometry: {
     type: string;
