@@ -5,6 +5,7 @@ const env = isBrowser ? (import.meta as any).env : process.env;
 const isMysql = env.UFO_DB_ENGINE === 'mysql';
 
 export type ConfigType = {
+  flags: {[key: string]: boolean },
   locale: string,
   db: {
     host: string;
@@ -72,6 +73,9 @@ const config: ConfigType = {
   zoomLevelForPoints: 8,
   zoomLevelForPointDetails: 11,
   minQLength: 3,
+  flags: {
+    USE_BOUNDS_WITHOUT_PANEL: true,
+  },
 };
 
 if (isMysql) {

@@ -111,6 +111,14 @@ function setVisibleDataLayer(layerName: MapLayerKeyType) {
 //   return null;
 // }
 
+function extentMinusPanel(bounds: [number,number, number]){
+  // Calculate the width of the extent
+  const extentWidth = bounds[2] - bounds[0];
+  // 30vw
+  const newMinx = bounds[0] + extentWidth * 0.3;
+  return [newMinx, bounds[1], bounds[2], bounds[3]] as [number, number, number, number];
+}
+
 const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const pointsCount = useSelector(selectPointsCount);
@@ -126,7 +134,12 @@ const OpenLayersMap: React.FC = () => {
     const zoom = Number(mapRef.current.getView().getZoom()) || 1;
     const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
     const bounds = transformExtent(extent, 'EPSG:3857', 'EPSG:4326') as [number, number, number, number];
-    dispatch(setMapParams({ center, zoom, bounds }));
+
+    dispatch(setMapParams({ 
+      center, 
+      zoom, 
+      bounds: config.USE_BOUNDS_WITHOUT_PANEL ? extentMinusPanel(bounds) : bounds
+    }));
   };
 
   useEffect(() => {

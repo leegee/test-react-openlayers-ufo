@@ -42,8 +42,8 @@ function updateLayerProperties(map) {
     if (map) {
         const view = map.getView() as View | undefined;
         const zoom: number = view.getZoom();
-        const newRadius = zoom >= 5 ? 14 : 5; 
-        const newBlur = zoom >= 5 ? 12 : 7; 
+        const newRadius = zoom >= 6 ? 14 : 5; 
+        const newBlur = zoom >= 6 ? 18 : 7; 
         console.log(zoom);
         
         vectorLayer.setBlur(newBlur);
