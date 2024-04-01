@@ -12,8 +12,9 @@ echo $INPUT_CSV
 
 
 # psql -c "DROP DATABASE IF EXISTS mufon"
-# psql -c "CREATE DATABASE mufon;"
+# psql -c "CREATE DATABASE mufon"
 
-psql -d mufon < schema.sql
+psql -d mufon < csv-schema.sql
 psql -d mufon -c "COPY sightings FROM '$INPUT_CSV' WITH (FORMAT CSV, HEADER);"
+psql -d mufon -c "SELECT COUNT(*) FROM sightings";
 psql -d mufon < update.sql
