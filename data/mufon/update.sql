@@ -8,6 +8,8 @@ ALTER TABLE sightings
   ADD COLUMN location_text VARCHAR(255),
   ADD COLUMN address VARCHAR(255);
 
+ALTER TABLE sightings ALTER COLUMN country TYPE VARCHAR(2) USING country::VARCHAR(2);
+
 ALTER TABLE sightings RENAME COLUMN comments TO report_text;
 
 ALTER TABLE sightings
