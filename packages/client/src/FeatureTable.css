@@ -22,7 +22,7 @@
         position: relative;
         display: flex;
         justify-content: flex-start;
-        align-items: flex-start
+        align-items: flex-start;
     }
 
     .tr:nth-child(even) {
@@ -30,7 +30,6 @@
     }
 
     .tbody .tr:hover {
-        outline: 1px solid var(--ufo-brand-clr);
         background: var(--ufo-brand-clr);
         color: black;
     }
@@ -104,7 +103,7 @@
         transform: translateY(-50%) translateX(0%);
         background: var(--ufo-primary-bg-highlight);
         border-radius: 4pt;
-        right: 1pt;
+        right: 0;
         left: unset;
         width: 6em;
         align-items: center;
@@ -220,7 +219,7 @@
 
     .td.ctrls {
         padding: 4pt;
-        border: 2pt solid var(--ufo-brand-clr);
+        border: 1pt solid var(--ufo-brand-clr);
         right: 2em;
     }
 
