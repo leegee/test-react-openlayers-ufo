@@ -123,7 +123,6 @@
 
     .ctrl:hover {
         filter: none;
-        opacity: 1;
     }
 
     .row-goto-map {
@@ -155,10 +154,6 @@
     .open-full-width:hover,
     .close-full-width:hover {
         color: var(--ufo-brand-clr);
-    }
-
-    .open-full-width:hover::after {
-        opacity: 1;
     }
 
     .hideable {
@@ -223,7 +218,4 @@
         right: 2em;
     }
 
-    .td.ctrls * {
-        opacity: 1 !important;
-    }
 }
