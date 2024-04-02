@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import config from '@ufo-monorepo-test/config';
+import { GeoJSONFeature } from '@ufo-monorepo-test/common-types';
 import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
 
 import './FeatureTable.css';
-import { GeoJSONFeature } from '@ufo-monorepo-test/common-types';
 
 function getRowId(featureId: string) {
     return 'fid_' + featureId;
@@ -147,9 +147,9 @@ const FeatureTable: React.FC = () => {
                                 {new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime as string))}
                             </div>
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text as string)}</div>
-                            <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text as string)}</div>
-                            <div className='td shape hideable'>{highlightText(q, feature.properties.shape as string)}</div>
-                            <div className='td duration_seconds hideable'>{feature.properties.duration_seconds as string}</div>
+                            <div className='td hideable report_text '>{highlightText(q, feature.properties.report_text as string)}</div>
+                            <div className='td hideable shape'>{highlightText(q, feature.properties.shape as string)}</div>
+                            <div className='td hideable duration_seconds'>{feature.properties.duration_seconds as string}</div>
                             <div className='td ctrls'>
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
                                 <Link className='ctrl row-goto-details' to={'/sighting/' + (feature.properties.id as string)} />

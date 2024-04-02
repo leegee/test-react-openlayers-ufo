@@ -29,14 +29,9 @@
         background-color: var(--ufo-primary-bg-highlight);
     }
 
-    .tbody {
-        position: relative;
-        top: 1em;
-    }
-
     .tbody .tr:hover {
-        background: var(--ufo-brand-clr);
-        color: black;
+        /* background: var(--ufo-brand-clr); */
+        outline: 1px solid var(--ufo-brand-clr);
     }
 
     .tr.selected {
@@ -72,14 +67,21 @@
     .th.location_text,
     .td.location_text {
         margin-left: 0.2em;
+        margin-right: auto;
         width: auto;
         text-transform: capitalize;
     }
 
     .th.report_text,
     .td.report_text {
-        width: auto;
+        width: 10%;
         flex: 1;
+    }
+
+    .th.duration_seconds,
+    .td.duration_seconds {
+        min-width: 3em;
+        max-width: 3em;
     }
 
     .shape {
@@ -106,7 +108,7 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%) translateX(0%);
-        background: var(--ufo-primary-bg-highlight);
+        background: var(--ufo-brand-clr);
         border-radius: 4pt;
         right: 0;
         left: unset;
@@ -182,6 +184,11 @@
         display: block;
     }
 
+    .tbody {
+        position: relative;
+        top: 1em;
+    }
+
     /* No button to open full-width when already full-width */
     #feature-table .open-full-width {
         display: none;
@@ -218,7 +225,6 @@
 
     .td.ctrls {
         padding: 4pt;
-        border: 1pt solid var(--ufo-brand-clr);
         right: 2em;
     }
 

@@ -221,7 +221,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined, s
             min: undefined,
             max: undefined,
         },
-        sqlBits,
+        selected_columns: sqlBits.selectColumns,
     };
 
     let min: Date | undefined = undefined;

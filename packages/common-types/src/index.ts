@@ -49,7 +49,7 @@ export type SqlBitsType = {
 
 export interface MapDictionaryType {
   datetime: DateTimeMinMaxType | undefined;
-  sqlBits: SqlBitsType;
+  selected_columns: string[];
 }
 
 export type QueryResponseType = {
