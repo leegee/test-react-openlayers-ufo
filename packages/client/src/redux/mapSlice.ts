@@ -19,8 +19,8 @@ export interface MapState {
   center: [number, number];
   zoom: number;
   bounds: [number, number, number, number] | null;
-  featureCollection: UfoFeatureCollectionType | null;
-  dictionary: MapDictionaryType | undefined;
+  featureCollection?: UfoFeatureCollectionType;
+  dictionary?: MapDictionaryType;
   from_date?: number;
   to_date?: number;
   q?: string;
@@ -33,9 +33,9 @@ export interface MapState {
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
 
 const initialState: MapState = {
-  featureCollection: null,
+  featureCollection: undefined,
   zoom: 5,
-  center: config.gui.map.centre,
+  center: config.gui.map.centre as [number, number],
   bounds: null,
   dictionary: undefined,
   from_date: undefined,
@@ -57,8 +57,8 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setFeatureCollection(state, action: PayloadAction<SearchResposneType>) {
-      state.featureCollection = action.payload.results;
-      state.dictionary = action.payload.dictionary;
+      state.featureCollection = action.payload.results as UfoFeatureCollectionType;
+      state.dictionary = action.payload.dictionary as MapDictionaryType;
     },
     resetDates(state) {
       state.from_date = undefined;
@@ -94,7 +94,7 @@ const mapSlice = createSlice({
       state.requestingCsv = false;
     },
     failedRequest: (state) => {
-      state.featureCollection = null;
+      state.featureCollection = undefined;
       state.previousQueryString = '';
       // action.payload.status etc
     },
@@ -111,12 +111,12 @@ export const selectBasemapSource = (state: RootState) => state.map.basemapSource
 
 export const selectPointsCount = createSelector(
   (state: RootState) => state.map.featureCollection,
-  (featureCollection) => featureCollection?.pointsCount ?? 0
+  (featureCollection: UfoFeatureCollectionType | undefined): number => featureCollection?.pointsCount ?? 0
 );
 
 export const selectClusterCount = createSelector(
   (state: RootState) => state.map.featureCollection,
-  (featureCollection) => featureCollection?.clusterCount ?? 0
+  (featureCollection: UfoFeatureCollectionType|undefined) => featureCollection?.clusterCount ?? 0
 );
 
 export const selectQueryString = (mapState: MapState): string | undefined => {
@@ -141,7 +141,6 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
 
 const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: RootState }>(
   'data/fetchData',
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   async (_, { dispatch, getState }): Promise<SearchResposneType|any> => {
     const mapState = getState().map;
     const queryString: string | undefined = selectQueryString(mapState);
@@ -170,13 +169,12 @@ const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: R
 
 export const fetchFeatures = debounce(
   _fetchFeatures,
-  config.gui.apiRequests.debounceMs,
+  Number(config.gui.apiRequests.debounceMs || 333),
   { immediate: true }
 );
 
 export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   async (_, { dispatch, getState }): Promise<SearchResposneType | any> => {
     const mapState = getState().map;
 

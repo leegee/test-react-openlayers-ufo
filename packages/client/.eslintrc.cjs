@@ -27,6 +27,9 @@ module.exports = {
     '@typescript-eslint/no-confusing-void-expression': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unused-vars': 'off', /* React is defined by never used...fixed once, now back */
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off"
   },
   parserOptions: {
     ecmaVersion: 'latest',

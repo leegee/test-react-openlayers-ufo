@@ -31,7 +31,6 @@ export const fetchSightingDetails: any = createAsyncThunk<
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return await response.json();
         }
         catch (error) {

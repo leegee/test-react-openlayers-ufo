@@ -69,6 +69,8 @@ export interface UfoFeatureCollectionType {
 }
 
 export interface SearchResposneType {
+  msg?: string;
+  status: number;
   results: UfoFeatureCollectionType;
   dictionary: MapDictionaryType;
 }

@@ -36,7 +36,7 @@ const highlightText = (q: string | undefined, text: string) => {
 
 const FeatureTable: React.FC = () => {
     const dispatch = useDispatch();
-    const featureCollection = useSelector((state: RootState) => state.map.featureCollection);
+    const { featureCollection } = useSelector((state: RootState) => state.map);
     const { selectionId } = useSelector((state: RootState) => state.gui);
     const { q } = useSelector((state: RootState) => state.map);
     const [localFeatures, setLocalFeatures] = useState<any[]>([]);
