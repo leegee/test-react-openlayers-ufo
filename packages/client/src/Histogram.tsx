@@ -28,12 +28,8 @@ const Histogram: React.FC = () => {
     const [data, setData] = useState<any>(null);
     const [options, setOptions] = useState<any>(null);
 
-    if (!pointsCount) {
-        alert('no points')
-    }
-
     useEffect(() => {
-        if (!featureCollection?.features) return;
+        if (!featureCollection?.features || !pointsCount) return;
 
         const yearValues: number[] = featureCollection.features
             .map((feature: any) => new Date(feature.properties.datetime as string).getFullYear())
@@ -62,6 +58,8 @@ const Histogram: React.FC = () => {
         }
 
         const newOptions = {
+            width: '100%',
+            height: '100%',
             responsive: true,
             plugins: {
                 legend: {
