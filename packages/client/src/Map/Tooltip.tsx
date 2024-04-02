@@ -51,7 +51,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             if (location_text) {
                 if (features.length === 1) {
                     const date = new Date(feature.get('datetime') as string);
-                    tooltipContent = '<small>' + new Intl.DateTimeFormat(config.locale).format(date) + '</small><br/>';
+                    tooltipContent = '<small>' + new Intl.DateTimeFormat(String(config.locale)).format(date) + '</small><br/>';
                 }
                 tooltipContent += '<b font-style="font-size:120%">' + feature.get('location_text') + '</b>';
                 if (features.length > 1) {
@@ -68,8 +68,17 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             }
 
             if (tooltipContent && tooltipElementRef.current !== null) {
-                tooltipElementRef.current.innerHTML = tooltipContent;
-                overlay.setPosition(event.coordinate);
+                const mapSize = map.getSize();
+                if (mapSize) {
+                    const viewportHeight = mapSize[1];
+                    tooltipElementRef.current.innerHTML = tooltipContent;
+                    const cursorY = event.pixel[1];
+                    const positioning = cursorY < viewportHeight / 3 ? 'top-right' : 'bottom-right';
+                    overlay.setPosition(event.coordinate);
+                    overlay.setPositioning(positioning);
+                } else {
+                    overlay.setPosition(event.coordinate);
+                }
             } else {
                 overlay.setPosition(undefined);
             }
