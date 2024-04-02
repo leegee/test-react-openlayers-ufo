@@ -1,8 +1,9 @@
-import React, { type Dispatch, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { type UnknownAction } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 import debounce from 'debounce';
 import { Map, type MapBrowserEvent, View } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 import type Layer from 'ol/layer/Layer';
@@ -55,32 +56,6 @@ function setTheme(baseLayerName: MapBaseLayerKeyType) {
   }
 }
 
-// Zoom to the cluster or point on click
-function clickMap(e: MapBrowserEvent<any>, map: Map, dispatch: Dispatch<UnknownAction>) {
-  let didOneFeature = false;
-  map.forEachFeatureAtPixel(e.pixel, function (clickedFeature): void {
-    if (!didOneFeature) {
-      // Clicked a clsuter
-      if (clickedFeature.get('cluster_id')) {
-        dispatch(setSelectionId(undefined));
-        map.getView().animate({
-          center: e.coordinate,
-          zoom: config.zoomLevelForPoints,
-          duration: 500,
-          easing: easeOut
-        });
-      }
-      else {
-        // Clicked a point
-        const id = Number(clickedFeature.get('id'));
-        dispatch(resetDates());
-        dispatch(setSelectionId(id));
-      }
-      didOneFeature = true;
-    }
-  });
-}
-
 function setVisibleDataLayer(layerName: MapLayerKeyType) {
   for (const l of Object.keys(mapLayers)) {
     mapLayers[l as MapLayerKeyType].setVisible(l === layerName);
@@ -127,6 +102,7 @@ const OpenLayersMap: React.FC = () => {
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
+  const navigate = useNavigate();
 
   const handleMoveEnd = () => {
     if (!mapRef.current) return;
@@ -141,6 +117,36 @@ const OpenLayersMap: React.FC = () => {
       bounds: config.flags.USE_BOUNDS_WITHOUT_PANEL ? extentMinusPanel(bounds) : bounds
     }));
   };
+
+  // Zoom to the cluster or point on click
+  function handleMapClick(e: MapBrowserEvent<any>, eventType: 'single' | 'double') {
+
+    let didOneFeature = false;
+    mapRef.current?.forEachFeatureAtPixel(e.pixel, function (clickedFeature: FeatureLike): void {
+      if (!didOneFeature) {
+        // Clicked a clsuter
+        if (clickedFeature.get('cluster_id')) {
+          dispatch(setSelectionId(undefined));
+          mapRef.current?.getView().animate({
+            center: e.coordinate,
+            zoom: config.zoomLevelForPoints,
+            duration: 500,
+            easing: easeOut
+          });
+        }
+        else {
+          // Clicked a point
+          const id = Number(clickedFeature.get('id'));
+          dispatch(resetDates());
+          dispatch(setSelectionId(id));
+          if (eventType === 'double') {
+            navigate(`/sighting/${clickedFeature.get('id')}`);
+          }
+        }
+        didOneFeature = true;
+      }
+    });
+  }
 
   useEffect(() => {
     setTheme(basemapSource);
@@ -178,10 +184,11 @@ const OpenLayersMap: React.FC = () => {
       setupHeatmapListeners(mapRef.current);
       setupFeatureHighlighting(mapRef.current);
 
-      map.on('moveend', debounce(handleMoveEnd, config.gui.debounce, { immediate: true }));
+      map.on('moveend', debounce(handleMoveEnd, Number(config.gui.debounce || 300), { immediate: true }));
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      map.on('click', debounce((e) => clickMap(e, map, dispatch), config.gui.debounce, { immediate: true }));
+      map.on('click', debounce((e) => handleMapClick(e, 'single'), config.gui.debounce, { immediate: true }));
+      map.on('dblclick', debounce((e) => handleMapClick(e, 'double'), config.gui.debounce, { immediate: true }));
     }
 
     return () => mapRef.current?.dispose();
