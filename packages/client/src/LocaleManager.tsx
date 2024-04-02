@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { init } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 import { RootState } from './redux/store';
 import { setLocaleKey } from './redux/guiSlice';
 
@@ -39,7 +39,7 @@ const LocaleManager = () => {
 
     const [loading, setLoading] = useState(true);
 
-    function handleClick (newLocale: LocaleKey)  {
+    function handleClick(newLocale: LocaleKey) {
         setLoading(true);
         try {
             void loadLocale(newLocale).then(() => {

@@ -4,7 +4,7 @@ import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
 import { FeatureLike } from 'ol/Feature';
 import Overlay from 'ol/Overlay';
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
 
 import './Tooltip.css';
@@ -63,7 +63,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                 }
             }
             else {
-                tooltipContent = get('panel.cluster_count', {count: Number(feature.get('num_points'))});
+                tooltipContent = get('panel.cluster_count', { count: Number(feature.get('num_points')) });
             }
 
             if (tooltipContent && tooltipElementRef.current !== null) {
@@ -91,7 +91,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
         return () => {
             map.removeOverlay(newOverlay);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map]);
 
     useEffect(() => {
@@ -102,7 +102,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             }
             map.un('pointermove', handleMapHover);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, overlay]);
 
     return <aside ref={tooltipElementRef} className="tooltip" />;

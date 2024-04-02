@@ -9,39 +9,17 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import debounce from 'debounce';
 
-import config from '@ufo-monorepo-test/config/src';
-import { FeatureSourceAttributeType, MapDictionaryType } from '@ufo-monorepo-test/common-types';
 import type { MapBaseLayerKeyType } from '../Map';
+import config from '@ufo-monorepo-test/config';
+import { FeatureSourceAttributeType, MapDictionaryType, UfoFeatureCollectionType, SearchResposneType } from '@ufo-monorepo-test/common-types';
 import { RootState } from './store';
-
-export interface GeoJSONFeature {
-  id: any;
-  type: "Feature";
-  geometry: {
-    type: string;
-    coordinates: number[] | number[][] | number[][][];
-  };
-  properties: Record<string, number|string|Date> ;
-}
-
-export interface UfoFeatureCollection {
-  type: "FeatureCollection";
-  clusterCount: number;
-  pointsCount: number;
-  features: GeoJSONFeature[] | null;
-}
-
-export interface FetchFeaturesResposneType {
-  results: UfoFeatureCollection;
-  dictionary: MapDictionaryType | undefined;
-}
 
 // Extend QueryParams 
 export interface MapState {
   center: [number, number];
   zoom: number;
   bounds: [number, number, number, number] | null;
-  featureCollection: UfoFeatureCollection | null;
+  featureCollection: UfoFeatureCollectionType | null;
   dictionary: MapDictionaryType | undefined;
   from_date?: number;
   to_date?: number;
@@ -78,8 +56,8 @@ const mapSlice = createSlice({
       state.zoom = action.payload.zoom;
       state.bounds = action.payload.bounds;
     },
-    setFeatureCollection(state, action: PayloadAction<FetchFeaturesResposneType>) {
-      state.featureCollection = (action.payload.results ) ;
+    setFeatureCollection(state, action: PayloadAction<SearchResposneType>) {
+      state.featureCollection = action.payload.results;
       state.dictionary = action.payload.dictionary;
     },
     resetDates(state) {
@@ -161,10 +139,10 @@ export const selectQueryString = (mapState: MapState): string | undefined => {
   return new URLSearchParams(queryObject).toString();
 };
 
-const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { state: RootState }>(
+const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: RootState }>(
   'data/fetchData',
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType|any> => {
+  async (_, { dispatch, getState }): Promise<SearchResposneType|any> => {
     const mapState = getState().map;
     const queryString: string | undefined = selectQueryString(mapState);
     const { previousQueryString } = mapState;
@@ -180,7 +158,7 @@ const _fetchFeatures: any = createAsyncThunk<FetchFeaturesResposneType, any, { s
     let response;
     try {
       response = await fetch(`${searchEndpoint}?${queryString}`);
-      const data = await response.json() as FetchFeaturesResposneType;
+      const data = await response.json() as SearchResposneType;
       dispatch(mapSlice.actions.setFeatureCollection(data));
     }
     catch (error) {
@@ -199,7 +177,7 @@ export const fetchFeatures = debounce(
 export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
   'data/fetchData',
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  async (_, { dispatch, getState }): Promise<FetchFeaturesResposneType | any> => {
+  async (_, { dispatch, getState }): Promise<SearchResposneType | any> => {
     const mapState = getState().map;
 
     dispatch(mapSlice.actions.setCsvRequesting());

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { FetchSightingDetailsResponseType, SightingRecordType } from '@ufo-monorepo-test/common-types';
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 
 export interface SightingDetailsState {
     id: string | undefined;

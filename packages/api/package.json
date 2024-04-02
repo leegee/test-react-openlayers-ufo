@@ -5,7 +5,9 @@
     "main": "./build/index.js",
     "type": "module",
     "scripts": {
+        "prebuild": "npm run clean",
         "build": "tsc --build",
+        "clean": "rm -rf build/*",
         "dev": "npx tsx src/server.ts",
         "watch": "npx nodemon --exec tsx src/server.ts",
         "start": "node ./build/index.js"

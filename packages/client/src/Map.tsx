@@ -7,7 +7,7 @@ import { fromLonLat, transformExtent } from 'ol/proj';
 import { easeOut } from 'ol/easing';
 import type Layer from 'ol/layer/Layer';
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 import { RootState } from './redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from './redux/mapSlice';
 import { setSelectionId } from './redux/guiSlice';

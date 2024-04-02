@@ -1,7 +1,7 @@
 import React, { type FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
+import type { FeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
 
 import { RootState } from '../redux/store';
 import { fetchFeatures, setSource } from '../redux/mapSlice';
@@ -25,7 +25,9 @@ const SourceSelector: React.FC = () => {
     return <nav className='component' onChange={handleChange}>
         <select defaultValue={source}>
             {Object.keys(options).map(
-                (option) => <option key={option} value={option}>{options[option as FeatureSourceAttributeType]}</option>
+                (option) => <option key={option} value={option}>{
+                    options[option as unknown as FeatureSourceAttributeType]
+                }</option>
             )}
         </select>
     </nav>

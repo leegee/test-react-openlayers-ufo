@@ -6,7 +6,7 @@ import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 
 import { sightingsStyleFunction } from "./map-style";
-import type { UfoFeatureCollection } from '../redux/mapSlice';
+import type { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
 
 const CLUSTER_DISTANCE = 40;
 
@@ -27,7 +27,7 @@ export const vectorLayer = new VectorLayer({
 
 vectorLayer.set('name', 'clusters');
 
-export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
+export function updateVectorLayer(featureCollection: UfoFeatureCollectionType) {
     vectorSource.clear();
     if ( featureCollection.features) {
         vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));

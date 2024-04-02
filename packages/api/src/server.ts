@@ -19,7 +19,7 @@ import Koa from "koa";
 import Router from 'koa-router';
 import cors from "@koa/cors";
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 
 import { search as searchRoute } from './routes/search';
 import { details as detailsRoute } from './routes/details';

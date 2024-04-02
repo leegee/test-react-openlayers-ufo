@@ -10,7 +10,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "prebuild": "npm run clean",
+    "clean": "rm -rf build/*"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",

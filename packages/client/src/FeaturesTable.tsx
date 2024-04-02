@@ -5,7 +5,7 @@ import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
 

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 
 import { selectPointsCount } from './redux/mapSlice';
-import { RootState } from 'redux/store';
+import { RootState } from './redux/store';
 import Modal from './Modal';
 
 import './Histogram.css';
@@ -24,7 +24,7 @@ const Histogram: React.FC = () => {
     const pointsCount = useSelector(selectPointsCount);
     const { featureCollection } = useSelector((state: RootState) => state.map);
     const [yearOneCount, setYearOneCount] = useState(0);
-    
+
     const [data, setData] = useState<any>(null);
     const [options, setOptions] = useState<any>(null);
 
@@ -37,7 +37,7 @@ const Histogram: React.FC = () => {
 
         const yearValues: number[] = featureCollection.features
             .map((feature: any) => new Date(feature.properties.datetime as string).getFullYear())
-            .filter(year => {
+            .filter((year: number) => {
                 // Filter out year 1, which currently represents bad dates
                 if (year === 1) {
                     setYearOneCount(yearOneCount + 1);

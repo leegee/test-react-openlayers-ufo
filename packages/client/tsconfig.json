@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./build",
-    "baseUrl": "./src",
+    "moduleResolution": "bundler",
+    "outDir": "build/client",
+    "rootDir": "src",
     "composite": true,
     "useDefineForClassFields": true,
     "lib": [
@@ -10,19 +11,15 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "moduleResolution": "bundler",
+    "types": [
+      "node",
+      "jest"
+      // "testing-library__jest-dom"
+    ],
     // "allowImportingTsExtensions": true,
     // "noEmit": true,
     // "jsx": "react-jsx",
-    "jsx": "react",
-    "paths": {
-      "@ufo-monorepo-test/config": [
-        "../config"
-      ],
-      "@ufo-monorepo-test/common-types": [
-        "../common-types"
-      ]
-    },
+    "jsx": "react"
   },
   "include": [
     "src",

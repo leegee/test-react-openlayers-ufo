@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'react-intl-universal';
 import debounce from 'debounce';
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 import { fetchFeatures, setQ } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 

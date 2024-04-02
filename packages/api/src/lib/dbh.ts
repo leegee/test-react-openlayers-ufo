@@ -1,6 +1,6 @@
 import pg from "pg";
 
-import config from '@ufo-monorepo-test/config/src';
+import config from '@ufo-monorepo-test/config';
 
 export const pool = new pg.Pool({
     user: config.db.user,

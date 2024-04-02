@@ -2,10 +2,15 @@
   "name": "@ufo-monorepo-test/common-types",
   "version": "1.0.0",
   "description": "The package containing some utility functions",
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
   "type": "module",
+  "main": "build/common-types/index.js",
+  "types": "build/common-types/index.d.ts",
+  "files": [
+    "build/common-types/"
+  ],
   "scripts": {
-    "build": "tsc --build"
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rm -rf build"
   }
 }

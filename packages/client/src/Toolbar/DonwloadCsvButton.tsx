@@ -1,10 +1,10 @@
 // DonwloadCsvButton
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 import { fetchCsv } from '../redux/mapSlice';
 
 import './DonwloadCsvButton.css';
-import { RootState } from 'redux/store';
 
 
 const DonwloadCsvButton: React.FC = () => {

@@ -3,7 +3,7 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { bbox } from "ol/loadingstrategy";
 import { Heatmap as HeatmapLayer } from 'ol/layer';
-import type { UfoFeatureCollection } from '../redux/mapSlice';
+import type { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
 
 const vectorSource = new VectorSource({
     format: new GeoJSON(),
@@ -21,7 +21,7 @@ export const vectorLayer = new HeatmapLayer({
 
 vectorLayer.set('name', 'server-clusters-only');
 
-export function updateVectorLayer(featureCollection: UfoFeatureCollection|null) {
+export function updateVectorLayer(featureCollection: UfoFeatureCollectionType|null) {
     if (featureCollection) {
         if (featureCollection.features) {
             vectorSource.clear();
@@ -46,7 +46,7 @@ function updateLayerProperties(map: Map) {
     const zoom: number = view.getZoom() ?? 0;
     const newRadius = zoom >= 6 ? 14 : 5; 
     const newBlur = zoom >= 6 ? 18 : 7; 
-    console.log(zoom);
+    console.log({zoom, newRadius, newBlur});
     
     vectorLayer.setBlur(newBlur);
     vectorLayer.setRadius(newRadius);

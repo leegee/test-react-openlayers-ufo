@@ -1,4 +1,4 @@
-const isNode = typeof process !== 'undefined' && process.release.name === 'node';
+const isNode = typeof process !== 'undefined';
 const isBrowser = !isNode;
 
 const env = isBrowser ? (import.meta as any).env : process.env;

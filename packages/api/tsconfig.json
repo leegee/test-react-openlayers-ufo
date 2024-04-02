@@ -1,16 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "./build",
-        "baseUrl": "./src",
-        "composite": true,
-        "paths": {
-            "@ufo-monorepo-test/config": [
-                "../config"
-            ],
-            "@ufo-monorepo-test/common-types": [
-                "../common-types"
-            ]
-        },
-    }
+        "outDir": "build/api",
+        "rootDir": "src",
+        "composite": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }

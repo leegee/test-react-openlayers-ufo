@@ -1,7 +1,17 @@
 import type { FeatureCollection } from "geojson";
 
+export interface GeoJSONFeature {
+  id: any;
+  type: "Feature";
+  geometry: {
+    type: string;
+    coordinates: number[] | number[][] | number[][][];
+  };
+  properties: Record<string, number|string|Date> ;
+}
+
 export type AllowedFeatureSourceAttributeType = [
-  'norge-ufo' | 'mufon-kaggle' | 'not-specified' | undefined
+  'norge-ufo' | 'mufon-kaggle' | 'not-specified'
 ];
 
 export type FeatureSourceAttributeType = AllowedFeatureSourceAttributeType[0];
@@ -11,7 +21,7 @@ export function isFeatureSourceAttributeType(value: any): value is FeatureSource
   return ['norge-ufo', 'mufon-kaggle', 'not-specified', '', undefined].includes(strValue);
 }
 
-export interface QueryParams {
+export interface QueryParamsType {
   minlng: number;
   minlat: number;
   maxlng: number;
@@ -25,23 +35,23 @@ export interface QueryParams {
   source?: FeatureSourceAttributeType
 }
 
-export interface DateTimeMinMax {
+export interface DateTimeMinMaxType {
   min: number | undefined;
   max: number | undefined;
 }
 
-export interface MapDictionary {
-  datetime: DateTimeMinMax | undefined;
+export interface MapDictionaryType {
+  datetime: DateTimeMinMaxType | undefined;
 }
 
 export type QueryResponseType = {
   msg: string;
   status: number;
-  dictionary: MapDictionary;
+  dictionary: MapDictionaryType;
   results: FeatureCollection | undefined;
 };
 
-export interface FetchSightingDetailsResponse {
+export interface FetchSightingDetailsResponseType {
   msg?: string;
   status: number;
   details: SightingRecordType
@@ -51,3 +61,14 @@ export type SightingRecordType = {
   [key: string]: string | number | undefined | null
 }
 
+export interface UfoFeatureCollectionType {
+  type: "FeatureCollection";
+  clusterCount: number;
+  pointsCount: number;
+  features: GeoJSONFeature[];
+}
+
+export interface SearchResposneType {
+  results: UfoFeatureCollectionType;
+  dictionary: MapDictionaryType;
+}

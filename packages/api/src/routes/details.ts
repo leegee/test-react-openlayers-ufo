@@ -4,12 +4,12 @@
  */
 import { Context } from 'koa';
 
-import { FetchSightingDetailsResponse } from '@ufo-monorepo-test/common-types/src';
-import config from '@ufo-monorepo-test/config/src';
+import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
+import config from '@ufo-monorepo-test/config';
 import { CustomError } from '../middleware/errors';
 
 export async function details(ctx: Context) {
-    const body: FetchSightingDetailsResponse = {
+    const body: FetchSightingDetailsResponseType = {
         msg: '',
         status: 200,
         details: {},

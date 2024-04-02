@@ -33,13 +33,13 @@ export async function errorHandler(ctx: Koa.Context, next: Koa.Next) {
     }
     catch (error) {
         console.error(error);
-        if (process.env.NODE_ENV === 'production') {
-            error.error = '';
+        if (process.env.NODE_ENV !== 'production') {
+            ctx.body = {
+                ...(error as Error),
+                error: (error as Error).toString()
+            };
         }
-        ctx.body = {
-            ...error,
-            error: error.error.toString()
-        };
     }
 }
+
 

@@ -1,10 +1,10 @@
-import { PassThrough, Writable } from 'stream';
+import { PassThrough } from 'stream';
 import type { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import type { ParsedUrlQuery } from "querystring";
 
-import { FeatureSourceAttributeType, MapDictionary, QueryParams, QueryResponseType, isFeatureSourceAttributeType } from '@ufo-monorepo-test/common-types/src';
-import config from '@ufo-monorepo-test/config/src';
+import { FeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, isFeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
+import config from '@ufo-monorepo-test/config';
 import { CustomError } from '../middleware/errors';
 import { listToCsvLine } from '../lib/csv';
 
@@ -15,27 +15,27 @@ type SqlBitsType = {
     orderByClause?: string[],
 };
 
-const epsMapping = [
-    200000,
-    200000,
-    200000,
-    160000,
-    90000,
-    25000,
-    10000,
-    7000,
-    5000,
-];
+// const epsMapping = [
+//     200000,
+//     200000,
+//     200000,
+//     160000,
+//     90000,
+//     25000,
+//     10000,
+//     7000,
+//     5000,
+// ];
 
 export async function search(ctx: Context) {
     const body: QueryResponseType = {
         msg: '',
         status: 200,
-        dictionary: {} as MapDictionary,
+        dictionary: {} as MapDictionaryType,
         results: undefined,
     };
 
-    const userArgs: QueryParams | null = getCleanArgs(ctx.request.query);
+    const userArgs: QueryParamsType | null = getCleanArgs(ctx.request.query);
 
     if (!userArgs) {
         throw new CustomError({
@@ -127,7 +127,7 @@ async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) 
     bodyStream.end();
 }
 
-function constructSqlBits(userArgs: QueryParams): SqlBitsType {
+function constructSqlBits(userArgs: QueryParamsType): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
         'id', 'location_text', 'address', 'report_text', 'datetime', 'point',
@@ -222,7 +222,7 @@ function constructSqlBits(userArgs: QueryParams): SqlBitsType {
 }
 
 async function getDictionary(featureCollection: FeatureCollection | undefined) {
-    const dictionary: MapDictionary = {
+    const dictionary: MapDictionaryType = {
         datetime: {
             min: undefined,
             max: undefined,
@@ -265,7 +265,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined) {
 }
 
 function getCleanArgs(args: ParsedUrlQuery) {
-    const userArgs: QueryParams = {
+    const userArgs: QueryParamsType = {
         zoom: parseInt(args.zoom as string),
         minlng: parseFloat(args.minlng as string),
         minlat: parseFloat(args.minlat as string),
@@ -363,7 +363,7 @@ function geoJsonForPoints(sqlBits: SqlBitsType) {
 }
 
 
-function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
+function geoJsonForClusters(sqlBits: SqlBitsType, _userArgs: QueryParamsType) {
     // For cluster boudnaries
     // const eps = epsFromZoom(userArgs.zoom);
 
@@ -435,125 +435,10 @@ function geoJsonForClusters(sqlBits: SqlBitsType, userArgs: QueryParams) {
     ) AS fc`;
 }
 
-function epsFromZoom(zoomLevel: number): number {
-    const eps = epsMapping[Math.min(Math.max(zoomLevel - 1, 1), config.zoomLevelForPoints)];
-    console.info({ zoomLevel, eps });
-    return eps;
-}
 
+// function epsFromZoom(zoomLevel: number): number {
+//     const eps = epsMapping[Math.min(Math.max(zoomLevel - 1, 1), config.zoomLevelForPoints)];
+//     console.info({ zoomLevel, eps });
+//     return eps;
+// }
 
-
-/* 
-function sqlForMvt(sqlBits: SqlBitsType, userArgs: MvtParams): string {
-    const eps = epsFromZoom(userArgs.z);
-    let sql = '';
-
-    // No clustering when zoomed in
-    if (userArgs.no_clusters || userArgs.z >= config.zoomLevelForPoints) {
-        console.log(`POINTS because z${userArgs.z} >= ${config.zoomLevelForPoints}`);
-        sql = `SELECT ST_AsMVT(q, 'sighting_points', 4096, 'geom')
-            FROM (
-                SELECT
-                    ${sqlBits.selectColumns.join(', ')},
-                    ST_AsMvtGeom(
-                        point,
-                        BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-                        4096,
-                        256,
-                        true
-                    ) AS geom
-                FROM sightings
-                WHERE 
-                ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-                ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-                GROUP BY id
-            ) AS q;`;
-        // point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})
-    }
-
-    else {
-        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-        // FROM (
-        //   SELECT
-        //     clusters.cluster_id,
-        //     COUNT(*) as num_points,
-        //     ST_AsMVTGeom(
-        //       ST_Centroid(ST_Collect(clusters.point)),
-        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-        //       4096, 256, true
-        //     ) AS geom,
-        //     MAX(sightings.id) as id,
-        //     MAX(sightings.datetime) as datetime,
-        //     MAX(sightings.location_text) as location_text
-        //   FROM (
-        //     SELECT
-        //       ST_ClusterDBSCAN(point, eps := ${eps}, minpoints := 1) OVER() AS cluster_id,
-        //       point,
-        //       ${sqlBits.selectColumns.join(', ')}
-        //     FROM sightings
-        //     WHERE
-        //       ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-        //       ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-        //   ) AS clusters
-        //   INNER JOIN sightings ON clusters.point = sightings.point
-        //   GROUP BY clusters.cluster_id
-        // ) AS q`;
-
-        // One convex hull per tile:
-        // sql = `SELECT ST_AsMVT(q, 'sightings', 4096, 'geom')
-        // FROM (
-        //   SELECT
-        //     1 as id,
-        //     COUNT(*) as num_points,
-        //     ST_AsMVTGeom(
-        //       ST_ConvexHull(ST_Collect(sightings.point)),
-        //       BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-        //       4096, 256, true
-        //     ) AS geom
-        //   FROM sightings
-        //   WHERE
-        //     ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-        //     ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-        // ) AS q`;
-
-        // Four hulls per tile:
-        sql = `SELECT ST_AsMVT(q, 'sighting_clusters', 4096, 'geom')
-        FROM (
-          SELECT 
-            quadrant,
-            COUNT(*) as num_points,
-            ST_AsMVTGeom(
-              ST_ConvexHull(ST_Collect(point)),
-              BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}),
-              4096, 256, true
-            ) AS geom
-          FROM (
-            SELECT 
-              CASE 
-                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin, bbox.ymin, bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymin + (bbox.ymax-bbox.ymin)/2), 3857)) THEN 'quadrant1'
-                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymin, bbox.xmax, bbox.ymin + (bbox.ymax-bbox.ymin)/2), 3857)) THEN 'quadrant2'
-                WHEN ST_Intersects(point, ST_SetSRID(ST_MakeEnvelope(bbox.xmin, bbox.ymin + (bbox.ymax-bbox.ymin)/2, bbox.xmin + (bbox.xmax-bbox.xmin)/2, bbox.ymax), 3857)) THEN 'quadrant3'
-                ELSE 'quadrant4'
-              END AS quadrant,
-              point
-            FROM sightings,
-                 (SELECT 
-                    ST_XMin(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as xmin,
-                    ST_YMin(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as ymin,
-                    ST_XMax(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as xmax,
-                    ST_YMax(BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z})) as ymax
-                 ) as bbox
-            WHERE 
-              ST_Intersects(point, BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}))
-              ${sqlBits.whereColumns.length ? ' AND ' + sqlBits.whereColumns.join(' AND ') : ''}
-          ) AS s
-          GROUP BY quadrant
-        ) AS q`;
-
-
-    }
-    //                   -- point && BBox(${userArgs.x}, ${userArgs.y}, ${userArgs.z}) AND
-
-    return sql;
-}
-*/
