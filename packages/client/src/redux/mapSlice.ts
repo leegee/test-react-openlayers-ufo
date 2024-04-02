@@ -57,9 +57,9 @@ const mapSlice = createSlice({
       state.bounds = action.payload.bounds;
     },
     setFeatureCollection(state, action: PayloadAction<SearchResposneType>) {
-      state.dictionary = action.payload.dictionary as MapDictionaryType;
-      state.featureCollection = action.payload.results as UfoFeatureCollectionType;
-      if (!state.featureCollection.features) {
+      state.dictionary = action.payload.dictionary;
+      state.featureCollection = action.payload.results;
+      if ((state.featureCollection as any).features === null) {
         state.featureCollection.features = [];
       }
     },
