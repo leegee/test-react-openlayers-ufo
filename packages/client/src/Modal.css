@@ -47,15 +47,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 1em;
         }
     }
 
 
     #modal-inner {
         flex-grow: 1;
-        height: 10rem;
         overflow: auto;
+        height: 10rem;
+        min-width: 100%;
     }
 
     #modal-close:after {
