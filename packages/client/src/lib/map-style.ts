@@ -26,14 +26,14 @@ const rings = [
         image: new Circle({
             radius: 100,
             fill: new Fill({color: 'transparent'}),
-            stroke: new Stroke({ width: 2, color: '#0F07' }),
+            stroke: new Stroke({ width: 2, color: 'lime' }),
         }),
     }),
     new Style({
         image: new Circle({
             radius: 50,
             fill: new Fill({color: 'transparent'}),
-            stroke: new Stroke({ width: 2, color: '#0F08' }),
+            stroke: new Stroke({ width: 2, color: 'lime' }),
         }),
     }),
 ];
