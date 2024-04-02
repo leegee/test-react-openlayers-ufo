@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
+import { get } from 'react-intl-universal';
 import { useNavigate } from 'react-router-dom';
 
 import './Modal.css';
@@ -32,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({ children, title }) => {
         <section id="modal">
             <div id='modal-content'>
                 <h2>{title}
-                    <nav id='modal-close' onClick={closeModal}></nav>
+                    <nav id='modal-close' onClick={closeModal} title={get('close')} aria-label={get('close')}></nav>
                 </h2>
                 <div id='modal-inner'>
                     {children}
