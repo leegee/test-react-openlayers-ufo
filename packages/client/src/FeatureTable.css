@@ -78,13 +78,13 @@
     }
 
     .shape {
-        min-width: 7em;
-        max-width: 7em;
+        min-width: 10em;
+        max-width: 10em;
     }
 
     .duration_seconds {
-        min-width: 4em;
-        max-width: 4em;
+        min-width: 7em;
+        max-width: 7em;
     }
 
     .th.ctrls,
@@ -110,8 +110,7 @@
         justify-content: space-evenly
     }
 
-    .tr:hover .td.ctrls,
-    .tr.selected .td.ctrls {
+    .tr:hover .td.ctrls {
         display: flex;
     }
 
