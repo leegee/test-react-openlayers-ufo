@@ -14,7 +14,7 @@ const initialState: GuiSliceType = {
     locale: config.locale,
     panel: 'hidden',
     selectionId: undefined,
-    showLabels: true,
+    showLabels: localStorage.getItem('showlabels') === 'no' ? false : true,
 };
 
 const localeSlice = createSlice({
@@ -36,6 +36,7 @@ const localeSlice = createSlice({
         },
         setShowLabels: (state, action: PayloadAction<boolean>) => {
             state.showLabels = action.payload;
+            localStorage.setItem('showlabels', action.payload ? 'yes' : 'no');
         }
     },
 });
