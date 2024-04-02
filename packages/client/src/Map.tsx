@@ -27,6 +27,7 @@ import LocaleManager from './LocaleManager';
 
 import 'ol/ol.css';
 import './Map.css';
+import { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'clusterOnly' | 'points'; // | 'mixedSearchResults'
@@ -187,8 +188,8 @@ const OpenLayersMap: React.FC = () => {
       map.on('moveend', debounce(handleMoveEnd, Number(config.gui.debounce || 300), { immediate: true }));
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      map.on('click', debounce((e) => handleMapClick(e, 'single'), config.gui.debounce, { immediate: true }));
-      map.on('dblclick', debounce((e) => handleMapClick(e, 'double'), config.gui.debounce, { immediate: true }));
+      map.on('click', debounce((e: MapBrowserEvent<any>) => handleMapClick(e, 'single'), Number(config.gui.debounce), { immediate: true }));
+      map.on('dblclick', debounce((e: MapBrowserEvent<any>) => handleMapClick(e, 'double'), Number(config.gui.debounce), { immediate: true }));
     }
 
     return () => mapRef.current?.dispose();
@@ -205,18 +206,16 @@ const OpenLayersMap: React.FC = () => {
   }, [dispatch, bounds, zoom]);
 
   useEffect(() => {
-    // if (!mapElementRef.current || featureCollection === null) return;
     if (!mapElementRef.current || !featureCollection) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
-      // updateMixedSearchResultsLayer(featureCollection);
-      // setVisibleDataLayer('mixedSearchResults');
-      updatePointsLayer(featureCollection);
+      updatePointsLayer(featureCollection as UfoFeatureCollectionType);
       setVisibleDataLayer('points');
     } else if (!pointsCount && zoom < config.zoomLevelForPoints) {
-      updateClusterOnlyLayer(featureCollection);
+      console.log(featureCollection);
+      updateClusterOnlyLayer(featureCollection as UfoFeatureCollectionType);
       setVisibleDataLayer('clusterOnly');
     } else {
-      updatePointsLayer(featureCollection);
+      updatePointsLayer(featureCollection as UfoFeatureCollectionType);
       setVisibleDataLayer('points');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -29,9 +29,7 @@ vectorLayer.set('name', 'clusters');
 
 export function updateVectorLayer(featureCollection: UfoFeatureCollectionType) {
     vectorSource.clear();
-    if ( featureCollection.features) {
-        vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
-    }
+    vectorSource.addFeatures(new GeoJSON().readFeatures(featureCollection));
     vectorSource.changed();
     console.debug("Number of features added:", vectorSource.getFeatures().length);
 }
