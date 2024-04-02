@@ -61,6 +61,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                 if (score) {
                     tooltipContent += '<br/><small style="font-weight:light">Search score: ' + score + '</small>';
                 }
+                tooltipContent += '<p class="report">' + feature.get('report_text') + '</p>';
             }
             else {
                 tooltipContent = get('panel.cluster_count', { count: Number(feature.get('num_points')) });

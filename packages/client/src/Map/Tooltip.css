@@ -7,3 +7,7 @@
     font-size: 12pt;
     color: #eee;
 }
+
+.tooltip p.report {
+    max-width: 20em;
+}

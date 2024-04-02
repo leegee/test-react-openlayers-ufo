@@ -28,13 +28,6 @@ type SqlBitsType = {
 // ];
 
 export async function search(ctx: Context) {
-    const body: QueryResponseType = {
-        msg: '',
-        status: 200,
-        dictionary: {} as MapDictionaryType,
-        results: undefined,
-    };
-
     const userArgs: QueryParamsType | null = getCleanArgs(ctx.request.query);
 
     if (!userArgs) {
@@ -53,19 +46,32 @@ export async function search(ctx: Context) {
         });
     }
 
-    let forErrorReporting = {};
-
     const acceptHeader = ctx.headers.accept || '';
-    const sendCsv = acceptHeader.includes('text/csv')
+
+    return acceptHeader.includes('text/csv') ? searchCsv(ctx, userArgs) : searchJson(ctx, userArgs);
+}
+
+async function searchCsv(ctx: Context, userArgs: QueryParamsType) {
+    let sqlBits = constructSqlBits(userArgs);
+    const sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
+    await sendCsvResponse(ctx, sql, sqlBits);
+}
+
+async function searchJson(ctx: Context, userArgs: QueryParamsType){
+    const body: QueryResponseType = {
+        msg: '',
+        status: 200,
+        dictionary: {} as MapDictionaryType,
+        results: undefined,
+    };
+
+    let forErrorReporting = {};
 
     try {
         let sql: string;
         let sqlBits = constructSqlBits(userArgs);
 
-        if (sendCsv) {
-            sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
-        }
-        else if (userArgs.zoom >= config.zoomLevelForPoints) {
+         if (userArgs.zoom >= config.zoomLevelForPoints) {
             sql = geoJsonForPoints(sqlBits);
         }
         else {
@@ -79,19 +85,13 @@ export async function search(ctx: Context) {
 
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
-        if (sendCsv) {
-            await sendCsvResponse(ctx, sql, sqlBits);
+        const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+        if (rows[0].jsonb_build_object.features === null && config.api.debug) {
+            console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
         }
-
-        else {
-            const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
-            if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-                console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
-            }
-            body.results = rows[0].jsonb_build_object as FeatureCollection;
-            body.dictionary = await getDictionary(body.results);
-            ctx.body = JSON.stringify(body);
-        }
+        body.results = rows[0].jsonb_build_object as FeatureCollection;
+        body.dictionary = await getDictionary(body.results);
+        ctx.body = JSON.stringify(body);
     }
     catch (e) {
         throw new CustomError({
