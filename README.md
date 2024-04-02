@@ -131,10 +131,7 @@ MUFON has much less detail, but much more data.
 
 ## Todo:
 
-* Choose datatest: norge, mufon, both (1h)
-* Sort order toggling (2h) - atm sorting is by score if the is one, otherwise by date, but dates need work
 * Tighten linting.
 * Tests.
 * Logger transports/etc
-* Store bounds and filter settings in the URI? (4h)
 * Initialise with map extent rather than center

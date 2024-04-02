@@ -23,11 +23,11 @@ import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnly
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from './lib/PointsVectorLayer';
 // import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
+import LabelToggleButton from './Map/LabelToggleButton';
 import LocaleManager from './LocaleManager';
 
 import 'ol/ol.css';
 import './Map.css';
-import { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
 export type MapLayerKeyType = 'clusterOnly' | 'points'; // | 'mixedSearchResults'
@@ -99,8 +99,8 @@ const OpenLayersMap: React.FC = () => {
   const dispatch = useDispatch();
   const pointsCount = useSelector(selectPointsCount);
   const { center, zoom, bounds, featureCollection, q } = useSelector((state: RootState) => state.map);
-  const { selectionId } = useSelector((state: RootState) => state.gui);
   const basemapSource: MapBaseLayerKeyType = useSelector(selectBasemapSource);
+  const { selectionId, showLabels } = useSelector((state: RootState) => state.gui);
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const navigate = useNavigate();
@@ -152,6 +152,10 @@ const OpenLayersMap: React.FC = () => {
   useEffect(() => {
     setTheme(basemapSource);
   }, [basemapSource]);
+
+  useEffect(() => {
+    labelsLayer.setVisible(showLabels);
+  }, [showLabels]);
 
   // Re-render visible layers when user selects a point
   useEffect(() => {
@@ -208,14 +212,14 @@ const OpenLayersMap: React.FC = () => {
   useEffect(() => {
     if (!mapElementRef.current || !featureCollection) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
-      updatePointsLayer(featureCollection as UfoFeatureCollectionType);
+      updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     } else if (!pointsCount && zoom < config.zoomLevelForPoints) {
       console.log(featureCollection);
-      updateClusterOnlyLayer(featureCollection as UfoFeatureCollectionType);
+      updateClusterOnlyLayer(featureCollection);
       setVisibleDataLayer('clusterOnly');
     } else {
-      updatePointsLayer(featureCollection as UfoFeatureCollectionType);
+      updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -225,6 +229,7 @@ const OpenLayersMap: React.FC = () => {
     <section id='map' ref={mapElementRef}>
       <div className='map-ctrls'>
         <ThemeToggleButton />
+        <LabelToggleButton />
         <LocaleManager />
       </div>
       {mapRef.current && <Tooltip map={mapRef.current} />}

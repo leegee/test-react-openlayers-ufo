@@ -7,12 +7,14 @@ export interface GuiSliceType {
     locale: string,
     panel: PanelStateTypes,
     selectionId: string | number | undefined,
+    showLabels: boolean;
 }
 
 const initialState: GuiSliceType = {
     locale: config.locale,
     panel: 'hidden',
-    selectionId: undefined
+    selectionId: undefined,
+    showLabels: true,
 };
 
 const localeSlice = createSlice({
@@ -32,9 +34,12 @@ const localeSlice = createSlice({
         setSelectionId: (state, action: PayloadAction<number | undefined>) => {
             state.selectionId = action.payload;
         },
+        setShowLabels: (state, action: PayloadAction<boolean>) => {
+            state.showLabels = action.payload;
+        }
     },
 });
 
-export const { setLocaleKey, setPanel, setSelectionId } = localeSlice.actions;
+export const { setLocaleKey, setPanel, setSelectionId, setShowLabels } = localeSlice.actions;
 
 export default localeSlice.reducer;
