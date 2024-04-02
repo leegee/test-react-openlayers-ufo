@@ -6,7 +6,7 @@ export type PanelStateTypes = 'hidden' | 'narrow' | 'full';
 export interface GuiSliceType {
     locale: string,
     panel: PanelStateTypes,
-    selectionId: string | number | undefined,
+    selectionId: number | undefined,
     showLabels: boolean;
 }
 

@@ -3,17 +3,11 @@ import type { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
 import type { ParsedUrlQuery } from "querystring";
 
-import { FeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, isFeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
+import { FeatureSourceAttributeType,  isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo-test/common-types';
 import config from '@ufo-monorepo-test/config';
 import { CustomError } from '../middleware/errors';
 import { listToCsvLine } from '../lib/csv';
 
-type SqlBitsType = {
-    selectColumns: string[],
-    whereColumns: string[],
-    whereParams: string[],
-    orderByClause?: string[],
-};
 
 // const epsMapping = [
 //     200000,
@@ -90,7 +84,7 @@ async function searchJson(ctx: Context, userArgs: QueryParamsType){
             console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
         }
         body.results = rows[0].jsonb_build_object as FeatureCollection;
-        body.dictionary = await getDictionary(body.results);
+        body.dictionary = await getDictionary(body.results, sqlBits);
         ctx.body = JSON.stringify(body);
     }
     catch (e) {
@@ -130,7 +124,7 @@ async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) 
 function constructSqlBits(userArgs: QueryParamsType): SqlBitsType {
     const whereColumns: string[] = [];
     const selectColumns = [
-        'id', 'location_text', 'address', 'report_text', 'datetime', 'point',
+        'id', 'location_text', 'address', 'report_text', 'datetime', 'point', 'duration_seconds',
     ];
     const whereParams: string[] = [];
     const orderByClause: string[] = [];
@@ -221,12 +215,13 @@ function constructSqlBits(userArgs: QueryParamsType): SqlBitsType {
     return rv;
 }
 
-async function getDictionary(featureCollection: FeatureCollection | undefined) {
+async function getDictionary(featureCollection: FeatureCollection | undefined, sqlBits: SqlBitsType) {
     const dictionary: MapDictionaryType = {
         datetime: {
             min: undefined,
             max: undefined,
         },
+        sqlBits,
     };
 
     let min: Date | undefined = undefined;

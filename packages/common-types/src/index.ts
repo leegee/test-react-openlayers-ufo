@@ -40,8 +40,16 @@ export interface DateTimeMinMaxType {
   max: number | undefined;
 }
 
+export type SqlBitsType = {
+  selectColumns: string[],
+  whereColumns: string[],
+  whereParams: string[],
+  orderByClause?: string[],
+};
+
 export interface MapDictionaryType {
   datetime: DateTimeMinMaxType | undefined;
+  sqlBits: SqlBitsType;
 }
 
 export type QueryResponseType = {
