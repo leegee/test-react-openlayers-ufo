@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'react-intl-universal';
 
 import type { FeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
-
+import config from '@ufo-monorepo-test/config';
 import { RootState } from '../redux/store';
 import { fetchFeatures, setSource } from '../redux/mapSlice';
 
@@ -12,6 +12,11 @@ import './SourceSelector.css';
 const SourceSelector: React.FC = () => {
     const dispatch = useDispatch();
     const { source } = useSelector((state: RootState) => state.map);
+
+
+    if (config.db.database !== 'ufo') {
+        return '';
+    }
 
     const options = {
         'norge-ufo': get('source.norge-ufo'),
