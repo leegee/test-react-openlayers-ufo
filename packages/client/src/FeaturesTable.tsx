@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* Create the interface for feature.properties */
 import React, { useEffect, useRef, useState } from 'react';
 import { get } from 'react-intl-universal';
@@ -10,13 +9,14 @@ import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
 
 import './FeatureTable.css';
+import { GeoJSONFeature } from '@ufo-monorepo-test/common-types';
 
-function getRowId(id: number | string) {
-    return 'fid_' + id;
+function getRowId(featureId: string) {
+    return 'fid_' + featureId;
 }
 
-function getIdFromRow_id(id: number | string) {
-    return Number(String(id).substring(4));
+function getIdFromRow_id(htmlId: string) {
+    return Number(String(htmlId).substring(4));
 }
 
 const highlightText = (q: string | undefined, text: string) => {
@@ -50,7 +50,7 @@ const FeatureTable: React.FC = () => {
         if (!selectionId || !featureCollection?.features) {
             return;
         }
-        const selectedRow = document.querySelector('#' + getRowId(selectionId));
+        const selectedRow = document.querySelector('#' + getRowId(String(selectionId)));
 
         if (event.key === 'ArrowUp') {
             const previousRow = selectedRow ? selectedRow.previousElementSibling : null;
@@ -68,7 +68,7 @@ const FeatureTable: React.FC = () => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const lastRowId = featureCollection.features.length > 0 ? featureCollection.features[featureCollection.features.length - 1].id : null;
             if (lastRowId) {
-                dispatch(setSelectionId(getIdFromRow_id(lastRowId)));
+                dispatch(setSelectionId(getIdFromRow_id(String(lastRowId))));
             }
 
         } else if (event.key === 'Home') {
@@ -136,23 +136,23 @@ const FeatureTable: React.FC = () => {
                         if (a.datetime > b.datetime) return 1;
                         return 0; // Leave them unchanged in order
                     })
-                    .map((feature: any, index: number) => (
+                    .map((feature: GeoJSONFeature, index: number) => (
 
-                        <div className={getRowClass(feature.properties.id)}
+                        <div className={getRowClass(Number(feature.properties.id))}
                             ref={feature.properties.id === selectionId ? selectedRowRef : null}
-                            key={index} id={getRowId(feature.properties.id)}
-                            onClick={() => handleClickRow(feature.properties.id)}
+                            key={index} id={getRowId(String(feature.properties.id))}
+                            onClick={() => handleClickRow(Number(feature.properties.id))}
                         >
                             <div className='td datetime'>
-                                {new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime))}
+                                {new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime as string))}
                             </div>
-                            <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
-                            <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text)}</div>
-                            <div className='td shape hideable'>{highlightText(q, feature.properties.shape)}</div>
-                            <div className='td duration_seconds hideable'>{feature.properties.duration_seconds}</div>
+                            <div className='td location_text'>{highlightText(q, feature.properties.location_text as string)}</div>
+                            <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text as string)}</div>
+                            <div className='td shape hideable'>{highlightText(q, feature.properties.shape as string)}</div>
+                            <div className='td duration_seconds hideable'>{feature.properties.duration_seconds as string}</div>
                             <div className='td ctrls'>
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
-                                <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
+                                <Link className='ctrl row-goto-details' to={'/sighting/' + (feature.properties.id as string)} />
                             </div>
                         </div>
                     ))}
