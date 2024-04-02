@@ -95,9 +95,7 @@ const FeatureTable: React.FC = () => {
 
     useEffect(() => {
         if (featureCollection) {
-            if (featureCollection.features !== null) {
-                setLocalFeatures(featureCollection.features);
-            }
+            setLocalFeatures(featureCollection.features);
         }
     }, [featureCollection]);
 
@@ -151,7 +149,7 @@ const FeatureTable: React.FC = () => {
                             <div className='td location_text'>{highlightText(q, feature.properties.location_text)}</div>
                             <div className='td report_text hideable'>{highlightText(q, feature.properties.report_text)}</div>
                             <div className='td shape hideable'>{highlightText(q, feature.properties.shape)}</div>
-                            <div className='td duration_seconds hideable'>{highlightText(q, feature.properties.duration_seconds)}</div>
+                            <div className='td duration_seconds hideable'>{feature.properties.duration_seconds}</div>
                             <div className='td ctrls'>
                                 <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
                                 <Link className='ctrl row-goto-details' to={'/sighting/' + feature.properties.id} />
