@@ -52,7 +52,7 @@ Please fix anything you can or suggest a better way of doing things.
 
 ## User Journey
 
-Sightings are clustered when zoomed out:
+Sightings are clustered as a heatmap when zoomed out:
 
 ![Initial view, theme a](./docs/images/init.png)
 ![Initial view, theme b](./docs/images/init-2.png)
