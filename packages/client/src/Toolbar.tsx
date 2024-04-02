@@ -11,8 +11,8 @@ import './Toolbar.css';
 const Toolbar: React.FC = () => {
     return (<nav className='toolbar'>
         <ReportCount />
-        <DateRange />
         <SourceSelector />
+        <DateRange />
         <SearchText />
         <DonwloadCsvButton />
     </nav>)
