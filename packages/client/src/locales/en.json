@@ -10,7 +10,8 @@
     "panel": {
         "points_count": "{count} sightings",
         "cluster_count": "{count} clusters of sightings",
-        "no_results": "No results: try zooming out or changing your terms"
+        "no_results": "No results: try zooming out or changing your terms",
+        "only_clusters_not_points": "Zoom in to view indidivual sightings"
     },
     "sighting_details": {
         "title": "Report"
@@ -41,5 +42,10 @@
             "min_range": "Minimum year must be less than or equal to maximum year",
             "max_range": "Maximum year must be greater than or equal to minimum year"
         }
+    },
+    "source": {
+        "norge-ufo": "Norge UFO",
+        "mufon-kaggle": "MUFON/Kaggle",
+        "not-specified": "All datasources"
     }
 }

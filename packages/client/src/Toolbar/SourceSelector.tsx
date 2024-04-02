@@ -1,20 +1,23 @@
 import React, { type FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { get } from 'react-intl-universal';
 
 import type { FeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
 
 import { RootState } from '../redux/store';
 import { fetchFeatures, setSource } from '../redux/mapSlice';
 
-const options = {
-    'norge-ufo': 'Norge UFO',
-    'mufon-kaggle': 'MUFON/Kaggle',
-    'not-specified': 'All',
-};
+import './SourceSelector.css';
 
 const SourceSelector: React.FC = () => {
     const dispatch = useDispatch();
     const { source } = useSelector((state: RootState) => state.map);
+
+    const options = {
+        'norge-ufo': get('source.norge-ufo'),
+        'mufon-kaggle': get('source.mufon-kaggle'),
+        'not-specified': get('source.not-specified'),
+    };
 
     function handleChange(e: FormEvent<HTMLElement>) {
         console.log((e.target as HTMLSelectElement).value);
@@ -22,7 +25,7 @@ const SourceSelector: React.FC = () => {
         dispatch(fetchFeatures());
     }
 
-    return <nav className='component' onChange={handleChange}>
+    return <nav id='SourceSelector' className='component highlightable' onChange={handleChange}>
         <select defaultValue={source}>
             {Object.keys(options).map(
                 (option) => <option key={option} value={option}>{

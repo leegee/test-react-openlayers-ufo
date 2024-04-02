@@ -1,0 +1,9 @@
+/* SourceSelector.css */
+
+#SourceSelector {
+    select {
+        outline: 0;
+        border: 0;
+        background-color: var(--ufo-ctrl-bg);
+    }
+}

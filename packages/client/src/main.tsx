@@ -2,12 +2,15 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
+import config from '@ufo-monorepo-test/config';
 import { store } from './redux/store';
 import { setupLocale } from './LocaleManager';
 import App from './App';
 
 import './index.css';
 import './App.css';
+
+console.info(`Locle: ${config.locale}`);
 
 await setupLocale();
 
