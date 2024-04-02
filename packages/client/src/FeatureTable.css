@@ -29,6 +29,11 @@
         background-color: var(--ufo-primary-bg-highlight);
     }
 
+    .tbody {
+        position: relative;
+        top: 1em;
+    }
+
     .tbody .tr:hover {
         background: var(--ufo-brand-clr);
         color: black;
