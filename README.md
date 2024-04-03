@@ -35,7 +35,7 @@
 * Date-range search
 * CSV downloads
 
-This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of an [OpenLayers](https://openlayers.org/) map served by [PostGIS](http://postgis.net/documentation/getting_started/install_windows/).
+This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of an [OpenLayers](https://openlayers.org/) map served by [PostGIS](http://postgis.net/documentation/getting_started/install_windows/) - probably [this version for 64-bit Windows](https://download.osgeo.org/postgis/windows/pg11/postgis-bundle-pg11x64-setup-3.3.3-1.exe).
 
 Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. 
 If zoomed out by a configurable amount, the server clusters the points that represent sightings.
