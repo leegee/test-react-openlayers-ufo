@@ -26,12 +26,12 @@
 ## Synopsis
 
 ```bash
-  psql -c 'CREATE DATABASE ufo'
+  psql -c 'CREATE DATABASE ${UFO_DATABASE}'
   psql -d ufo < data/merged/ufo-combined.sql
   npm install
 
-  # For dev, either
-  npm run dev:api &
+  # For dev, either in separate terminals:
+  npm run dev:api 
   npm run dev:client
   # or to do both via 'concurrently':
   npm start
