@@ -18,6 +18,7 @@
   psql -d ufo < data/merged/ufo-combined.sql
   npm install
 
+  # Set env vars as used  in packages/config/index.ts, and then:
   # For dev, either
   npm run dev:api &
   npm run dev:client
