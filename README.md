@@ -13,7 +13,6 @@
 ## Synopsis
 
 ```bash
-  # After editing the config and/or setting env vars:
   psql -c 'CREATE DATABASE ufo'
   psql -d ufo < data/merged/ufo-combined.sql
   npm install
@@ -28,6 +27,16 @@
   # For production
   npm run build -ws
 ```
+
+## Environment
+
+    PGHOST || 'localhost'
+    PGPORT || '5432'
+    PGUSER || 'postgres'
+    PGPASSWORD || 'password'
+    UFO_DATABASE || 'ufo'
+    UFO_HTTP_PORT || '8080'
+    UFO_HTTP_HOST || 'http://localhost'
 
 ## Description
 
