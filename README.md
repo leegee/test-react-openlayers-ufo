@@ -12,15 +12,15 @@
 
 ## Environment Variables
 
-| name | default |
-|---------|----------------|
-|  PGHOST | 'localhost' |
-|  PGPORT | '5432' |
-|  PGUSER | 'postgres' |
-|  PGPASSWORD | 'password' |
-|  UFO_DATABASE | 'ufo' |
-|  UFO_HTTP_PORT | '8080' |
-|  UFO_HTTP_HOST | 'http://localhost' |
+| Name | Default | Description |
+|---------|----------------| --- |
+|  PGHOST | 'localhost' | The PostGIS host machine |
+|  PGPORT | '5432' | The PostGIS host port |
+|  PGUSER | 'postgres' | PostGIS user name |
+|  PGPASSWORD | 'password' | PostGIS passphrase |
+|  UFO_DATABASE | 'ufo' | Name of the database |
+|  UFO_HTTP_HOST | 'http://localhost' | The Node.js API host |
+|  UFO_HTTP_PORT | '8080' | The Node.js API port |
 
 
 ## Synopsis
