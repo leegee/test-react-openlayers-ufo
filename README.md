@@ -17,7 +17,15 @@
   psql -d ufo < data/merged/ufo-combined.sql
   npm install
 
-  # Set env vars as used  in packages/config/index.ts, and then:
+  # Set env vars:
+  PGHOST || 'localhost'
+  PGPORT || '5432'
+  PGUSER || 'postgres'
+  PGPASSWORD || 'password'
+  UFO_DATABASE || 'ufo'
+  UFO_HTTP_PORT || '8080'
+  UFO_HTTP_HOST || 'http://localhost'
+
   # For dev, either
   npm run dev:api &
   npm run dev:client
@@ -27,16 +35,6 @@
   # For production
   npm run build -ws
 ```
-
-## Environment
-
-    PGHOST || 'localhost'
-    PGPORT || '5432'
-    PGUSER || 'postgres'
-    PGPASSWORD || 'password'
-    UFO_DATABASE || 'ufo'
-    UFO_HTTP_PORT || '8080'
-    UFO_HTTP_HOST || 'http://localhost'
 
 ## Description
 
