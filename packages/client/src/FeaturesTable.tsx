@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
 import type { RowStyle } from 'ag-grid-community';
@@ -79,21 +79,6 @@ const FeatureTable: React.FC = () => {
         });
     };
 
-    const actionsRenderer = (params: any) => {
-        return (
-            <span className='ctrls'>
-                <span
-                    className='ctrl row-goto-map'
-                    onClick={() => showPointOnMap(params.id as string)}
-                />
-                <Link
-                    className='ctrl row-goto-details'
-                    to={`/sighting/${params.data.id}`}
-                />
-            </span>
-        );
-    };
-
     interface highlightTextArgType { q: string | undefined, text: string }
 
     const highlightRenderer = ({ text }: highlightTextArgType) => {
@@ -144,13 +129,6 @@ const FeatureTable: React.FC = () => {
             headerName: get('feature_table.duration_seconds'),
             field: 'duration_seconds',
             hide: false
-        },
-        {
-            headerName: '',
-            field: 'ctrls',
-            cellRenderer: actionsRenderer,
-            cellRendererParams: { dispatch, setPanel, setSelectionId },
-            hide: true,
         },
     ];
 

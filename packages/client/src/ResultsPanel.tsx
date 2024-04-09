@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
+import type { RootState } from './redux/store';
 import { setPanel } from './redux/guiSlice';
 import FeatureTable from './FeaturesTable';
 import ReportToggleButton from './ReportToggleButton';
@@ -14,11 +15,17 @@ import './ResultsPanel.css';
 
 const Panel: React.FC = () => {
     const dispatch = useDispatch();
+    const { panel } = useSelector((state: RootState) => state.gui);
+
     const pointsCount = useSelector(selectPointsCount);
     const clusterCount = useSelector(selectClusterCount);
     const [nothingToShow, setNothingToShow] = useState<boolean>(true);
 
-    const onEscCloseFullReport = (e: KeyboardEvent) => { if (e.key === 'Escape') { dispatch(setPanel('hidden')) } };
+    const onEscCloseFullReport = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && panel === 'full') {
+            dispatch(setPanel('hidden'))
+        }
+    };
 
     useEffect(() => {
         document.addEventListener('keyup', onEscCloseFullReport);
