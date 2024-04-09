@@ -1,165 +1,158 @@
-/* Create the interface for feature.properties */
 import React, { useEffect, useRef, useState } from 'react';
-import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { AgGridReact } from 'ag-grid-react';
+import { get } from 'react-intl-universal';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import config from '@ufo-monorepo-test/config';
-import { GeoJSONFeature } from '@ufo-monorepo-test/common-types';
 import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
-
 import './FeatureTable.css';
 
-function getRowId(featureId: string) {
-    return 'fid_' + featureId;
-}
+const onGridReady = (params: any) => {
+    params.api.sizeColumnsToFit();
+};
 
-function getIdFromRow_id(htmlId: string) {
-    return Number(String(htmlId).substring(4));
-}
-
-const highlightText = (q: string | undefined, text: string) => {
-    if (!text) return;
-    if (typeof q === 'undefined' || q.trim() === '') {
-        return text;
-    }
-    const parts = text.split(new RegExp(`(${q})`, 'gi'));
-    return parts.map((part, index) =>
-        part.toLowerCase() === q.toLowerCase() ? (
-            <mark key={index}>{part}</mark>
-        ) : (
-            <React.Fragment key={index}>{part}</React.Fragment>
-        )
-    );
+const defaultColDef = {
+    sortable: true,
+    resizable: true,
 };
 
 const FeatureTable: React.FC = () => {
     const dispatch = useDispatch();
-    const { featureCollection } = useSelector((state: RootState) => state.map);
+    const { featureCollection, q } = useSelector((state: RootState) => state.map);
+    const { panel } = useSelector((state: RootState) => state.gui);
     const { selectionId } = useSelector((state: RootState) => state.gui);
-    const { q } = useSelector((state: RootState) => state.map);
-    const [localFeatures, setLocalFeatures] = useState<any[]>([]);
-    const selectedRowRef = useRef<HTMLDivElement>(null);
+    const gridRef = useRef<AgGridReact>(null);
 
-    function handleClickRow(id: number) {
-        dispatch(setSelectionId(Number(id)));
-    }
+    const actionsRenderer = (params: any) => {
+        return (
+            <>
+                <span
+                    className='ctrl row-goto-map'
+                    onClick={() => showPointOnMap(params.data)}
+                />
+                <Link
+                    className='ctrl row-goto-details'
+                    to={`/sighting/${params.data.id}`}
+                />
+            </>
+        );
+    };
 
-    function handleKeyDown(event: KeyboardEvent) {
-        if (!selectionId || !featureCollection?.features) {
-            return;
+    interface highlightTextArgType { q: string | undefined, text: string }
+
+    const highlightRenderer = ({ text }: highlightTextArgType) => {
+        if (!text || !q || q.trim() === '') {
+            return <>{text}</>;
         }
-        const selectedRow = document.querySelector('#' + getRowId(String(selectionId)));
+        const parts = text.split(new RegExp(`(${q})`, 'gi'));
+        return parts.map((part, index) =>
+            part.toLowerCase() === q.toLowerCase() ? (
+                <mark key={index}>{part}</mark>
+            ) : (
+                <React.Fragment key={index}>{part}</React.Fragment>
+            )
+        );
+    };
 
-        if (event.key === 'ArrowUp') {
-            const previousRow = selectedRow ? selectedRow.previousElementSibling : null;
-            if (previousRow?.id) {
-                dispatch(setSelectionId(getIdFromRow_id(previousRow.id)));
-            }
-        } else if (event.key === 'ArrowDown') {
-            const nextRow = selectedRow ? selectedRow.nextElementSibling : null;
-            if (nextRow?.id) {
-                dispatch(setSelectionId(getIdFromRow_id(nextRow.id)));
-            }
-        } else if (event.key === 'PageUp') {
-            // Handle Page Up key
-        } else if (event.key === 'PageDown') {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const lastRowId = featureCollection.features.length > 0 ? featureCollection.features[featureCollection.features.length - 1].id : null;
-            if (lastRowId) {
-                dispatch(setSelectionId(getIdFromRow_id(String(lastRowId))));
-            }
+    const initialColumnDef = [
+        {
+            headerName: get('feature_table.date'),
+            field: 'datetime',
+            valueFormatter: (params: any) => {
+                return new Intl.DateTimeFormat(config.locale).format(new Date(params.value as string));
+            },
+            hide: false,
+        },
+        {
+            headerName: get('feature_table.location'),
+            field: 'location_text',
+            cellRenderer: highlightRenderer,
+            cellRendererParams: (params: any) => ({ text: params.data.location_text }),
+            hide: false,
+        },
+        {
+            headerName: get('feature_table.report'),
+            field: 'report_text',
+            cellRenderer: highlightRenderer,
+            cellRendererParams: (params: any) => ({ text: params.data.report_text }),
+            hide: true,  // Initially hidden
+        },
+        {
+            headerName: get('feature_table.shape'),
+            field: 'shape',
+            cellRenderer: highlightRenderer,
+            cellRendererParams: (params: any) => ({ text: params.data.shape }),
+            hide: true,  // Initially hidden
+        },
+        {
+            headerName: get('feature_table.duration_seconds'),
+            field: 'duration_seconds',
+            hide: false
+        },
+        {
+            headerName: '',
+            cellRenderer: actionsRenderer,
+            cellRendererParams: { dispatch, setPanel, setSelectionId },
+            hide: false,
+        },
+    ];
 
-        } else if (event.key === 'Home') {
-            // Handle Home key
-        } else if (event.key === 'End') {
-            // Handle End key
-        }
-    }
-
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    });
-
-    // Scroll the selected row into view when user selectionchanges, if it is not already visible
-    useEffect(() => {
-        if (selectedRowRef.current) {
-            const rect = selectedRowRef.current.getBoundingClientRect();
-            if (rect.top < 0 || rect.bottom > window.innerHeight) {
-                selectedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-            }
-        }
-    }, [selectionId]);
-
-    useEffect(() => {
-        if (featureCollection) {
-            setLocalFeatures(featureCollection.features);
-        }
-    }, [featureCollection]);
-
-    function getRowClass(id: number) {
-        return selectionId && selectionId === Number(id) ? 'tr selected' : 'tr';
-    }
-
-    function showPointOnMap(feature: any) {
+    const showPointOnMap = (feature: any) => {
         dispatch(setPanel('narrow'));
         dispatch(setSelectionId(Number(feature.properties.id)));
-    }
+    };
+
+    const [columns, setColumns] = useState(initialColumnDef);
+
+    useEffect(() => {
+        const newColumns = panel === 'full' ? initialColumnDef : initialColumnDef.filter(col => !col.hide);
+        setColumns(newColumns);
+    }, [panel]);
+
+    const onGridColumnsChanged = () => {
+        if (gridRef.current?.api) {
+            if (panel === 'full') {
+                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
+
+                // Set column width when panel is full
+                gridRef.current.api.setColumnWidth('report_text', 200);  // Set width for report_text column
+                gridRef.current.api.setColumnWidth('shape', 150);       // Set width for shape column
+            } else {
+                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], false);
+            }
+
+            // Force refresh to resize columns
+            gridRef.current.api.refreshCells({ force: true });
+        }
+    };
+
+
+    useEffect(() => {
+        console.log(`columns changed:  ${columns.length} columns`)
+        onGridColumnsChanged();
+    }, [columns]);
+
+    const rowData = featureCollection?.features.map((feature: any) => ({
+        ...feature.properties,
+        id: feature.properties.id,
+    })) ?? [];
 
     return (
-        <div id='feature-table'>
-            <div className='thead'>
-                <div className='tr'>
-                    <div className='th datetime'>{get('feature_table.date')}</div>
-                    <div className='th location_text'>{get('feature_table.location')}</div>
-                    <div className='th hideable report_text'>{get('feature_table.report')}</div>
-                    <div className='th hideable shape'>{get('feature_table.shape')}</div>
-                    <div className='th hideable duration_seconds'>{get('feature_table.duration_seconds')}</div>
-                    <div className='th ctrls'>
-                        <span className='close-full-width' onClick={() => dispatch(setPanel('narrow'))} title={get('close')} aria-label={get('close')} />
-                        <span className='open-full-width' onClick={() => dispatch(setPanel('full'))} title={get('open')} aria-label={get('open')} />
-                    </div>
-                </div>
-            </div>
-
-            <div className='tbody'>
-                {localFeatures
-                    .slice() // Create a copy of the array to avoid mutating the original array
-                    .sort((a, b) => {
-                        if (a.search_score) {
-                            if (a.search_score < b.search_score) return -1; // Sort a before b
-                            if (a.search_score > b.search_score) return 1;
-                        }
-                        if (a.datetime < b.datetime) return -1;
-                        if (a.datetime > b.datetime) return 1;
-                        return 0; // Leave them unchanged in order
-                    })
-                    .map((feature: GeoJSONFeature, index: number) => (
-
-                        <div className={getRowClass(Number(feature.properties.id))}
-                            ref={feature.properties.id === selectionId ? selectedRowRef : null}
-                            key={index} id={getRowId(String(feature.properties.id))}
-                            onClick={() => handleClickRow(Number(feature.properties.id))}
-                        >
-                            <div className='td datetime'>
-                                {new Intl.DateTimeFormat(config.locale).format(new Date(feature.properties.datetime as string))}
-                            </div>
-                            <div className='td location_text'>{highlightText(q, feature.properties.location_text as string)}</div>
-                            <div className='td hideable report_text '>{highlightText(q, feature.properties.report_text as string)}</div>
-                            <div className='td hideable shape'>{highlightText(q, feature.properties.shape as string)}</div>
-                            <div className='td hideable duration_seconds'>{feature.properties.duration_seconds as string}</div>
-                            <div className='td ctrls'>
-                                <span className='ctrl row-goto-map' onClick={() => showPointOnMap(feature)} />
-                                <Link className='ctrl row-goto-details' to={'/sighting/' + (feature.properties.id as string)} />
-                            </div>
-                        </div>
-                    ))}
-            </div>
+        <div className="ag-theme-alpine-dark" style={{ height: '90vh', width: 'auto' }}>
+            <AgGridReact
+                ref={gridRef}
+                columnDefs={columns}
+                rowData={rowData}
+                defaultColDef={defaultColDef}
+                onGridReady={onGridReady}
+                onGridColumnsChanged={onGridColumnsChanged}
+            ></AgGridReact>
         </div>
     );
 };
 
 export default FeatureTable;
-

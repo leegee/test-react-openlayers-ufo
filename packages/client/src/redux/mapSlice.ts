@@ -27,6 +27,7 @@ export interface MapState {
   basemapSource: string;
   previousQueryString: string;
   requestingCsv: boolean;
+  isLoading: boolean;
   source: FeatureSourceAttributeType;
 }
 
@@ -43,6 +44,7 @@ const initialState: MapState = {
   q: '',
   basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
+  isLoading: false,
   requestingCsv: false,
   source: 'not-specified',
 };
@@ -96,6 +98,9 @@ const mapSlice = createSlice({
     csvRequestFailed: (state) => {
       state.requestingCsv = false;
     },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
     failedRequest: (state) => {
       state.featureCollection = undefined;
       state.previousQueryString = '';
@@ -108,6 +113,7 @@ export const {
   setPreviousQueryString, setMapParams,
   resetDates, setFromDate, setToDate,
   setQ, setBasemapSource, setSource,
+  setIsLoading,
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
@@ -156,6 +162,7 @@ const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: R
       return undefined;
     }
     dispatch(setPreviousQueryString(queryString));
+    dispatch(setIsLoading(true));
 
     let response;
     try {
@@ -166,6 +173,9 @@ const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: R
     catch (error) {
       console.error(error);
       dispatch(mapSlice.actions.failedRequest());
+    }
+    finally {
+      dispatch(setIsLoading(false));
     }
   }
 );

@@ -7,7 +7,7 @@
     padding-bottom: 1em;
 }
 
-#feature-table {
+#xxx_feature-table {
     .thead {
         position: sticky;
         top: 0;
@@ -178,7 +178,7 @@
 }
 
 /* Show the report text in full-width */
-.REPORT_FULL_WIDTH {
+xxx.REPORT_FULL_WIDTH {
 
     #feature-table .hideable {
         display: block;

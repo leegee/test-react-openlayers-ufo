@@ -56,6 +56,8 @@
     "@types/koa-router": "^7.4.8",
     "@ufo-monorepo-test/client": "^0.0.0",
     "@ufo-monorepo-test/common-types": "^0.0.0",
+    "ag-grid-community": "^31.2.0",
+    "ag-grid-react": "^31.2.0",
     "concurrently": "^8.2.2",
     "debounce": "^2.0.0",
     "dotenv": "^16.4.5",

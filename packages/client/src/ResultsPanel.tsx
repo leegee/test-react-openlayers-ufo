@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
 import { setPanel } from './redux/guiSlice';
 import FeatureTable from './FeaturesTable';
+import ReportToggleButton from './ReportToggleButton';
 
 import './ResultsPanel.css';
 
@@ -40,7 +41,10 @@ const Panel: React.FC = () => {
                 </p>
             ) :
                 pointsCount ?
-                    <FeatureTable />
+                    <>
+                        <ReportToggleButton />
+                        <FeatureTable />
+                    </>
                     : <p className='message'>
                         {get('panel.only_clusters_not_points')}
                     </p>
