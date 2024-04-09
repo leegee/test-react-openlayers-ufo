@@ -171,6 +171,7 @@ const FeatureTable: React.FC = () => {
     useEffect(() => {
         const newColumns = panel === 'full' ? initialColumnDef : initialColumnDef.filter(col => !col.hide);
         setColumns(newColumns);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [panel]);
 
     const onGridColumnsChanged = () => {
@@ -198,6 +199,7 @@ const FeatureTable: React.FC = () => {
     useEffect(() => {
         console.log(`columns changed:  ${columns.length} columns`)
         onGridColumnsChanged();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [columns]);
 
     const rowData = featureCollection?.features.map((feature: any) => ({
