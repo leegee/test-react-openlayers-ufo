@@ -10,7 +10,7 @@ import './ReportToggleButton.css';
 const ReportButton: React.FC = () => {
     const dispatch = useDispatch();
     const { panel } = useSelector((state: RootState) => state.gui);
-    const { isLoading } = useSelector((state: RootState) => state.map);
+    const { requestingFeatures: featuresAreLoading } = useSelector((state: RootState) => state.map);
 
     useEffect(() => {
         console.log("Panel state:", panel);
@@ -25,7 +25,7 @@ const ReportButton: React.FC = () => {
     };
 
     return (
-        <button id='report-button' disabled={isLoading} className='component highlightable' onClick={togglePanel}>
+        <button id='report-button' disabled={featuresAreLoading} className='component highlightable' onClick={togglePanel}>
             {panel === 'full' ? (
                 <span className='close-full-width' title={get('close')} aria-label={get('close')} />
             ) : (

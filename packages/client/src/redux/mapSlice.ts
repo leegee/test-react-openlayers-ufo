@@ -27,8 +27,9 @@ export interface MapState {
   basemapSource: string;
   previousQueryString: string;
   requestingCsv: boolean;
-  isLoading: boolean;
+  requestingFeatures: boolean;
   source: FeatureSourceAttributeType;
+  queryString:any;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
@@ -44,9 +45,10 @@ const initialState: MapState = {
   q: '',
   basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
-  isLoading: false,
+  requestingFeatures: false,
   requestingCsv: false,
   source: 'not-specified',
+  queryString: {},
 };
 
 const mapSlice = createSlice({
@@ -86,8 +88,8 @@ const mapSlice = createSlice({
     setSource: (state, action: PayloadAction<FeatureSourceAttributeType>) => {
       state.source = action.payload;
     },
-    setPreviousQueryString: (state, action: PayloadAction<string>) => {
-      state.previousQueryString = action.payload;
+    setPreviousQueryString: (state) => {
+      state.previousQueryString = state.queryString;
     },
     setCsvRequesting: (state) => {
       state.requestingCsv = true;
@@ -98,22 +100,41 @@ const mapSlice = createSlice({
     csvRequestFailed: (state) => {
       state.requestingCsv = false;
     },
-    setIsLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
+    setFeaturesAreLoading: (state, action: PayloadAction<boolean>) => {
+      state.requestingFeatures = action.payload;
     },
-    failedRequest: (state) => {
+    failedFeaturesRequest: (state) => {
       state.featureCollection = undefined;
       state.previousQueryString = '';
-      // action.payload.status etc
+      state.queryString = new URLSearchParams();
     },
+    selectQueryString: (state: MapState) => {
+      const { zoom, bounds, from_date, to_date, q, source } = state;
+      if (!zoom || !bounds) {
+        return;
+      }
+    
+      const queryObject = {
+        zoom: String(zoom),
+        minlng: String(bounds[0]),
+        minlat: String(bounds[1]),
+        maxlng: String(bounds[2]),
+        maxlat: String(bounds[3]),
+        source: String(source),
+        ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+        ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+        ...(q !== '' ? { q: q } : {}),
+      };
+    
+      state.queryString = new URLSearchParams(queryObject).toString();
+    },    
   },
 });
 
 export const {
-  setPreviousQueryString, setMapParams,
-  resetDates, setFromDate, setToDate,
-  setQ, setBasemapSource, setSource,
-  setIsLoading,
+  setMapParams,
+  setQ, resetDates, setFromDate, setToDate,
+  setBasemapSource, setSource,
 } = mapSlice.actions;
 
 export const selectBasemapSource = (state: RootState) => state.map.basemapSource as MapBaseLayerKeyType;
@@ -128,41 +149,45 @@ export const selectClusterCount = createSelector(
   (featureCollection: UfoFeatureCollectionType|undefined) => featureCollection?.clusterCount ?? 0
 );
 
-export const selectQueryString = (mapState: MapState): string | undefined => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { zoom, bounds, from_date, to_date, q, source } = mapState;
-  if (!zoom || !bounds) return;
+// export const selectQueryString = (mapState: MapState): string | undefined => {
+//   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//   const { zoom, bounds, from_date, to_date, q, source } = mapState;
+//   if (!zoom || !bounds) {
+//     return;
+//   }
 
-  const queryObject = {
-    zoom: String(zoom),
-    minlng: String(bounds[0]),
-    minlat: String(bounds[1]),
-    maxlng: String(bounds[2]),
-    maxlat: String(bounds[3]),
-    source: String(source),
-    ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
-    ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
-    ...(q !== '' ? { q: q } : {}),
-  };
+//   const queryObject = {
+//     zoom: String(zoom),
+//     minlng: String(bounds[0]),
+//     minlat: String(bounds[1]),
+//     maxlng: String(bounds[2]),
+//     maxlat: String(bounds[3]),
+//     source: String(source),
+//     ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+//     ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+//     ...(q !== '' ? { q: q } : {}),
+//   };
 
-  return new URLSearchParams(queryObject).toString();
-};
+//   return new URLSearchParams(queryObject).toString();
+// };
 
 const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<SearchResposneType|any> => {
     const mapState = getState().map;
-    const queryString: string | undefined = selectQueryString(mapState);
-    const { previousQueryString } = mapState;
+    const { previousQueryString, queryString } = mapState;
 
-    if (!queryString) return;
+    if (!queryString) {
+      return;
+    }
 
     if (previousQueryString === queryString) {
-      console.log('fetchFeatures - bail, this request query same as last request query');
+      console.log('fetchFeatures - bailing: this query is the same as the last');
       return undefined;
     }
-    dispatch(setPreviousQueryString(queryString));
-    dispatch(setIsLoading(true));
+
+    dispatch(mapSlice.actions.setPreviousQueryString());
+    dispatch(mapSlice.actions.setFeaturesAreLoading(true));
 
     let response;
     try {
@@ -172,10 +197,10 @@ const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: R
     }
     catch (error) {
       console.error(error);
-      dispatch(mapSlice.actions.failedRequest());
+      dispatch(mapSlice.actions.failedFeaturesRequest());
     }
     finally {
-      dispatch(setIsLoading(false));
+      dispatch(mapSlice.actions.setFeaturesAreLoading(false));
     }
   }
 );
@@ -193,7 +218,7 @@ export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
 
     dispatch(mapSlice.actions.setCsvRequesting());
 
-    const queryString: string | undefined = selectQueryString(mapState);
+    const { queryString } = mapState;
 
     const requestOptions = {
       headers: {
@@ -207,6 +232,7 @@ export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       // Expose the CSV
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
