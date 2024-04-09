@@ -1,4 +1,5 @@
 :root {
+  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --ufo-brand-clr: #FFA500;
   --ufo-primary-fg: rgba(255, 255, 255, 0.85);
   --ufo-primary-bg: #242424;
@@ -39,6 +40,7 @@
 * {
   box-sizing: border-box;
   outline: none;
+  font-family: var(--font-family);
 }
 
 a {
@@ -99,6 +101,8 @@ mark {
 
 .component {
   border: 1pt solid var(--ufo-primary-border-clr);
+  background-color: var(--ufo-ctrl-bg);
+  color: var(--ufo-ctrl-fg);
   border-radius: 4pt;
   padding: 0 3pt;
   margin-left: 1rem;
