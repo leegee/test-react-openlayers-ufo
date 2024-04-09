@@ -21,7 +21,11 @@
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området",
         "shape": "Form",
-        "duration_seconds": "Varighet (sekunder)"
+        "duration_seconds": "Varighet (sekunder)",
+        "context_menu": {
+            "showPointOnMap": "Show on the map",
+            "showDetails": "Show full entry"
+        }
     },
     "search_text": {
         "title": "Søk etter {minChars} tegn eller malm",

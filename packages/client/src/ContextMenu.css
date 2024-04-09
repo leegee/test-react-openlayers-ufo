@@ -1,0 +1,17 @@
+/* ContextMenu.css */
+
+#context-menu {
+    position: fixed;
+    z-index: 100;
+    border: 1px solid var(--ufo-primary-border-clr);
+    background-color: var(--ufo-primary-bg);
+    color: var(--ufo-primary-fg);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    min-width: 10em;
+    min-height: 10em;
+}
+
+#context-menu div {
+    padding: 8px 12px;
+    cursor: pointer;
+}

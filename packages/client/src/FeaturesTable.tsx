@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { AgGridReact } from 'ag-grid-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
+import { AgGridReact } from 'ag-grid-react';
+import type { RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import config from '@ufo-monorepo-test/config';
 import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
+import ContextMenu from './ContextMenu';
+
 import './FeatureTable.css';
 
 const onGridReady = (params: any) => {
@@ -26,19 +29,68 @@ const FeatureTable: React.FC = () => {
     const { panel } = useSelector((state: RootState) => state.gui);
     const { selectionId } = useSelector((state: RootState) => state.gui);
     const gridRef = useRef<AgGridReact>(null);
+    const navigate = useNavigate();
+
+    const [contextMenu, setContextMenu] = useState({
+        isOpen: false,
+        x: 110,
+        y: 110,
+        rowData: null,
+    });
+
+    useEffect(() => {
+        const v = () => void (0);
+        window.addEventListener('contextmenu', v);
+        return () => window.removeEventListener('contextmenu', v)
+    });
+
+    const handleContextMenu = (event: any) => {
+        const mouseEvent = event.event as MouseEvent;
+        mouseEvent.preventDefault();
+        mouseEvent.stopPropagation();
+        console.log(event);
+
+        setContextMenu({
+            isOpen: true,
+            x: mouseEvent.clientX,
+            y: mouseEvent.clientY,
+            rowData: event.node.data,
+        });
+
+        return false;
+    };
+
+    const handleAction = (action: string, data: any) => {
+        switch (action) {
+            case 'showPointOnMap':
+                console.log('View on map:', data);
+                showPointOnMap(data.id as string);
+                break;
+            case 'showDetails':
+                navigate(`/sighting/${data.id}`);
+                break;
+            default:
+                break;
+        }
+
+        setContextMenu({
+            ...contextMenu,
+            isOpen: false,
+        });
+    };
 
     const actionsRenderer = (params: any) => {
         return (
-            <>
+            <span className='ctrls'>
                 <span
                     className='ctrl row-goto-map'
-                    onClick={() => showPointOnMap(params.data)}
+                    onClick={() => showPointOnMap(params.id as string)}
                 />
                 <Link
                     className='ctrl row-goto-details'
                     to={`/sighting/${params.data.id}`}
                 />
-            </>
+            </span>
         );
     };
 
@@ -95,15 +147,23 @@ const FeatureTable: React.FC = () => {
         },
         {
             headerName: '',
+            field: 'ctrls',
             cellRenderer: actionsRenderer,
             cellRendererParams: { dispatch, setPanel, setSelectionId },
-            hide: false,
+            hide: true,
         },
     ];
 
-    const showPointOnMap = (feature: any) => {
+    const getRowStyle = (params: any): RowStyle | undefined => {
+        if (params.data.id === selectionId) {
+            return { background: 'lightblue' };  // Highlight color
+        }
+        return undefined;
+    };
+
+    const showPointOnMap = (id: number | string) => {
         dispatch(setPanel('narrow'));
-        dispatch(setSelectionId(Number(feature.properties.id)));
+        dispatch(setSelectionId(Number(id)));
     };
 
     const [columns, setColumns] = useState(initialColumnDef);
@@ -117,13 +177,17 @@ const FeatureTable: React.FC = () => {
         if (gridRef.current?.api) {
             if (panel === 'full') {
                 gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
-
-                // Set column width when panel is full
-                gridRef.current.api.setColumnWidth('report_text', 200);  // Set width for report_text column
-                gridRef.current.api.setColumnWidth('shape', 150);       // Set width for shape column
+                gridRef.current.api.setColumnWidths([
+                    { key: 'report_text', newWidth: 200 },
+                    { key: 'shape', newWidth: 150 },
+                ]);
             } else {
                 gridRef.current.api.setColumnsVisible(['report_text', 'shape'], false);
             }
+
+            gridRef.current.api.setColumnWidths([
+                { key: 'ctrls', newWidth: 0 },
+            ]);
 
             // Force refresh to resize columns
             gridRef.current.api.refreshCells({ force: true });
@@ -142,7 +206,7 @@ const FeatureTable: React.FC = () => {
     })) ?? [];
 
     return (
-        <div className="ag-theme-alpine-dark" style={{ height: '90vh', width: 'auto' }}>
+        <section className="ag-theme-alpine-dark" style={{ height: '90vh', width: 'auto' }}>
             <AgGridReact
                 ref={gridRef}
                 columnDefs={columns}
@@ -150,8 +214,17 @@ const FeatureTable: React.FC = () => {
                 defaultColDef={defaultColDef}
                 onGridReady={onGridReady}
                 onGridColumnsChanged={onGridColumnsChanged}
-            ></AgGridReact>
-        </div>
+                getRowStyle={getRowStyle}
+                onCellContextMenu={handleContextMenu}
+            />
+            <ContextMenu
+                isOpen={contextMenu.isOpen}
+                onAction={handleAction}
+                rowData={contextMenu.rowData}
+                x={contextMenu.x}
+                y={contextMenu.y}
+            />
+        </section>
     );
 };
 

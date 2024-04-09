@@ -93,88 +93,93 @@
         min-width: 7em;
         max-width: 7em;
     }
+}
 
-    .th.ctrls,
-    .td.ctrls {
-        margin-left: auto;
-        white-space: nowrap;
-        z-index: 2;
-        top: 0;
-        right: 0;
-    }
+.ctrls,
+.ctrls {
+    margin-left: auto;
+    white-space: nowrap;
+    z-index: 2;
+    top: 0;
+    right: 0;
+}
 
-    .td.ctrls {
-        display: none;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%) translateX(0%);
-        background: var(--ufo-brand-clr);
-        border-radius: 4pt;
-        right: 0;
-        left: unset;
-        width: 6em;
-        align-items: center;
-        justify-content: space-evenly
-    }
+.ctrls {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(0%);
+    background: var(--ufo-brand-clr);
+    border-radius: 4pt;
+    right: 0;
+    left: unset;
+    width: 6em;
+    max-width: 0;
+    width: 0;
+    align-items: center;
+    justify-content: space-evenly
+}
 
-    .tr:hover .td.ctrls {
-        display: flex;
-    }
+.ctrls:hover,
+.ag-row:hover .ctrls {
+    width: 6em;
+    max-width: 6em;
+    display: flex !important;
+}
 
-    .ctrl {
-        filter: grayscale(100%);
-        cursor: pointer;
-        margin: 0 1pt;
-    }
+.ctrl {
+    filter: grayscale(100%);
+    cursor: pointer;
+    margin: 0 1pt;
+}
 
-    .ctrl:hover {
-        filter: none;
-    }
+.ctrl:hover {
+    filter: none;
+}
 
-    .row-goto-map {
-        margin-left: 0.25em;
-    }
+.row-goto-map {
+    margin-left: 0.25em;
+}
 
-    .row-goto-map::after {
-        content: '🗺️';
-    }
+.row-goto-map::after {
+    content: '🗺️';
+}
 
-    .row-goto-full-report::after {
-        content: '▶';
-    }
+.row-goto-full-report::after {
+    content: '▶';
+}
 
-    .row-goto-details:after {
-        font-size: 120%;
-        content: '📄';
-        /* content: '🛈'; */
-    }
+.row-goto-details:after {
+    font-size: 120%;
+    content: '📄';
+    /* content: '🛈'; */
+}
 
-    .close-full-width::after {
-        content: '◀';
-    }
+.close-full-width::after {
+    content: '◀';
+}
 
-    .open-full-width::after {
-        content: '▶';
-    }
+.open-full-width::after {
+    content: '▶';
+}
 
-    .open-full-width:hover,
-    .close-full-width:hover {
-        color: var(--ufo-brand-clr);
-    }
+.open-full-width:hover,
+.close-full-width:hover {
+    color: var(--ufo-brand-clr);
+}
 
-    .hideable {
-        display: none;
-    }
+.hideable {
+    display: none;
+}
 
-    /* No button to close full-width when already narrow-width */
-    .close-full-width {
-        display: none;
-    }
+/* No button to close full-width when already narrow-width */
+.close-full-width {
+    display: none;
+}
 
-    /* No our-datetime in narrow width only in full-width */
-    .our-datetime {
-        display: none;
-    }
+/* No our-datetime in narrow width only in full-width */
+.our-datetime {
+    display: none;
 }
 
 /* Show the report text in full-width */

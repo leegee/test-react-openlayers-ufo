@@ -22,7 +22,11 @@
         "report": "Report",
         "no_data": "No data for the visible area",
         "shape": "Shape",
-        "duration_seconds": "Duration (seconds)"
+        "duration_seconds": "Duration (seconds)",
+        "context_menu": {
+            "showPointOnMap": "Show on the map",
+            "showDetails": "Show full entry"
+        }
     },
     "search_text": {
         "title": "Search for {minChars} characters or more",
