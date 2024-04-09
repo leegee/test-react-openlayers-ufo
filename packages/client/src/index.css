@@ -106,8 +106,8 @@ mark {
 
 .component:focus-within,
 .component.highlightable:focus-within:hover {
-  border-color: var(--ufo-primary-border-clr) !important;
-  background-color: var(--ufo-ctrl-bg-focus) !important;
+  border-color: var(--ufo-primary-border-clr);
+  background-color: var(--ufo-ctrl-bg-focus);
 }
 
 .highlightable:hover {

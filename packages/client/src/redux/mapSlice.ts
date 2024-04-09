@@ -13,8 +13,8 @@ import type { MapBaseLayerKeyType } from '../Map';
 import config from '@ufo-monorepo-test/config';
 import { FeatureSourceAttributeType, MapDictionaryType, UfoFeatureCollectionType, SearchResposneType } from '@ufo-monorepo-test/common-types';
 import { RootState } from './store';
+import { downloadCsvBlob } from '../lib/download-csv-blob';
 
-// Extend QueryParams 
 export interface MapState {
   center: [number, number];
   zoom: number;
@@ -26,10 +26,10 @@ export interface MapState {
   q?: string;
   basemapSource: string;
   previousQueryString: string;
+  queryString: string;
   requestingCsv: boolean;
   requestingFeatures: boolean;
   source: FeatureSourceAttributeType;
-  queryString:any;
 }
 
 const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
@@ -45,10 +45,10 @@ const initialState: MapState = {
   q: '',
   basemapSource: localStorage.getItem('basemap_source') ?? 'geo',
   previousQueryString: '',
+  queryString: '',
   requestingFeatures: false,
   requestingCsv: false,
   source: 'not-specified',
-  queryString: {},
 };
 
 const mapSlice = createSlice({
@@ -100,17 +100,19 @@ const mapSlice = createSlice({
     csvRequestFailed: (state) => {
       state.requestingCsv = false;
     },
-    setFeaturesAreLoading: (state, action: PayloadAction<boolean>) => {
+    setRequestingFeatures: (state, action: PayloadAction<boolean>) => {
       state.requestingFeatures = action.payload;
     },
     failedFeaturesRequest: (state) => {
       state.featureCollection = undefined;
       state.previousQueryString = '';
-      state.queryString = new URLSearchParams();
+      state.requestingFeatures = false;
+      state.queryString = '';
     },
-    selectQueryString: (state: MapState) => {
+    setQueryString: (state: MapState) => {
       const { zoom, bounds, from_date, to_date, q, source } = state;
       if (!zoom || !bounds) {
+        console.debug('setQueryString: no bounds or zoom');
         return;
       }
     
@@ -149,45 +151,25 @@ export const selectClusterCount = createSelector(
   (featureCollection: UfoFeatureCollectionType|undefined) => featureCollection?.clusterCount ?? 0
 );
 
-// export const selectQueryString = (mapState: MapState): string | undefined => {
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//   const { zoom, bounds, from_date, to_date, q, source } = mapState;
-//   if (!zoom || !bounds) {
-//     return;
-//   }
-
-//   const queryObject = {
-//     zoom: String(zoom),
-//     minlng: String(bounds[0]),
-//     minlat: String(bounds[1]),
-//     maxlng: String(bounds[2]),
-//     maxlat: String(bounds[3]),
-//     source: String(source),
-//     ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
-//     ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
-//     ...(q !== '' ? { q: q } : {}),
-//   };
-
-//   return new URLSearchParams(queryObject).toString();
-// };
-
 const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: RootState }>(
   'data/fetchData',
   async (_, { dispatch, getState }): Promise<SearchResposneType|any> => {
+    dispatch(mapSlice.actions.setQueryString());
     const mapState = getState().map;
     const { previousQueryString, queryString } = mapState;
 
     if (!queryString) {
+      console.debug('fetchFeatures - no queryString');
       return;
     }
 
-    if (previousQueryString === queryString) {
-      console.log('fetchFeatures - bailing: this query is the same as the last');
+    if (previousQueryString === queryString && queryString !== '') {
+      console.debug('fetchFeatures - bailing: this query is the same as the last', previousQueryString, queryString);
       return undefined;
     }
 
     dispatch(mapSlice.actions.setPreviousQueryString());
-    dispatch(mapSlice.actions.setFeaturesAreLoading(true));
+    dispatch(mapSlice.actions.setRequestingFeatures(true));
 
     let response;
     try {
@@ -200,7 +182,7 @@ const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: R
       dispatch(mapSlice.actions.failedFeaturesRequest());
     }
     finally {
-      dispatch(mapSlice.actions.setFeaturesAreLoading(false));
+      dispatch(mapSlice.actions.setRequestingFeatures(false));
     }
   }
 );
@@ -235,15 +217,7 @@ export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
       
       // Expose the CSV
       const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = 'data.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadCsvBlob(blob);
       dispatch(mapSlice.actions.csvRequestDone());
     }
     catch (error) {

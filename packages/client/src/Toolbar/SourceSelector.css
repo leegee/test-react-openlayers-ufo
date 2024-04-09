@@ -8,5 +8,20 @@
         height: 100%;
         padding: 0;
         margin: 0;
+        border: none;
+        outline: none;
     }
+
+    option {
+        outline: none;
+        border: none;
+        margin: 0;
+        padding: 0 0.5em;
+        font-weight: normal !important;
+        font-family: var(--font-family) !important;
+    }
+}
+
+#SourceSelector:focus-within {
+    border-color: var(--ufo-brand-clr);
 }
