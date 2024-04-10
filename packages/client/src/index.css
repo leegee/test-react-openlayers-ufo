@@ -7,9 +7,11 @@
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.15);
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
 
-  --ufo-ctrl-fg: rgba(255, 255, 255, 0.9);
+  --ufo-ctrl-fg: hsla(72, 100%, 98%, 0.807);
   --ufo-ctrl-bg: #333;
   --ufo-ctrl-bg-focus: #040404;
+  --ufo-ctrl-fg-focus: rgba(255, 255, 255, 0.9);
+  ;
 
   --ufo-modal-fg: rgba(255, 255, 255, 0.9);
   --ufo-modal-bg: #141414;
@@ -20,8 +22,11 @@
   --ufo-panel-narrow-width: 25em;
   --ufo-panel-SMALL-SCREEN-height: 30vh;
 
+  --ufo-box-shadow: 0px 2pt 4pt rgba(0, 0, 0, 0.8);
+
   --ol-background-color: var(--ufo-ctrl-bg);
   --ol-subtle-foreground-color: var(--ufo-ctrl-fg);
+  --ol-brand-color: var(--ufo-brand-clr);
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

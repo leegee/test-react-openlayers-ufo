@@ -33,13 +33,13 @@ const FeatureTable: React.FC = () => {
 
     const [contextMenu, setContextMenu] = useState({
         isOpen: false,
-        x: 110,
-        y: 110,
+        x: 0,
+        y: 0,
         rowData: null,
     });
 
     useEffect(() => {
-        const v = () => void (0);
+        const v = (e: Event) => e.preventDefault();
         window.addEventListener('contextmenu', v);
         return () => window.removeEventListener('contextmenu', v)
     });
