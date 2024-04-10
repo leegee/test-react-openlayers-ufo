@@ -113,6 +113,9 @@ const FeatureTable: React.FC = () => {
         {
             headerName: get('feature_table.report'),
             field: 'report_text',
+            flex: 1,
+            wrapText: true,
+            autoHeight: true,
             cellRenderer: highlightRenderer,
             cellRendererParams: (params: any) => ({ text: params.data.report_text }),
             hide: true,
@@ -151,7 +154,6 @@ const FeatureTable: React.FC = () => {
         if (gridRef.current?.api) {
             if (panel === 'full') {
                 gridRef.current.api.setColumnWidths([
-                    { key: 'report_text', newWidth: 200 },
                     { key: 'shape', newWidth: 150 },
                 ]);
                 gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
