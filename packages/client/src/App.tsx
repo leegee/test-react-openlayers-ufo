@@ -68,6 +68,7 @@ const App: React.FC = () => {
           </Routes>
 
           <Toolbar />
+
           <div id='map-panel-container'>
             <Map />
             <ResultsPanel />

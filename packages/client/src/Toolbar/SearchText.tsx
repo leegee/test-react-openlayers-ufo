@@ -30,7 +30,7 @@ const SearchText: React.FC = () => {
     };
 
     return (
-        <nav className='search-text component highlightable'>
+        <nav id='SearchText' className='component highlightable'>
             <span className='grey search-icon' />
             <input
                 title={get('search_text.title', { minChars: config.minQLength })}

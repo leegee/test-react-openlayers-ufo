@@ -1,11 +1,11 @@
 /* DateRange.module.css */
 
-.search-text {
+#SearchText {
     width: 24em;
     min-width: 12em;
 }
 
-.search-text {
+#SearchText {
     input {
         font-size: 1rem;
         padding: 0 2pt;

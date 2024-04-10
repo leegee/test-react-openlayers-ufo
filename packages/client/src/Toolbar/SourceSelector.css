@@ -5,11 +5,13 @@
         outline: 0;
         border: 0;
         background-color: var(--ufo-ctrl-bg);
+        color: var(--ufo-ctrl-fg);
         padding: 0;
         margin: 0;
         border: none;
         outline: none;
         font-family: var(--font-family);
+        font-size: normal;
     }
 
     option {

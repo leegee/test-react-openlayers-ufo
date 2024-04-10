@@ -17,7 +17,7 @@ const Panel: React.FC = () => {
     }, [pointsCount, clusterCount, nothingToShow]);
 
     return (
-        <header className='report-ctrl component'>
+        <header id='status' className='component'>
             <span className='inner'>
                 {nothingToShow ? (
                     <>{get('status.no_results')}</>
