@@ -97,7 +97,7 @@ const FeatureTable: React.FC = () => {
     }
 
     const handleSelectionChanged = (event: RowSelectedEvent) => {
-        dispatch(setSelectionId(Number(event.api.getSelectedRows()[0].id)));
+        dispatch(setSelectionId(Number(event.api.getSelectedRows()[0]?.id)));
     }
 
     const handleContextMenu = (event: any) => {
