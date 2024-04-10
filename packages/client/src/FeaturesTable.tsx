@@ -48,7 +48,6 @@ const FeatureTable: React.FC = () => {
         const mouseEvent = event.event as MouseEvent;
         mouseEvent.preventDefault();
         mouseEvent.stopPropagation();
-        console.log(event);
 
         setContextMenu({
             isOpen: true,

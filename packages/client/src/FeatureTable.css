@@ -6,10 +6,12 @@
     color: black !important;
 }
 
+.ag-row {
+    border: 1px solid transparent !important;
+}
+
 .ag-row:hover {
-    background: var(--ufo-brand-clr);
-    color: var(--ufo-brand-clr-fg);
-    transition: background 2.6s ease-out !important;
+    border: 1px solid var(--ufo-brand-clr) !important;
 }
 
 #feature-table {

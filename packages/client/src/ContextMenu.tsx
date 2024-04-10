@@ -13,11 +13,18 @@ interface ContextMenuProps {
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x, y }) => {
     const handleAction = (action: string) => onAction(action, rowData);
-    const [currentlyOpen, setCurrentlyOpen] = useState<boolean>(isOpen);
 
+    // Any click anywhere hides a visible context menu:
+    const handleClick = () => {
+        if (isOpen) {
+            handleAction('');
+        }
+    }
+
+    // As does the Escape key:
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
-            setCurrentlyOpen(false);
+            handleAction('');
             event.stopPropagation();
             event.preventDefault();
         }
@@ -25,20 +32,21 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x,
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
+        document.addEventListener('click', handleClick);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('click', handleClick);
+        };
     });
 
-    useEffect(() => {
-        setCurrentlyOpen(isOpen);
-    }, [isOpen]);
 
-    return !currentlyOpen ? null : (
+    return !isOpen ? null : (
         <nav id="context-menu" style={{ top: y, left: x }}>
             <li onClick={() => handleAction('showPointOnMap')}>{get('feature_table.context_menu.showPointOnMap')}</li>
             <li onClick={() => handleAction('showDetails')}>{get('feature_table.context_menu.showDetails')}</li>
             <hr />
-            <li onClick={() => setCurrentlyOpen(false)}>{get('close')}</li>
-        </nav>
+            <li onClick={() => handleAction('')}> {get('close')}</li>
+        </nav >
     );
 };
 
