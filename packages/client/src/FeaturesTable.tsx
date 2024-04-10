@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
-import type { CellClickedEvent, CellDoubleClickedEvent, RowStyle } from 'ag-grid-community';
+import type { CellDoubleClickedEvent, RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -11,6 +11,7 @@ import config from '@ufo-monorepo-test/config';
 import { RootState } from './redux/store';
 import { setPanel, setSelectionId } from './redux/guiSlice';
 import ContextMenu from './ContextMenu';
+import { highlightRenderer, secondsRenderer } from './FeaturesTable/cell-renderers';
 
 import './FeatureTable.css';
 
@@ -22,6 +23,49 @@ const defaultColDef = {
     sortable: true,
     resizable: true,
 };
+
+const initialColumnDef = (q: string | undefined) => [
+    {
+        headerName: get('feature_table.date'),
+        field: 'datetime',
+        valueFormatter: (params: any) => {
+            return new Intl.DateTimeFormat(config.locale).format(new Date(params.value as string));
+        },
+        hide: false,
+    },
+    {
+        headerName: get('feature_table.location'),
+        field: 'location_text',
+        cellRenderer: highlightRenderer,
+        cellRendererParams: (params: any) => ({ q, text: params.data.location_text }),
+        hide: false,
+    },
+    {
+        headerName: get('feature_table.report'),
+        field: 'report_text',
+        flex: 1,
+        wrapText: true,
+        autoHeight: true,
+        cellRenderer: highlightRenderer,
+        cellRendererParams: (params: any) => ({ text: params.data.report_text }),
+        hide: true,
+    },
+    {
+        headerName: get('feature_table.shape'),
+        field: 'shape',
+        cellRenderer: highlightRenderer,
+        cellRendererParams: (params: any) => ({ text: params.data.shape }),
+        hide: true,
+    },
+    {
+        headerName: get('feature_table.duration_seconds'),
+        field: 'duration_seconds',
+        type: 'numericColumn',
+        cellRenderer: secondsRenderer,
+        cellRendererParams: (params: any) => ({ seconds: params.data.duration_seconds }),
+        hide: false
+    },
+];
 
 const FeatureTable: React.FC = () => {
     const dispatch = useDispatch();
@@ -90,79 +134,7 @@ const FeatureTable: React.FC = () => {
         });
     };
 
-    const highlightRenderer = ({ text }: { text: string }) => {
-        if (!text || !q || q.trim() === '') {
-            return <>{text}</>;
-        }
-        const parts = text.split(new RegExp(`(${q})`, 'gi'));
-        return parts.map((part, index) =>
-            part.toLowerCase() === q.toLowerCase() ? (
-                <mark key={index}>{part}</mark>
-            ) : (
-                <React.Fragment key={index}>{part}</React.Fragment>
-            )
-        );
-    };
-
-    const secondsRenderer = ({ seconds }: { seconds: number | null }) => {
-        if (seconds === null) {
-            return '';
-        }
-        const hours = Math.floor(Number(seconds) / 3600);
-        const minutes = Math.floor((Number(seconds) % 3600) / 60);
-        const remainingSeconds = Number(seconds) % 60;
-
-        const formattedHours = hours ? new Intl.NumberFormat(config.locale,).format(hours) + get('hours') + ' ' : '';
-        const formattedMinutes = minutes ? new Intl.NumberFormat(config.locale, { minimumIntegerDigits: 1 }).format(minutes) + get('minutes') + ' ' : '';
-        const formattedSeconds = remainingSeconds ? new Intl.NumberFormat(config.locale, { minimumIntegerDigits: 2 }).format(remainingSeconds) + get('seconds') : '';
-
-        return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
-    }
-
-    const initialColumnDef = [
-        {
-            headerName: get('feature_table.date'),
-            field: 'datetime',
-            valueFormatter: (params: any) => {
-                return new Intl.DateTimeFormat(config.locale).format(new Date(params.value as string));
-            },
-            hide: false,
-        },
-        {
-            headerName: get('feature_table.location'),
-            field: 'location_text',
-            cellRenderer: highlightRenderer,
-            cellRendererParams: (params: any) => ({ text: params.data.location_text }),
-            hide: false,
-        },
-        {
-            headerName: get('feature_table.report'),
-            field: 'report_text',
-            flex: 1,
-            wrapText: true,
-            autoHeight: true,
-            cellRenderer: highlightRenderer,
-            cellRendererParams: (params: any) => ({ text: params.data.report_text }),
-            hide: true,
-        },
-        {
-            headerName: get('feature_table.shape'),
-            field: 'shape',
-            cellRenderer: highlightRenderer,
-            cellRendererParams: (params: any) => ({ text: params.data.shape }),
-            hide: true,
-        },
-        {
-            headerName: get('feature_table.duration_seconds'),
-            field: 'duration_seconds',
-            type: 'numericColumn',
-            cellRenderer: secondsRenderer,
-            cellRendererParams: (params: any) => ({ seconds: params.data.duration_seconds }),
-            hide: false
-        },
-    ];
-
-    const [columns, setColumns] = useState(initialColumnDef);
+    const [columns, setColumns] = useState(initialColumnDef(q));
 
     const getRowStyleHighlightingSelection = (params: any): RowStyle | undefined => {
         if (params.data.id === selectionId) {
@@ -173,45 +145,27 @@ const FeatureTable: React.FC = () => {
 
     // Show even hidden columns when in full width mode
     useEffect(() => {
-        const newColumns = panel === 'full' ? initialColumnDef : initialColumnDef.filter(col => !col.hide);
+        const newColumns = panel === 'full' ? initialColumnDef(q) : initialColumnDef(q).filter(col => !col.hide);
         setColumns(newColumns);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [panel]);
+    }, [panel, q]);
 
     const onGridColumnsChanged = () => {
         if (gridRef.current?.api) {
-            if (panel === 'full') {
-                gridRef.current.api.setColumnWidths([
-                    { key: 'shape', newWidth: 150 },
-                ]);
-                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
-            } else {
-                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], false);
-            }
-
-            gridRef.current.api.setColumnWidths([
-                { key: 'ctrls', newWidth: 0 },
-            ]);
-
+            gridRef.current.api.setColumnsVisible(['report_text', 'shape'], panel === 'full');
             // Force refresh to resize columns
             gridRef.current.api.refreshCells({ force: true });
         }
     };
 
+    // useEffect(() => {
+    //     onGridColumnsChanged();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [columns]);
 
-    useEffect(() => {
-        console.log(`columns changed:  ${columns.length} columns`)
-        onGridColumnsChanged();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [columns]);
-
-    const rowData = featureCollection?.features.map((feature: any) => ({
-        ...feature.properties,
-        // id: feature.properties.id,
-    })) ?? [];
+    const rowData = featureCollection?.features.map((feature) => ({ ...feature.properties })) ?? [];
 
     return (
-        <section className="ag-theme-alpine-dark" style={{ height: '90vh', width: 'auto' }}>
+        <section id="features-table" className="ag-theme-alpine-dark">
             <AgGridReact
                 ref={gridRef}
                 columnDefs={columns}

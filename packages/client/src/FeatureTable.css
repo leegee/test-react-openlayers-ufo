@@ -1,5 +1,10 @@
 /* FeatureTable.css */
 
+#features-table {
+    height: calc(100vh - var(--ufo-toolbar-height));
+    width: auto;
+}
+
 .ag-row-focus {
     outline: 1px solid var(--ufo-brand-clr) !important;
     background: var(--ufo-brand-clr) !important;

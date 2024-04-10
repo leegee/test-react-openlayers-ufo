@@ -10,11 +10,11 @@
     overflow: auto;
     width: var(--ufo-panel-narrow-width);
     top: var(--ufo-toolbar-height);
-    left: 0;
-    padding-left: var(--ufo-div-padding);
+    padding: 0 var(--ufo-div-padding);
     bottom: unset;
     right: unset;
-    height: 100%;
+    height: calc(100vh - var(--ufo-toolbar-height));
+    padding-bottom: calc(var(--ufo-div-padding));
     color: var(--ufo-primary-fg);
     border: 1pt solid var(--ufo-primary-border-clr);
     border-top: none;
