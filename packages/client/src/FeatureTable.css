@@ -6,6 +6,11 @@
     color: black !important;
 }
 
+.ag-row:hover {
+    background: var(--ufo-brand-clr);
+    transition: background 2.6s ease-out !important;
+}
+
 #feature-table {
     position: relative;
     display: block;

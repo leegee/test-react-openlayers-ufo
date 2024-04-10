@@ -182,7 +182,7 @@ const FeatureTable: React.FC = () => {
 
     const rowData = featureCollection?.features.map((feature: any) => ({
         ...feature.properties,
-        id: feature.properties.id,
+        // id: feature.properties.id,
     })) ?? [];
 
     return (
