@@ -1,14 +1,20 @@
 # Combined Mufon/Norwegian UFO Database
 
+* UFOs
 * npm Typescript Monorepo
-* Koa
+* OpenLayers 9
 * React (hooks)
 * Redux Toolkit 
+* ag-grid
 * Jest
 * Vite 
-* OpenLayers 9
+* Koa
 * PostGIS
-* UFOs
+
+* Text search
+* Date-range search
+* CSV downloads
+* Optional server-side clustering
 
 ## Environment Variables
 
@@ -40,12 +46,9 @@
   npm run build -ws
 ```
 
-## Description
+After bulding you will be left with the output of the Vite bundler, to host via nginx or other, and with the Node server script, to host via pm2/nginx/other.
 
-* Server-side clustering
-* Text search
-* Date-range search
-* CSV downloads
+## Description
 
 This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of an [OpenLayers](https://openlayers.org/) map served by [PostGIS](http://postgis.net/documentation/getting_started/install_windows/) - probably [this version for 64-bit Windows](https://download.osgeo.org/postgis/windows/pg11/postgis-bundle-pg11x64-setup-3.3.3-1.exe).
 
