@@ -18,10 +18,3 @@
 .ag-row:hover {
     border: 1px solid var(--ufo-brand-clr) !important;
 }
-
-#feature-table {
-    position: relative;
-    display: block;
-    background-color: var(--ufo-ctrl-primary-bg) !important;
-    padding-bottom: 1em;
-}
