@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
-import type { CellDoubleClickedEvent, RowStyle } from 'ag-grid-community';
+import type { CellClickedEvent, CellDoubleClickedEvent, RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -87,6 +87,10 @@ const FeatureTable: React.FC = () => {
         window.addEventListener('contextmenu', v);
         return () => window.removeEventListener('contextmenu', v)
     });
+
+    const handleClick = (event: CellClickedEvent) => {
+        dispatch(setSelectionId(Number(event.data.id)));
+    }
 
     const handleDoubleClick = (event: CellDoubleClickedEvent) => {
         showDetails(Number(event.data.id));
@@ -175,6 +179,7 @@ const FeatureTable: React.FC = () => {
                 onGridColumnsChanged={onGridColumnsChanged}
                 getRowStyle={getRowStyleHighlightingSelection}
                 onCellContextMenu={handleContextMenu}
+                onCellClicked={handleClick}
                 onCellDoubleClicked={handleDoubleClick}
             />
             <ContextMenu
