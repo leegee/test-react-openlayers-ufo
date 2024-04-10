@@ -131,7 +131,7 @@ const OpenLayersMap: React.FC = () => {
           mapRef.current?.getView().animate({
             center: e.coordinate,
             zoom: config.zoomLevelForPoints,
-            duration: 500,
+            duration: 200,
             easing: easeOut
           });
         }
