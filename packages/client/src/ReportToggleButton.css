@@ -1,10 +1,12 @@
 #report-button {
     position: absolute;
-    right: 1em;
-    top: 1.3em;
+    background-color: var(--ufo-ctrl-bg);
+    color: var(--ufo-ctrl-fg);
+    left: calc(var(--ufo-panel-narrow-width) + 2em);
+    top: var(--ufo-toolbar-height);
     border: 0 !important;
-    height: 1.3em;
-    width: 1.3em;
+    height: 3.6em;
+    width: 1.5em;
     z-index: 2;
 
     .close-full-width::after {

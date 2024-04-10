@@ -41,22 +41,24 @@ const Panel: React.FC = () => {
     }, [pointsCount, clusterCount, nothingToShow]);
 
     return (
-        <section id='panel' className={(nothingToShow || clusterCount) ? 'nothing-to-show' : ''}>
-            {nothingToShow ? (
-                <p className='message'>
-                    {get('panel.no_results')}
-                </p>
-            ) :
-                pointsCount ?
-                    <>
-                        <ReportToggleButton />
-                        <FeatureTable />
-                    </>
-                    : <p className='message'>
-                        {get('panel.only_clusters_not_points')}
+        <>
+            <section id='panel' className={(nothingToShow || clusterCount) ? 'nothing-to-show' : ''}>
+                {nothingToShow ? (
+                    <p className='message'>
+                        {get('panel.no_results')}
                     </p>
-            }
-        </section>
+                ) :
+                    pointsCount ?
+                        <FeatureTable />
+                        : <p className='message'>
+                            {get('panel.only_clusters_not_points')}
+                        </p>
+                }
+            </section>
+
+
+            {pointsCount && <ReportToggleButton />}
+        </>
     );
 };
 

@@ -9,8 +9,8 @@
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
 
   --ufo-ctrl-fg: hsla(72, 100%, 98%, 0.807);
-  --ufo-ctrl-bg: black;
-  --ufo-ctrl-bg-focus: #333;
+  --ufo-ctrl-bg: #333;
+  --ufo-ctrl-bg-focus: #black;
   --ufo-ctrl-fg-focus: white;
   ;
 
@@ -87,12 +87,15 @@ input {
   caret-shape: bar;
   caret-color: var(--ufo-brand-clr);
   background-color: var(--ufo-ctrl-bg);
+  color: var(--ufo-ctrl-fg);
 }
 
+select:focus,
 input:focus,
 input:focus-visible {
   border-bottom: 1px solid var(--ufo-brand-clr);
   background-color: var(--ufo-ctrl-bg-focus);
+  color: var(--ufo-ctrl-fg-focus);
 }
 
 mark {
