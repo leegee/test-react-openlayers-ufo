@@ -33,13 +33,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x,
     }, [isOpen]);
 
     return !currentlyOpen ? null : (
-        <div
-            id="context-menu"
-            style={{ top: y, left: x }}
-        >
-            <div onClick={() => handleAction('showPointOnMap')}>{get('feature_table.context_menu.showPointOnMap')}</div>
-            <div onClick={() => handleAction('showDetails')}>{get('feature_table.context_menu.showDetails')}</div>
-        </div>
+        <nav id="context-menu" style={{ top: y, left: x }}>
+            <li onClick={() => handleAction('showPointOnMap')}>{get('feature_table.context_menu.showPointOnMap')}</li>
+            <li onClick={() => handleAction('showDetails')}>{get('feature_table.context_menu.showDetails')}</li>
+            <hr />
+            <li onClick={() => setCurrentlyOpen(false)}>{get('close')}</li>
+        </nav>
     );
 };
 

@@ -1,6 +1,7 @@
 :root {
   --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --ufo-brand-clr: #FFA500;
+  --ufo-brand-clr-fg: black;
   --ufo-primary-fg: rgba(255, 255, 255, 0.85);
   --ufo-primary-bg: #242424;
   --ufo-primary-bg-highlight: #2238;
@@ -8,13 +9,13 @@
   --ufo-primary-border-clr: rgba(255, 255, 255, 0.25);
 
   --ufo-ctrl-fg: hsla(72, 100%, 98%, 0.807);
-  --ufo-ctrl-bg: #333;
-  --ufo-ctrl-bg-focus: #040404;
-  --ufo-ctrl-fg-focus: rgba(255, 255, 255, 0.9);
+  --ufo-ctrl-bg: black;
+  --ufo-ctrl-bg-focus: #333;
+  --ufo-ctrl-fg-focus: white;
   ;
 
   --ufo-modal-fg: rgba(255, 255, 255, 0.9);
-  --ufo-modal-bg: #141414;
+  --ufo-modal-bg: #333;
   --ufo-modal-border-clr: rgba(255, 255, 255, 0.25);
 
   --ufo-div-padding: 0.75rem;

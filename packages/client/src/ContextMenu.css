@@ -10,9 +10,21 @@
     min-width: 10em;
     min-height: 1em;
     transition: all 0.3s ease;
-}
 
-#context-menu div {
-    padding: 8px 12px;
-    cursor: pointer;
+    li {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-weight: bold;
+        list-style: none;
+    }
+
+    li:hover {
+        background-color: var(--ufo-brand-clr);
+        color: var(--ufo-brand-clr-fg)
+    }
+
+    hr {
+        color: var(--ufo-primary-border-clr);
+        opacity: 0.25;
+    }
 }
