@@ -29,12 +29,21 @@ const App: React.FC = () => {
   const appElementRef = useRef<HTMLDivElement>(null);
   const [appClasses, setAppClasses] = useState('');
   const { panel } = useSelector((state: RootState) => state.gui);
+  const { requestingFeatures } = useSelector((state: RootState) => state.map);
 
   useEffect(() => {
     window.addEventListener('resize', setScreenSizeClass);
     setScreenSizeClass();
     return () => window.removeEventListener('resize', setScreenSizeClass);
   }, []);
+
+  useEffect(() => {
+    if (requestingFeatures) {
+      document.body.classList.add('loading');
+    } else {
+      document.body.classList.remove('loading');
+    }
+  }, [requestingFeatures]);
 
   useEffect(() => {
     let widthClass = '';
@@ -59,7 +68,7 @@ const App: React.FC = () => {
           </Routes>
 
           <Toolbar />
-          <div className='map-panel-container'>
+          <div id='map-panel-container'>
             <Map />
             <ResultsPanel />
           </div>

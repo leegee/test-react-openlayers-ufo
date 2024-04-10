@@ -126,6 +126,9 @@ mark {
   opacity: 1;
 }
 
+.loading {
+  cursor: wait;
+}
 
 @keyframes flash {
   0% {

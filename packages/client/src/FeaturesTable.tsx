@@ -59,11 +59,11 @@ const FeatureTable: React.FC = () => {
         return false;
     };
 
-    const handleAction = (action: string, data: any) => {
+    const ContextMenuActionCallback = (action: string, data: any) => {
         switch (action) {
             case 'showPointOnMap':
-                console.log('View on map:', data);
-                showPointOnMap(data.id as string);
+                dispatch(setPanel('narrow'));
+                dispatch(setSelectionId(Number(data.id)));
                 break;
             case 'showDetails':
                 navigate(`/sighting/${data.id}`);
@@ -115,14 +115,14 @@ const FeatureTable: React.FC = () => {
             field: 'report_text',
             cellRenderer: highlightRenderer,
             cellRendererParams: (params: any) => ({ text: params.data.report_text }),
-            hide: true,  // Initially hidden
+            hide: true,
         },
         {
             headerName: get('feature_table.shape'),
             field: 'shape',
             cellRenderer: highlightRenderer,
             cellRendererParams: (params: any) => ({ text: params.data.shape }),
-            hide: true,  // Initially hidden
+            hide: true,
         },
         {
             headerName: get('feature_table.duration_seconds'),
@@ -131,20 +131,16 @@ const FeatureTable: React.FC = () => {
         },
     ];
 
-    const getRowStyle = (params: any): RowStyle | undefined => {
+    const [columns, setColumns] = useState(initialColumnDef);
+
+    const getRowStyleHighlightingSelection = (params: any): RowStyle | undefined => {
         if (params.data.id === selectionId) {
-            return { background: 'lightblue' };  // Highlight color
+            return { background: 'var(--ufo-brand-clr', color: 'var(--ufo-brand-clr-fg', };
         }
         return undefined;
     };
 
-    const showPointOnMap = (id: number | string) => {
-        dispatch(setPanel('narrow'));
-        dispatch(setSelectionId(Number(id)));
-    };
-
-    const [columns, setColumns] = useState(initialColumnDef);
-
+    // Show even hidden columns when in full width mode
     useEffect(() => {
         const newColumns = panel === 'full' ? initialColumnDef : initialColumnDef.filter(col => !col.hide);
         setColumns(newColumns);
@@ -154,11 +150,11 @@ const FeatureTable: React.FC = () => {
     const onGridColumnsChanged = () => {
         if (gridRef.current?.api) {
             if (panel === 'full') {
-                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
                 gridRef.current.api.setColumnWidths([
                     { key: 'report_text', newWidth: 200 },
                     { key: 'shape', newWidth: 150 },
                 ]);
+                gridRef.current.api.setColumnsVisible(['report_text', 'shape'], true);
             } else {
                 gridRef.current.api.setColumnsVisible(['report_text', 'shape'], false);
             }
@@ -193,12 +189,12 @@ const FeatureTable: React.FC = () => {
                 defaultColDef={defaultColDef}
                 onGridReady={onGridReady}
                 onGridColumnsChanged={onGridColumnsChanged}
-                getRowStyle={getRowStyle}
+                getRowStyle={getRowStyleHighlightingSelection}
                 onCellContextMenu={handleContextMenu}
             />
             <ContextMenu
                 isOpen={contextMenu.isOpen}
-                onAction={handleAction}
+                onAction={ContextMenuActionCallback}
                 rowData={contextMenu.rowData}
                 x={contextMenu.x}
                 y={contextMenu.y}

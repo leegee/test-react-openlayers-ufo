@@ -12,7 +12,7 @@
     height: 100%;
 }
 
-.map-panel-container {
+#map-panel-container {
     position: relative;
     display: flex;
     justify-content: space-between;
