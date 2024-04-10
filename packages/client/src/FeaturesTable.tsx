@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
-import type { RowStyle } from 'ag-grid-community';
+import type { CellClickedEvent, CellDoubleClickedEvent, RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -44,6 +44,10 @@ const FeatureTable: React.FC = () => {
         return () => window.removeEventListener('contextmenu', v)
     });
 
+    const handleDoubleClick = (event: CellDoubleClickedEvent) => {
+        showDetails(Number(event.data.id));
+    }
+
     const handleContextMenu = (event: any) => {
         const mouseEvent = event.event as MouseEvent;
         mouseEvent.preventDefault();
@@ -59,14 +63,22 @@ const FeatureTable: React.FC = () => {
         return false;
     };
 
+    const showDetails = (id: number) => {
+        navigate(`/sighting/${id}`);
+    }
+
+    const showPointOnMap = (id: number) => {
+        dispatch(setPanel('narrow'));
+        dispatch(setSelectionId(Number(id)));
+    };
+
     const ContextMenuActionCallback = (action: string, data: any) => {
         switch (action) {
             case 'showPointOnMap':
-                dispatch(setPanel('narrow'));
-                dispatch(setSelectionId(Number(data.id)));
+                showPointOnMap(Number(data.id));
                 break;
             case 'showDetails':
-                navigate(`/sighting/${data.id}`);
+                showDetails(Number(data.id));
                 break;
             default:
                 break;
@@ -193,6 +205,7 @@ const FeatureTable: React.FC = () => {
                 onGridColumnsChanged={onGridColumnsChanged}
                 getRowStyle={getRowStyleHighlightingSelection}
                 onCellContextMenu={handleContextMenu}
+                onCellDoubleClicked={handleDoubleClick}
             />
             <ContextMenu
                 isOpen={contextMenu.isOpen}
