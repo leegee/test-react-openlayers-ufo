@@ -15,6 +15,9 @@ import SightingDetails from './SightingDetails';
 
 import './App.css';
 
+export const REPORT_FULL_WIDTH = 'REPORT_FULL_WIDTH';
+export const REPORT_NARROW_WIDTH = 'REPORT_NARROW_WIDTH';
+
 function setScreenSizeClass() {
   if (window.innerWidth < 768) {
     document.body.classList.add('SMALL-SCREEN');
@@ -48,9 +51,9 @@ const App: React.FC = () => {
   useEffect(() => {
     let widthClass = '';
     if (panel === 'full') {
-      widthClass = 'REPORT_FULL_WIDTH';
+      widthClass = REPORT_FULL_WIDTH;
     } else if (panel === 'narrow') {
-      widthClass = 'REPORT_NARROW_WIDTH';
+      widthClass = REPORT_NARROW_WIDTH;
     }
     setAppClasses(widthClass + ' panel-is-' + panel);
   }, [panel])
@@ -69,10 +72,10 @@ const App: React.FC = () => {
 
           <Toolbar />
 
-          <div id='map-panel-container'>
+          <section id='map-panel-container'>
             <Map />
             <ResultsPanel />
-          </div>
+          </section>
         </>
       </BrowserRouter>
     </main>
