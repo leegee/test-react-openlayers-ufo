@@ -2,7 +2,7 @@
     position: absolute;
     background-color: transparent;
     color: var(--ufo-ctrl-fg);
-    left: calc(var(--ufo-panel-narrow-width) + 3.5em);
+    left: calc(var(--ufo-panel-narrow-width) + 2.75em);
     top: var(--ufo-toolbar-height);
     border: 0 !important;
     padding: 0;
