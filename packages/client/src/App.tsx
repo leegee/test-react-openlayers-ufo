@@ -12,6 +12,7 @@ import About from './Modal/About';
 import Contact from './Modal/Contact';
 import Histogram from './Histogram';
 import SightingDetails from './SightingDetails';
+import OpenReport from './OpenReport';
 
 import './App.css';
 
@@ -67,6 +68,7 @@ const App: React.FC = () => {
             <Route path="/contact" element={<Modal><Contact /></Modal>} />
             <Route path="/sighting/:id" element={<SightingDetails />} />
             <Route path="/histogram/dates" element={<Histogram />} />
+            <Route path="/report" element={<OpenReport />} />
             <Route path="/" element={<span />} />{/* noop */}
           </Routes>
 
