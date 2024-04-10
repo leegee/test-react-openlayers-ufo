@@ -1,6 +1,9 @@
 {
     "open": "Åpne",
     "close": "Lukke",
+    "hours": "t",
+    "minutes": "m",
+    "seconds": "s",
     "panel": {
         "points_count": "{count} observasjoner",
         "cluster_count": "{count} grupper av observasjoner",
@@ -21,7 +24,7 @@
         "report": "Rapport",
         "no_data": "Ingen data for det synlige området",
         "shape": "Form",
-        "duration_seconds": "Varighet (sekunder)",
+        "duration_seconds": "Varighet",
         "context_menu": {
             "showPointOnMap": "Show on the map",
             "showDetails": "Show full entry"

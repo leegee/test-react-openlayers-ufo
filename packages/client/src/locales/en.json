@@ -1,6 +1,9 @@
 {
     "open": "Open",
     "close": "Close",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s",
     "status": {
         "points_count": "{count} sightings",
         "cluster_count": "{count} clusters of sightings",
