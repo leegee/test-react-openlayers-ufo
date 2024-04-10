@@ -13,6 +13,7 @@ interface ContextMenuProps {
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x, y }) => {
     const handleAction = (action: string) => onAction(action, rowData);
+    const [myPos, setMyPos] = useState({ x: 0, y: 0 });
 
     // Any click anywhere hides a visible context menu:
     const handleClick = () => {
@@ -29,6 +30,25 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x,
             event.preventDefault();
         }
     }
+
+    // Invert the menu position to stop it going off sceren
+    useEffect(() => {
+        let myX = x;
+        let myY = y;
+
+        const EL_WIDTH = 200;
+        const EL_HEIGHT = 120;
+
+        if (myX > window.innerWidth - EL_WIDTH) {
+            myX = window.innerWidth - EL_WIDTH;
+        }
+
+        if (myY > window.innerHeight - EL_HEIGHT) {
+            myY = window.innerWidth - EL_HEIGHT;
+        }
+
+        setMyPos({ x: myX, y: myY });
+    }, [x, y]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
