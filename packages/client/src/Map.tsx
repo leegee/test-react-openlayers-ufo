@@ -214,8 +214,7 @@ const OpenLayersMap: React.FC = () => {
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       updatePointsLayer(featureCollection);
       setVisibleDataLayer('points');
-    } else if (!pointsCount && zoom < config.zoomLevelForPoints) {
-      console.log(featureCollection);
+    } else if (!pointsCount || zoom < config.zoomLevelForPoints) {
       updateClusterOnlyLayer(featureCollection);
       setVisibleDataLayer('clusterOnly');
     } else {

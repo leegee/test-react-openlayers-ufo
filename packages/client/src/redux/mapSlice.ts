@@ -51,6 +51,36 @@ const initialState: MapState = {
   source: 'not-specified',
 };
 
+const setQueryString = (state: MapState) => {
+  const { zoom, bounds, from_date, to_date, q, source } = state;
+  let returnedQueryString: string;
+
+  if (!zoom || !bounds) {
+    returnedQueryString = state.queryString;
+    console.error('setQueryString: no bounds or zoom');
+  }
+
+  else {
+    const queryObject = {
+      zoom: String(zoom),
+      minlng: String(bounds[0]),
+      minlat: String(bounds[1]),
+      maxlng: String(bounds[2]),
+      maxlat: String(bounds[3]),
+      source: String(source),
+      ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
+      ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
+      ...(q !== '' ? { q: q } : {}),
+    };
+    returnedQueryString = new URLSearchParams(queryObject).toString();
+  }
+
+  return {
+    previousQueryString: state.previousQueryString,
+    queryString: returnedQueryString,
+  };
+};
+
 const mapSlice = createSlice({
   name: 'map',
   initialState,
@@ -109,27 +139,6 @@ const mapSlice = createSlice({
       state.requestingFeatures = false;
       state.queryString = '';
     },
-    setQueryString: (state: MapState) => {
-      const { zoom, bounds, from_date, to_date, q, source } = state;
-      if (!zoom || !bounds) {
-        console.debug('setQueryString: no bounds or zoom');
-        return;
-      }
-    
-      const queryObject = {
-        zoom: String(zoom),
-        minlng: String(bounds[0]),
-        minlat: String(bounds[1]),
-        maxlng: String(bounds[2]),
-        maxlat: String(bounds[3]),
-        source: String(source),
-        ...(from_date !== undefined ? { from_date: String(from_date) } : {}),
-        ...(to_date !== undefined ? { to_date: String(to_date) } : {}),
-        ...(q !== '' ? { q: q } : {}),
-      };
-    
-      state.queryString = new URLSearchParams(queryObject).toString();
-    },    
   },
 });
 
@@ -148,25 +157,31 @@ export const selectPointsCount = createSelector(
 
 export const selectClusterCount = createSelector(
   (state: RootState) => state.map.featureCollection,
-  (featureCollection: UfoFeatureCollectionType|undefined) => featureCollection?.clusterCount ?? 0
+  (featureCollection: UfoFeatureCollectionType | undefined) => featureCollection?.clusterCount ?? 0
 );
 
 const _fetchFeatures: any = createAsyncThunk<SearchResposneType, any, { state: RootState }>(
   'data/fetchData',
-  async (_, { dispatch, getState }): Promise<SearchResposneType|any> => {
-    dispatch(mapSlice.actions.setQueryString());
+  async (_, { dispatch, getState }): Promise<SearchResposneType | any> => {
     const mapState = getState().map;
-    const { previousQueryString, queryString } = mapState;
+    if (mapState.requestingFeatures) {
+      console.log('fetchFeatures - bail as already requesting');
+      return;
+    }
+    const { previousQueryString, queryString } = setQueryString(mapState);
 
     if (!queryString) {
-      console.debug('fetchFeatures - no queryString');
+      console.debug('fetchFeatures - bail as no queryString');
       return;
     }
 
-    if (previousQueryString === queryString && queryString !== '') {
-      console.debug('fetchFeatures - bailing: this query is the same as the last', previousQueryString, queryString);
+    if (previousQueryString === queryString) {
+      console.debug('zoom', mapState.zoom);
+      console.trace('fetchFeatures - bailing: this query is the same as the last', previousQueryString, queryString);
       return undefined;
     }
+
+    console.debug(`fetchFeatures - calling ${searchEndpoint}`);
 
     dispatch(mapSlice.actions.setPreviousQueryString());
     dispatch(mapSlice.actions.setRequestingFeatures(true));
@@ -214,7 +229,7 @@ export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       // Expose the CSV
       const blob = await response.blob();
       downloadCsvBlob(blob);

@@ -138,7 +138,7 @@ I've had to rename these as part of the move to MYSQL. Perhaps they relate to th
 
 ### MUFON
 
-Some kind soul has done most of the above for the [MUFON dataset](data\mufon\datapackage.info.json) avaiable through Kaggle.
+Some kind soul has done most of the above for the [MUFON dataset](data\mufon\datapackage.info.json) avaiable through Kaggle. I think this is the same as [on GitHub](https://github.com/planetsig/ufo-reports).
 
 See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as verbose, but does cover quite a large area. The text had some HTML entities good and bad (soem of tabs and commas, presumably from others' ingestion), which are tidied by the SQL ingestion scripts.
 
