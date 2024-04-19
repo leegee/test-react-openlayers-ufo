@@ -1,0 +1,29 @@
+#help-butto-ctrl {
+    position: fixed;
+    bottom: var(--ufo-div-padding);
+    right: var(--ufo-div-padding);
+    font-size: 18pt;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1em;
+    max-width: 1em;
+    min-height: 1em;
+    max-height: 1em;
+    border-radius: 50%;
+    color: white;
+    border: 1pt solid white;
+    background-color: #FFF2;
+}
+
+#help-butto-ctrl::after {
+    padding-bottom: 2pt;
+    content: '?';
+}
+
+#help-butto-ctrl:hover {
+    color: black;
+    border: 1pt solid var(--ufo-brand-clr);
+    background-color: #FFF8;
+}
