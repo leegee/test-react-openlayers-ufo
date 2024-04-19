@@ -70,10 +70,14 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
             if (tooltipContent && tooltipElementRef.current !== null) {
                 const mapSize = map.getSize();
                 if (mapSize) {
-                    const viewportHeight = mapSize[1];
                     tooltipElementRef.current.innerHTML = tooltipContent;
+                    const viewportWidth = mapSize[0];
+                    const viewportHeight = mapSize[1];
+                    const cursorX = event.pixel[0];
                     const cursorY = event.pixel[1];
-                    const positioning = cursorY < viewportHeight / 3 ? 'top-right' : 'bottom-right';
+                    const positioningX = cursorX < viewportWidth / 2 ? 'left' : 'right';
+                    const positioningY = cursorY < viewportHeight / 2 ? 'top' : 'bottom';
+                    const positioning = positioningY + '-' + positioningX;
                     overlay.setPosition(event.coordinate);
                     overlay.setPositioning(positioning);
                 } else {
