@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
-import type { CellClickedEvent, CellDoubleClickedEvent, RowSelectedEvent, RowStyle } from 'ag-grid-community';
+import type { CellClickedEvent, CellDoubleClickedEvent, GridApi, RowSelectedEvent, RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -82,22 +82,23 @@ const FeatureTable: React.FC = () => {
         rowData: null,
     });
 
-    useEffect(() => {
-        const v = (e: Event) => e.preventDefault();
-        window.addEventListener('contextmenu', v);
-        return () => window.removeEventListener('contextmenu', v)
-    });
+    const selectRecordById = (id: number) => {
+        const comparator = (node: { data: { id: number } }) => node.data.id === id;
+        gridRef.current?.api.ensureNodeVisible(comparator, 'middle');
+        dispatch(setSelectionId(id));
+    };
 
     const handleClick = (event: CellClickedEvent) => {
-        dispatch(setSelectionId(Number(event.data.id)));
+        selectRecordById(Number(event.data.id));
     }
 
     const handleDoubleClick = (event: CellDoubleClickedEvent) => {
+        selectRecordById(Number(event.data.id));
         showDetails(Number(event.data.id));
     }
 
     const handleSelectionChanged = (event: RowSelectedEvent) => {
-        dispatch(setSelectionId(Number(event.api.getSelectedRows()[0]?.id)));
+        selectRecordById(Number(event.api.getSelectedRows()[0]?.id));
     }
 
     const handleContextMenu = (event: any) => {
@@ -165,10 +166,18 @@ const FeatureTable: React.FC = () => {
         }
     };
 
-    // useEffect(() => {
-    //     onGridColumnsChanged();
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [columns]);
+    useEffect(() => {
+        const v = (e: Event) => e.preventDefault();
+        window.addEventListener('contextmenu', v);
+        return () => window.removeEventListener('contextmenu', v)
+    });
+
+    useEffect(() => {
+        if (selectionId) {
+            selectRecordById(selectionId);
+        }
+    }, [selectionId]);
+
 
     const rowData = featureCollection?.features.map((feature) => ({ ...feature.properties })) ?? [];
 
