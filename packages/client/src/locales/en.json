@@ -4,6 +4,10 @@
     "hours": "h",
     "minutes": "m",
     "seconds": "s",
+    "info": "Info",
+    "about": {
+        "title": "About this app"
+    },
     "status": {
         "points_count": "{count} sightings",
         "cluster_count": "{count} clusters of sightings",

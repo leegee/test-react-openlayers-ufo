@@ -4,6 +4,10 @@
     "hours": "t",
     "minutes": "m",
     "seconds": "s",
+    "info": "Info",
+    "about": {
+        "title": "Om denne  appen"
+    },
     "panel": {
         "points_count": "{count} observasjoner",
         "cluster_count": "{count} grupper av observasjoner",

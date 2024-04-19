@@ -25,6 +25,7 @@ import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } fr
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LabelToggleButton from './Map/LabelToggleButton';
 import LocaleManager from './LocaleManager';
+import HelpButton from './Map/HelpButton';
 
 import 'ol/ol.css';
 import './Map.css';
@@ -230,6 +231,7 @@ const OpenLayersMap: React.FC = () => {
         <ThemeToggleButton />
         <LabelToggleButton />
         <LocaleManager />
+        <HelpButton />
       </div>
       {mapRef.current && <Tooltip map={mapRef.current} />}
     </section>

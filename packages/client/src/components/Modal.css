@@ -47,6 +47,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin: 0;
+            margin-bottom: 0.3em;
         }
     }
 
@@ -73,7 +75,7 @@
         justify-content: center;
         padding: 10%;
         cursor: pointer;
-        font-weight: 100;
+        font-weight: lighter;
     }
 
     #modal-close:hover:after {
@@ -81,4 +83,28 @@
         border-color: var(--ufo-brand-clr)
     }
 
+    h2,
+    h3 {
+        font-weight: lighter;
+    }
+
+    h3,
+    h4 {
+        margin: 0;
+        margin-bottom: 0.6em;
+    }
+
+    h4 {
+        font-weight: bold;
+        letter-spacing: 0.6pt;
+        font-size: normal;
+        opacity: 60%;
+    }
+
+    p {
+        font-size: 100%;
+        margin: 0;
+        margin-bottom: 1em;
+        opacity: 90%;
+    }
 }

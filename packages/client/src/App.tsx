@@ -64,7 +64,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <>
           <Routes>
-            <Route path="/about" element={<Modal><About /></Modal>} />
+            <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Modal><Contact /></Modal>} />
             <Route path="/sighting/:id" element={<SightingDetails />} />
             <Route path="/histogram/dates" element={<Histogram />} />
