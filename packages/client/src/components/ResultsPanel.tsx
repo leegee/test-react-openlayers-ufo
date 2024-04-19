@@ -50,9 +50,7 @@ const Panel: React.FC = () => {
                 ) :
                     pointsCount ?
                         <FeatureTable />
-                        : <p className='message'>
-                            {get('panel.only_clusters_not_points')}
-                        </p>
+                        : <div className='message' dangerouslySetInnerHTML={{ __html: get('panel.only_clusters_not_points') }} />
                 }
             </section>
 

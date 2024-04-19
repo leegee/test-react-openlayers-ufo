@@ -11,7 +11,7 @@
     "status": {
         "points_count": "{count} sightings",
         "cluster_count": "{count} clusters of sightings",
-        "only_clusters_not_points": "Please zoom to for details of sightings.",
+        "only_clusters_not_points": "<p>Please pan or zoom in for details of sightings.</p><p>Search the map the controls at the top.</p> <p>Change the view with the buttons on the right.</p>",
         "no_results": "There were no matches for your search on the current map. Perhaps try panning and zooming out."
     },
     "panel": {
