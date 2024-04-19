@@ -5,9 +5,9 @@
 import React, { useEffect, useState } from 'react';
 import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectClusterCount, selectPointsCount } from './redux/mapSlice';
-import type { RootState } from './redux/store';
-import { setPanel } from './redux/guiSlice';
+import { selectClusterCount, selectPointsCount } from '../redux/mapSlice';
+import type { RootState } from '../redux/store';
+import { setPanel } from '../redux/guiSlice';
 import FeatureTable from './FeaturesTable';
 import ReportToggleButton from './ReportToggleButton';
 

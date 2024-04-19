@@ -8,10 +8,10 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import config from '@ufo-monorepo-test/config';
-import { RootState } from './redux/store';
-import { setPanel, setSelectionId } from './redux/guiSlice';
+import { RootState } from '../redux/store';
+import { setPanel, setSelectionId } from '../redux/guiSlice';
 import ContextMenu from './ContextMenu';
-import { highlightRenderer, secondsRenderer } from './FeaturesTable/cell-renderers';
+import { highlightRenderer, secondsRenderer } from '../FeaturesTable/cell-renderers';
 
 import './FeatureTable.css';
 

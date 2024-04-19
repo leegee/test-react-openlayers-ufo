@@ -5,8 +5,8 @@ import { Bar } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 
-import { selectPointsCount } from './redux/mapSlice';
-import { RootState } from './redux/store';
+import { selectPointsCount } from '../redux/mapSlice';
+import { RootState } from '../redux/store';
 import Modal from './Modal';
 
 import './Histogram.css';

@@ -4,15 +4,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
-import Map from './Map';
-import ResultsPanel from './ResultsPanel';
-import Toolbar from './Toolbar';
-import Modal from './Modal';
-import About from './Modal/About';
-import Contact from './Modal/Contact';
-import Histogram from './Histogram';
-import SightingDetails from './SightingDetails';
-import OpenReport from './OpenReport';
+import Map from './components/Map';
+import ResultsPanel from './components/ResultsPanel';
+import Toolbar from './components/Toolbar';
+import Modal from './components/Modal';
+import About from './views/About';
+import Contact from './views/Contact';
+import Histogram from './components/Histogram';
+import SightingDetails from './views/SightingDetails';
+import OpenReport from './components/OpenReport';
 
 import './App.css';
 

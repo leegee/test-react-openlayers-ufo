@@ -3,9 +3,9 @@ import { get } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import Modal from './Modal';
-import { RootState } from './redux/store';
-import { fetchSightingDetails } from './redux/details';
+import Modal from '../components/Modal';
+import { RootState } from '../redux/store';
+import { fetchSightingDetails } from '../redux/details';
 
 import './SightingDetails.css';
 

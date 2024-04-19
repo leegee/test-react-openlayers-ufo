@@ -1,7 +1,7 @@
 import { MapBaseLayerKeyType } from '../Map';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectBasemapSource, setBasemapSource } from '../redux/mapSlice';
+import { selectBasemapSource, setBasemapSource } from '../../redux/mapSlice';
 
 import './ThemeToggleButton.css';
 

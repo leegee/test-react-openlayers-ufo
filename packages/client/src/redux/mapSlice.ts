@@ -9,7 +9,7 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import debounce from 'debounce';
 
-import type { MapBaseLayerKeyType } from '../Map';
+import type { MapBaseLayerKeyType } from '../components/Map';
 import config from '@ufo-monorepo-test/config';
 import { FeatureSourceAttributeType, MapDictionaryType, UfoFeatureCollectionType, SearchResposneType } from '@ufo-monorepo-test/common-types';
 import { RootState } from './store';

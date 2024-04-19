@@ -5,8 +5,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import type { EnhancedStore } from '@reduxjs/toolkit';
 
-import { setupLocale } from '../LocaleManager';
-import FeaturesTable from '../FeaturesTable';
+import { setupLocale } from '../components/LocaleManager';
+import FeaturesTable from '../components/FeaturesTable';
 
 const mockStore = configureStore([]);
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { setPanel } from './redux/guiSlice';
+import { setPanel } from '../redux/guiSlice';
 
-import { RootState } from './redux/store';
+import { RootState } from '../redux/store';
 
 const OpenReport: React.FC = () => {
     const { panel } = useSelector((state: RootState) => state.gui);

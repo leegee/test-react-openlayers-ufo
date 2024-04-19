@@ -4,10 +4,10 @@ import { Provider } from 'react-redux';
 
 import config from '@ufo-monorepo-test/config';
 import { store } from './redux/store';
-import { setupLocale } from './LocaleManager';
+import { setupLocale } from './components/LocaleManager';
 import App from './App';
 
-import './index.css';
+import './main.css';
 import './App.css';
 
 console.info(`Locle: ${config.locale}`);

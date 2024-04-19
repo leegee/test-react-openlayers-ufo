@@ -3,14 +3,14 @@ import { init } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 
 import config from '@ufo-monorepo-test/config';
-import { RootState } from './redux/store';
-import { setLocaleKey } from './redux/guiSlice';
+import { RootState } from '../redux/store';
+import { setLocaleKey } from '../redux/guiSlice';
 
 import './LocaleManager.css';
 
 export const translations: Record<string, Promise<any>> = {
-    'en': import('./locales/en.json'),
-    'no': import('./locales/no.json'),
+    'en': import('../locales/en.json'),
+    'no': import('../locales/no.json'),
 };
 
 type LocaleKey = keyof typeof translations;
