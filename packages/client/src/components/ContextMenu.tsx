@@ -13,7 +13,7 @@ interface ContextMenuProps {
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ onAction, rowData, isOpen, x, y }) => {
     const handleAction = (action: string) => onAction(action, rowData);
-    const [myPos, setMyPos] = useState({ x: 0, y: 0 });
+    const [_myPos, setMyPos] = useState({ x: 0, y: 0 });
 
     // Any click anywhere hides a visible context menu:
     const handleClick = () => {
