@@ -29,6 +29,8 @@
     }
 
     #modal-content {
+        --top-padding: 10pt;
+
         position: relative;
         background: var(--ufo-modal-bg);
         color: var(--ufo-modal-fg);
@@ -36,7 +38,7 @@
         height: clamp(30rem, 50em, 80vh);
         border: 1pt solid var(--ufo-modal-border-clr);
         border-radius: 4pt;
-        padding: 1em;
+        padding: 2em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -48,10 +50,10 @@
             align-items: center;
             justify-content: space-between;
             margin: 0;
-            margin-bottom: 0.3em;
+            margin-bottom: 0.6em;
+            font-weight: normal;
         }
     }
-
 
     #modal-inner {
         flex-grow: 1;
@@ -60,9 +62,15 @@
         min-width: 100%;
     }
 
+    #modal-close {
+        position: absolute;
+        right: var(--top-padding);
+        top: var(--top-padding);
+    }
+
     #modal-close:after {
         content: 'X';
-        border: 1pt solid var(--ufo-ctrl-fg);
+        border: 1px dotted var(--ufo-ctrl-fg);
         border-radius: 50%;
         min-width: 1em;
         max-width: 1em;
@@ -83,7 +91,6 @@
         border-color: var(--ufo-brand-clr)
     }
 
-    h2,
     h3 {
         font-weight: lighter;
     }

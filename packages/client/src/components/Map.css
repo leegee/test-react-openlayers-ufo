@@ -92,3 +92,9 @@
 .map-ctrls .map-ctrl:last-child {
     padding-bottom: 0 !important;
 }
+
+.map-ctrl:hover {
+    color: var(--ufo-brand-clr) !important;
+    filter: none !important;
+    background: var(--ufo-ctrl-bg-focus) !important;
+}

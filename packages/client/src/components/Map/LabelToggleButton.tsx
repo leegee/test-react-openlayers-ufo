@@ -15,7 +15,7 @@ const LabelToggleButton: React.FC = () => {
     }
 
     return (
-        <button onClick={handleClick} id='labels-ctrl' className='map-ctrl highlightable ol-unselectable ol-control' />
+        <button data-active={showLabels} onClick={handleClick} id='labels-ctrl' className='map-ctrl highlightable ol-unselectable ol-control' />
     );
 };
 

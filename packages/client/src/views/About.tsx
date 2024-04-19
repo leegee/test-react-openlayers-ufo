@@ -3,11 +3,13 @@ import React from 'react';
 import Modal from '../components/Modal';
 import { get } from 'react-intl-universal';
 
+import './About.css';
+
 const About: React.FC = () => {
     return <Modal title={get('about.title')}>
         <section id='about'>
             <p>
-                This map is an experiment in representing reports of UFO sightings.
+                A map experiment in representing reports of UFO sightings.
             </p>
 
             <h3>Data Sources</h3>
