@@ -42,7 +42,7 @@
   npm run build -ws
 ```
 
-After bulding you will be left with the output of the Vite bundler, to host via nginx or other, and with the Node server script, to host via pm2/nginx/other.
+After bulding you will be left with: the output of the Vite bundler to be hosted by your HTTP server; a Node server script, to host via pm2/etc; serverless functions compatible with Vercel.
 
 ## Description
 
