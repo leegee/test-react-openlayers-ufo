@@ -13,6 +13,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
         details: {},
     };
 
+    res.statusCode = 200;
+    res.statusMessage = 'OK';
+    res.setHeader('Content-type', 'application/json; charset=uft-8')
+
     const id = (req.url?.split('/') as string[]).pop() || '';
 
     if (!id) {
@@ -47,6 +51,9 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 
         body.details = rows[0];
     } catch (e) {
+        res.statusCode = 500;
+        res.statusMessage = 'NOT OK';
+
         throw new CustomError({
             action: 'details',
             details: { id },

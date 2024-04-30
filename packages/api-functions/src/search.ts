@@ -50,6 +50,10 @@ async function searchGeoJson(_req: IncomingMessage, res: ServerResponse, userArg
         results: undefined,
     };
 
+    res.statusCode = 200;
+    res.statusMessage = 'OK';
+    res.setHeader('Content-type', 'application/json; charset=uft-8')
+
     let forErrorReporting = {};
 
     try {
@@ -79,11 +83,16 @@ async function searchGeoJson(_req: IncomingMessage, res: ServerResponse, userArg
         res.write(JSON.stringify(body));
     }
     catch (e) {
+        res.statusCode = 500;
+        res.statusMessage = 'NOK';
         throw new CustomError({
             action: 'query',
             details: JSON.stringify(forErrorReporting, null, 2),
             error: e as Error
         });
+    }
+    finally {
+        res.end();
     }
 }
 

@@ -8,9 +8,9 @@
 * ag-grid
 * Jest
 * Vite 
-* Koa
 * PostGIS
-
+* Koa
+* Serverless functions
 * Text search
 * Date-range search
 * CSV downloads
@@ -35,11 +35,7 @@
   psql -c 'CREATE DATABASE ${UFO_DATABASE}'
   psql -d ufo < data/merged/ufo-combined.sql
   npm install
-
-  # For dev, either in separate terminals:
-  npm run dev:api 
-  npm run dev:client
-  # or to do both via 'concurrently':
+  npm run
   npm start
 
   # For production
