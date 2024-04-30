@@ -1,27 +1,17 @@
-import type { Context } from 'koa';
 import type { IncomingMessage, ServerResponse } from 'http';
-
-import { searchRoute } from '@ufo-monorepo-test/api-functions/src';
-
-const search = async (ctx: Context) => await searchRoute(ctx.req as IncomingMessage, ctx.res as ServerResponse);
-
-export default search;
-
-
-/*
-
 import { PassThrough } from 'stream';
-import type { Context } from 'koa';
 import type { FeatureCollection } from 'geojson';
-import type { ParsedUrlQuery } from "querystring";
-
 import { FeatureSourceAttributeType, isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo-test/common-types';
 import config from '@ufo-monorepo-test/config';
-import { CustomError } from '../middleware/errors';
-import { listToCsvLine } from '../lib/csv';
+import pool from '@ufo-monorepo-test/dbh';
+import { listToCsvLine } from './lib/csv';
+import { CustomError } from './lib/CustomError';
+import { parse } from 'url';
 
-export async function search(ctx: Context) {
-    const userArgs: QueryParamsType | null = getCleanArgs(ctx.request.query);
+let DBH = pool;
+
+export async function search(req: IncomingMessage, res: ServerResponse) {
+    const userArgs: QueryParamsType | null = getCleanArgs(req);
 
     if (!userArgs) {
         throw new CustomError({
@@ -39,18 +29,20 @@ export async function search(ctx: Context) {
         });
     }
 
-    const acceptHeader = ctx.headers.accept || '';
+    const acceptHeader = req.headers.accept || '';
 
-    return acceptHeader.includes('text/csv') ? searchCsv(ctx, userArgs) : searchJson(ctx, userArgs);
+    return acceptHeader.includes('text/csv') ? searchCsv(res, userArgs) : searchGeoJson(req, res, userArgs);
 }
 
-async function searchCsv(ctx: Context, userArgs: QueryParamsType) {
+
+async function searchCsv(res: ServerResponse, userArgs: QueryParamsType) {
     let sqlBits = constructSqlBits(userArgs);
     const sql = `SELECT * FROM sightings WHERE ${sqlBits.whereColumns.join(' AND ')}`;
-    await sendCsvResponse(ctx, sql, sqlBits);
+    await sendCsvResponse(res, sql, sqlBits);
 }
 
-async function searchJson(ctx: Context, userArgs: QueryParamsType) {
+
+async function searchGeoJson(_req: IncomingMessage, res: ServerResponse, userArgs: QueryParamsType) {
     const body: QueryResponseType = {
         msg: '',
         status: 200,
@@ -78,13 +70,13 @@ async function searchJson(ctx: Context, userArgs: QueryParamsType) {
 
         forErrorReporting = { sql, sqlBits, formattedQuery: formattedQueryForLogging, userArgs };
 
-        const { rows } = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
+        const { rows } = await DBH.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
         if (rows[0].jsonb_build_object.features === null && config.api.debug) {
             console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
         }
         body.results = rows[0].jsonb_build_object as FeatureCollection;
         body.dictionary = await getDictionary(body.results, sqlBits);
-        ctx.body = JSON.stringify(body);
+        res.write(JSON.stringify(body));
     }
     catch (e) {
         throw new CustomError({
@@ -95,29 +87,36 @@ async function searchJson(ctx: Context, userArgs: QueryParamsType) {
     }
 }
 
-async function sendCsvResponse(ctx: Context, sql: string, sqlBits: SqlBitsType) {
-    ctx.type = 'text/csv';
-    ctx.attachment('ufo-sightings.csv');
+async function sendCsvResponse(res: ServerResponse, sql: string, sqlBits: SqlBitsType) {
+    try {
+        const results = await DBH.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
 
-    const results = await ctx.dbh.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
-    type ResponseBody = PassThrough | string | Buffer | NodeJS.WritableStream | null;
-    let bodyStream: ResponseBody = ctx.body as ResponseBody;
-    if (!bodyStream || typeof bodyStream === 'string' || Buffer.isBuffer(bodyStream)) {
-        bodyStream = new PassThrough();
-        ctx.body = bodyStream;
-    }
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="ufo-sightings.csv"`);
 
-    // Should enforce order. Map?
-    let firstLine = true;
-    for (const row of results.rows) {
-        if (firstLine) {
-            listToCsvLine(Object.keys(row), bodyStream);
-            firstLine = false;
+        // Initialize a PassThrough stream for the response body
+        const bodyStream = new PassThrough();
+
+        // Pipe the response body stream to the HTTP response
+        bodyStream.pipe(res);
+
+        // Write CSV data to the response body stream
+        let firstLine = true;
+        for (const row of results.rows) {
+            if (firstLine) {
+                listToCsvLine(Object.keys(row), bodyStream);
+                firstLine = false;
+            }
+            listToCsvLine(Object.values(row), bodyStream);
         }
-        listToCsvLine(Object.values(row), bodyStream);
-    }
 
-    bodyStream.end();
+        // End the response body stream
+        bodyStream.end();
+    } catch (error) {
+        console.error('Error handling request:', error);
+        res.statusCode = 500;
+        res.end('Internal server error');
+    }
 }
 
 function constructSqlBits(userArgs: QueryParamsType): SqlBitsType {
@@ -149,11 +148,11 @@ function constructSqlBits(userArgs: QueryParamsType): SqlBitsType {
         const searchWords = userArgs.q.split(' ');
 
         const searchConditions = searchWords.map(
-            (_word, index) => `(location_text ILIKE $${whereParams.length + index + 1} OR report_text ILIKE $${whereParams.length + index + 1})`
+            (_word: string, index: number) => `(location_text ILIKE $${whereParams.length + index + 1} OR report_text ILIKE $${whereParams.length + index + 1})`
         ).join(' AND ');
 
         // Push the search conditions and parameters
-        searchWords.forEach(word => whereParams.push(`%${word}%`));
+        searchWords.forEach((word: string) => whereParams.push(`%${word}%`));
         whereColumns.push(`(${searchConditions})`);
 
         // Construct the SELECT clause to calculate search score for each word
@@ -258,36 +257,39 @@ async function getDictionary(featureCollection: FeatureCollection | undefined, s
     return dictionary;
 }
 
-function getCleanArgs(args: ParsedUrlQuery) {
-    const userArgs: QueryParamsType = {
-        zoom: parseInt(args.zoom as string),
-        minlng: parseFloat(args.minlng as string),
-        minlat: parseFloat(args.minlat as string),
-        maxlng: parseFloat(args.maxlng as string),
-        maxlat: parseFloat(args.maxlat as string),
+function getCleanArgs(req: IncomingMessage) {
 
-        to_date: args.to_date ? (Array.isArray(args.to_date) ? args.to_date[0] : args.to_date) : undefined,
-        from_date: args.from_date ? (Array.isArray(args.from_date) ? args.from_date[0] : args.from_date) : undefined,
+    const url = req.url || '';
+    const { query } = parse(url, true);
+    const userArgs: QueryParamsType = {
+        zoom: parseInt(query.zoom as string),
+        minlng: parseFloat(query.minlng as string),
+        minlat: parseFloat(query.minlat as string),
+        maxlng: parseFloat(query.maxlng as string),
+        maxlat: parseFloat(query.maxlat as string),
+
+        to_date: query.to_date ? (Array.isArray(query.to_date) ? query.to_date[0] : query.to_date) : undefined,
+        from_date: query.from_date ? (Array.isArray(query.from_date) ? query.from_date[0] : query.from_date) : undefined,
 
         // Potentially the subject of a text search:
-        q: args.q ? String(args.q).trim() : undefined,
+        q: query.q ? String(query.q).trim() : undefined,
 
         // Potentially the subject of the text search: undefined = search all cols defined in config.api.searchableTextColumnNames
         // Not yet implemented.
-        q_subject: args.q_subject && [config.api.searchableTextColumnNames].includes(
-            args.q_subject instanceof Array ? args.q_subject : [args.q_subject]
-        ) ? String(args.q_subject) : undefined,
+        q_subject: query.q_subject && [config.api.searchableTextColumnNames].includes(
+            query.q_subject instanceof Array ? query.q_subject : [query.q_subject]
+        ) ? String(query.q_subject) : undefined,
 
-        sort_order: String(args.sort_order) === 'ASC' || String(args.sort_order) === 'DESC' ? String(args.sort_order) as 'ASC' | 'DESC' : undefined,
+        sort_order: String(query.sort_order) === 'ASC' || String(query.sort_order) === 'DESC' ? String(query.sort_order) as 'ASC' | 'DESC' : undefined,
 
         ... (
-            isFeatureSourceAttributeType(args.source)
-                ? { source: args.source as FeatureSourceAttributeType }
+            isFeatureSourceAttributeType(query.source)
+                ? { source: query.source as FeatureSourceAttributeType }
                 : {}
         )
     };
 
-    if (args.source)
+    if (query.source)
 
         if (userArgs.from_date && Number(userArgs.from_date) === 1) {
             delete userArgs.from_date;
@@ -429,4 +431,5 @@ function geoJsonForClusters(sqlBits: SqlBitsType, _userArgs: QueryParamsType) {
     ) AS fc`;
 }
 
-*/
+
+export default search;

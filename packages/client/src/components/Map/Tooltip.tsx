@@ -3,7 +3,7 @@ import { get } from 'react-intl-universal';
 import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
 import { FeatureLike } from 'ol/Feature';
-import Overlay from 'ol/Overlay';
+import Overlay, { Positioning } from 'ol/Overlay';
 import config from '@ufo-monorepo-test/config';
 import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
 
@@ -79,7 +79,7 @@ const Tooltip: React.FC<TooltipComponentProps> = ({ map }) => {
                     const positioningY = cursorY < viewportHeight / 2 ? 'top' : 'bottom';
                     const positioning = positioningY + '-' + positioningX;
                     overlay.setPosition(event.coordinate);
-                    overlay.setPositioning(positioning);
+                    overlay.setPositioning(positioning as Positioning);
                 } else {
                     overlay.setPosition(event.coordinate);
                 }

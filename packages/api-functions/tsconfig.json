@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "build/server",
+        "outDir": "build/api-functions",
         "rootDir": "src",
         "composite": true
     },

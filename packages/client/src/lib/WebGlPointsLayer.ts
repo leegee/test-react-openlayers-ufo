@@ -1,8 +1,9 @@
 import GeoJSON from 'ol/format/GeoJSON.js';
 import Vector from 'ol/source/Vector.js';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints.js';
-import type { UfoFeatureCollection } from 'redux/mapSlice';
+import type { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
 
+/*
 const predefinedStyles = {
     circles: {
         'circle-radius': [
@@ -52,6 +53,7 @@ const predefinedStyles = {
         'circle-opacity': 0.95,
     },
 };
+*/
 
 const vectorSource = new Vector({
     format: new GeoJSON(),
@@ -79,16 +81,16 @@ export function style() {
         ],
         'circle-fill-color': [
             'interpolate', ['linear'],
-            ['get', 'rc_temperature'],  
-            -50, 'navy',                     
-            50, 'cyan'                      
+            ['get', 'rc_temperature'],
+            -50, 'navy',
+            50, 'cyan'
         ],
         'circle-rotate-with-view': false,
         'circle-displacement': [0, 0],
     }
 }
 
-export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
+export function updateVectorLayer(featureCollection: UfoFeatureCollectionType) {
     window.document.body.style.cursor = 'wait';
     vectorSource.clear();
     if (featureCollection.features !== null) {
@@ -98,4 +100,3 @@ export function updateVectorLayer(featureCollection: UfoFeatureCollection) {
     console.debug("Number of features added:", vectorSource.getFeatures().length);
     window.document.body.style.cursor = 'unset';
 }
-

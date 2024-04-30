@@ -37,6 +37,12 @@
             ],
             "@ufo-monorepo-test/config/*": [
                 "packages/config/*"
+            ],
+            "@ufo-monorepo-test/dbh/*": [
+                "packages/dbh/*"
+            ],
+            "@ufo-monorepo-test/api-functions/*": [
+                "packages/api-functions/*"
             ]
         }
     },
@@ -48,7 +54,13 @@
             "path": "./packages/config"
         },
         {
-            "path": "./packages/api"
+            "path": "./packages/dbh"
+        },
+        {
+            "path": "./packages/api-functions"
+        },
+        {
+            "path": "./packages/server"
         },
         {
             "path": "./packages/client"

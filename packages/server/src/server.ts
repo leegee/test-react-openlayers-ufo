@@ -21,23 +21,18 @@ import cors from "@koa/cors";
 
 import config from '@ufo-monorepo-test/config';
 
-import { search as searchRoute } from './routes/search';
-import { details as detailsRoute } from './routes/details';
-import { errorHandler } from "./middleware/errors";
-import { dbhMiddleware } from './middleware/dbh';
+import searchRoute from './routes/search';
+import detailsRoute from './routes/details';
 
-if (!config.db.engine) {
-    throw new TypeError('Env var UFO_DB_ENGINE needs to be postgres or mysql');
-} else {
-    console.debug(`config.db.engine=${config.db.engine}`);
-}
+import { errorHandler } from "./middleware/errors";
+// import { dbhMiddleware } from './middleware/dbh';
 
 const router = new Router();
 const app = new Koa();
 
 app.use(cors({ origin: "*" }));
 app.use(errorHandler);
-app.use(dbhMiddleware);
+// app.use(dbhMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
@@ -45,10 +40,10 @@ router.get('/search', searchRoute);
 router.get('/details/:id', detailsRoute);
 
 app.listen(config.api.port, () => {
-    console.info({ 
-        action: 'start-up', 
-        port: config.api.port, 
+    console.info({
+        action: 'start-up',
+        port: config.api.port,
         taking_to: config.db.database,
-});
+    });
 });
 

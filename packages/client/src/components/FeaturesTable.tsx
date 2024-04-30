@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'react-intl-universal';
 import { AgGridReact } from 'ag-grid-react';
-import type { CellClickedEvent, CellDoubleClickedEvent, GridApi, RowSelectedEvent, RowStyle } from 'ag-grid-community';
+import type { CellClickedEvent, CellDoubleClickedEvent, RowSelectedEvent, RowStyle } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 

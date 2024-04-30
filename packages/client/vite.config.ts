@@ -20,6 +20,7 @@ export default defineConfig({
       '@swc/core': '@swc/core',
       '@ufo-monorepo-test/config': path.resolve(__dirname, '../config/src'),
       '@ufo-monorepo-test/common-types': path.resolve(__dirname, '../common-types/src'),
+      '@ufo-monorepo-test/api-functions': path.resolve(__dirname, '../api-functions/src'),
     },
   },
   plugins: [

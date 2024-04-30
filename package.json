@@ -11,13 +11,15 @@
     "packages/client",
     "packages/common-types",
     "packages/config",
-    "packages/api"
+    "packages/dbh",
+    "packages/api-functions",
+    "packages/server"
   ],
   "scripts": {
     "build": "npm run build -ws",
     "dev:client": "npm run dev -w packages/client",
-    "start:api": "npm run dev -w packages/api",
-    "dev:api": "npm run watch -w packages/api",
+    "start:api": "npm run dev -w packages/server",
+    "dev:api": "npm run watch -w packages/server",
     "dev:preview": "npm run preview -w packages/client",
     "start": "concurrently \"npm run dev:api\" \"npm run dev:preview"
   },

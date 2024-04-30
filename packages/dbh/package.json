@@ -1,0 +1,18 @@
+{
+    "name": "@ufo-monorepo-test/dbh",
+    "version": "1.0.0",
+    "description": "Database handle",
+    "main": "./build/index.js",
+    "type": "module",
+    "scripts": {
+        "prebuild": "npm run clean",
+        "build": "tsc --build",
+        "clean": "rm -rf build/*"
+    },
+    "dependencies": {
+        "@ufo-monorepo-test/config": "file:../config"
+    },
+    "engines": {
+        "node": "20.x"
+    }
+}

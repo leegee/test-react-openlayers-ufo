@@ -1,7 +1,15 @@
-/**
- * Until the MUFON Kaggle and Norege UFO databases are merged, their hard-coded names
- * (from config.db.database) control some SQL.
- */
+import type { Context } from 'koa';
+import type { IncomingMessage, ServerResponse } from 'http';
+
+import { detailsRoute } from '@ufo-monorepo-test/api-functions/src';
+
+const details = async (ctx: Context) => await detailsRoute(ctx.req as IncomingMessage, ctx.res as ServerResponse);
+
+export default details;
+
+
+
+/*
 import { Context } from 'koa';
 
 import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
@@ -60,3 +68,4 @@ export async function details(ctx: Context) {
     ctx.body = JSON.stringify(body);
 }
 
+*/
