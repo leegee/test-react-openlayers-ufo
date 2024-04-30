@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
 import config from '@ufo-monorepo-test/config';
-import pool from '@ufo-monorepo-test/dbh';
+import pool from '@ufo-monorepo-test/dbh/src';
 import { CustomError } from './lib/CustomError';
 
 let DBH = pool;

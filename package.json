@@ -56,8 +56,6 @@
     "@swc/cli": "^0.3.10",
     "@swc/core": "^1.4.6",
     "@types/koa-router": "^7.4.8",
-    "@ufo-monorepo-test/client": "^0.0.0",
-    "@ufo-monorepo-test/common-types": "^0.0.0",
     "ag-grid-community": "^31.2.0",
     "ag-grid-react": "^31.2.0",
     "concurrently": "^8.2.2",

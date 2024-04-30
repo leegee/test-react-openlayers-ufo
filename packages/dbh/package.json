@@ -1,9 +1,13 @@
 {
     "name": "@ufo-monorepo-test/dbh",
     "version": "1.0.0",
-    "description": "Database handle",
+    "description": "Database handle pool",
     "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "type": "module",
+    "files": [
+        "build/dbh"
+    ],
     "scripts": {
         "prebuild": "npm run clean",
         "build": "tsc --build",
