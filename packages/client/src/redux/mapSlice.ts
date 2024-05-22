@@ -32,7 +32,7 @@ export interface MapState {
   source: FeatureSourceAttributeType;
 }
 
-const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.search;
+const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endpoints.search;
 
 const initialState: MapState = {
   featureCollection: undefined,

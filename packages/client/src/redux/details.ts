@@ -10,7 +10,7 @@ export interface SightingDetailsState {
     // Add other fields as needed
 }
 
-const detailsEndpoint = config.api.host + ':' + config.api.port + config.api.endopoints.details;
+const detailsEndpoint = config.api.host + ':' + config.api.port + config.api.endpoints.details;
 
 const initialState: SightingDetailsState = {
     id: undefined,
@@ -43,7 +43,7 @@ const detailsSlice = createSlice({
     name: 'sightingDetails',
     initialState,
     reducers: {
-        setId: (state, action: PayloadAction<string|undefined>) => {
+        setId: (state, action: PayloadAction<string | undefined>) => {
             state.id = action.payload;
         },
     },

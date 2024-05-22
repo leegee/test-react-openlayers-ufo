@@ -1,19 +1,24 @@
 import pg from "pg";
+import config, { isVercel, VercelDbConfig, OurDbConfig } from '@ufo-monorepo-test/config/src';
 
-import config from '@ufo-monorepo-test/config';
+let poolConfig: pg.PoolConfig;
 
-if (!config.db.engine) {
-    throw new TypeError('Env var UFO_DB_ENGINE needs to be postgres or mysql');
+if (isVercel()) {
+    const dbConfig = config.db as VercelDbConfig;
+    poolConfig = {
+        connectionString: dbConfig.POSTGRES_URL
+    };
 } else {
-    console.debug(`config.db.engine=${config.db.engine}`);
+    const dbConfig = config.db as OurDbConfig;
+    poolConfig = {
+        user: dbConfig.user,
+        password: dbConfig.password,
+        host: dbConfig.host,
+        port: Number(dbConfig.port),
+        database: dbConfig.database,
+    };
 }
 
-export const pool = new pg.Pool({
-    user: config.db.user,
-    password: config.db.password,
-    host: config.db.host,
-    port: Number(config.db.port),
-    database: config.db.database,
-});
+export const pool = new pg.Pool(poolConfig);
 
 export default pool;

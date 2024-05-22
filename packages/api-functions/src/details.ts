@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
-import config from '@ufo-monorepo-test/config';
+import { isCombinedDb } from '@ufo-monorepo-test/config';
 import pool from '@ufo-monorepo-test/dbh/src';
 import { CustomError } from './lib/CustomError';
 
@@ -29,7 +29,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 
     try {
         // Construct the SQL query based on the database configuration
-        let sql = config.db.database === 'ufo' ? `SELECT * FROM sightings WHERE id=$1` :
+        let sql = isCombinedDb() ? `SELECT * FROM sightings WHERE id=$1` :
             `SELECT sightings.*,
             observed_via.*, 
             yes_no_dontknow.*, 
