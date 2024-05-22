@@ -1,0 +1,35 @@
+digraph {
+    edge [arrowhead = "none";];
+    
+    // Nodes
+    postgres [label = "Postgres Server";];
+    server [label = "Service Layer";];
+    vercel_sf [label = "Vercel Serverless Functions";];
+    api_functions [label = "API Functions";];
+    client_package [label = "Vite Bundled Client";];
+    agent [label = "User Agent";];
+    
+    // Define node ranks
+    subgraph {
+        rank = same;
+        api_functions;
+        vercel_sf;
+        server;
+    }
+    subgraph {
+        rank = same;
+        postgres;
+    }
+    subgraph {
+        rank = same;
+        client_package;
+    }
+    
+    // Edges
+    postgres -> server;
+    api_functions -> vercel_sf;
+    client_package -> vercel_sf;
+    api_functions -> server;
+    server -> client_package;
+    client_package -> agent;
+}

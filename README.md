@@ -57,6 +57,7 @@ Please fix anything you can or suggest a better way of doing things.
 
 ## Limitations
 
+* The Muffon database reports are truncated.
 * Much of the Norge UFO data is yet to be processed. Any advice on reading the schema much appreciated.
 * The map's minimum zoom level is set to avoid over-taxing the server and the client: hopefully will find time to produce density maps for such zoom levels.
 * The heatmap may be slow, so perhaps write a custom loader to load a CSV
@@ -140,9 +141,14 @@ See [./data/mufon/](./data/mufon/) for the ingestion script. The data is not as 
 
 MUFON has much less detail, but much more data.
 
+## Overview
+
+![Flowchart](docs/images/arch-flowchart.png)
+
 ## Todo:
 
 * Tighten linting.
 * Tests.
 * Logger transports/etc
 * Initialise with map extent rather than center
+
