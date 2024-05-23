@@ -23,7 +23,7 @@ export const pool = new pg.Pool(poolConfig);
 
 export default pool;
 
-export function final() {
+export function finaliseDbh() {
     if (isVercel()) {
         pool.end();
     }

@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
 import { isCombinedDb } from '@ufo-monorepo-test/config';
-import pool from '@ufo-monorepo-test/dbh/src';
+import { pool, finaliseDbh } from '@ufo-monorepo-test/dbh/src';
 import { CustomError } from './lib/CustomError';
 
 let DBH = pool;
@@ -48,9 +48,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 
         // Execute the SQL query and retrieve the details
         const { rows } = await DBH.query(sql, [id]);
-
         body.details = rows[0];
-    } catch (e) {
+    }
+
+    catch (e) {
         res.statusCode = 500;
         res.statusMessage = 'NOT OK';
 
@@ -59,6 +60,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
             details: { id },
             error: e as Error
         });
+    }
+
+    finally {
+        finaliseDbh();
     }
 
     // Set the response body and send the response
