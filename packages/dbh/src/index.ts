@@ -22,3 +22,9 @@ if (isVercel()) {
 export const pool = new pg.Pool(poolConfig);
 
 export default pool;
+
+export function final() {
+    if (isVercel()) {
+        pool.end();
+    }
+}
