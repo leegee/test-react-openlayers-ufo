@@ -19,15 +19,15 @@
 
 ## Environment Variables
 
-| Name | Default | Description |
-|---------|----------------| --- |
-|  PGHOST | 'localhost' | The PostGIS host machine |
-|  PGPORT | '5432' | The PostGIS host port |
-|  PGUSER | 'postgres' | PostGIS user name |
-|  PGPASSWORD | 'password' | PostGIS passphrase |
-|  UFO_DATABASE | 'ufo' | Name of the database |
-|  UFO_HTTP_HOST | 'http://localhost' | The Node.js API host |
-|  UFO_HTTP_PORT | '8080' | The Node.js API port |
+| Name           | Default            | Description              |
+|----------------|--------------------| ------------------------ |
+|  PGHOST        | 'localhost'        | The PostGIS host machine |
+|  PGPORT        | '5432'             | The PostGIS host port    |
+|  PGUSER        | 'postgres'         | PostGIS user name        |
+|  PGPASSWORD    | 'password'         | PostGIS passphrase       |
+|  UFO_DATABASE  | 'ufo'              | Name of the database     |
+|  UFO_HTTP_HOST | 'http://localhost' | The Node.js API host     |
+|  UFO_HTTP_PORT | '8080'             | The Node.js API port     |
 
 
 ## Synopsis
@@ -152,4 +152,4 @@ MUFON has much less detail, but much more data.
 * Tests.
 * Logger transports/etc
 * Initialise with map extent rather than center
-
+* Use `class-validator` when it supports a modern Node version.
