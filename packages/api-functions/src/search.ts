@@ -3,10 +3,10 @@ import { PassThrough } from 'stream';
 import type { FeatureCollection } from 'geojson';
 import { parse } from 'url';
 
-import { FeatureSourceAttributeType, isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo-test/common-types';
-import config from '@ufo-monorepo-test/config';
-import { logger } from '@ufo-monorepo-test/logger';
-import { pool, finaliseDbh } from '@ufo-monorepo-test/dbh/src';
+import { FeatureSourceAttributeType, isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo/common-types';
+import config from '@ufo-monorepo/config';
+import { logger } from '@ufo-monorepo/logger';
+import { pool, finaliseDbh } from '@ufo-monorepo/dbh/src';
 
 import { listToCsvLine } from './lib/csv';
 import { CustomError } from './lib/CustomError';

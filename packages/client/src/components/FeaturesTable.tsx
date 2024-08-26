@@ -7,7 +7,7 @@ import type { CellClickedEvent, CellDoubleClickedEvent, RowSelectedEvent, RowSty
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 import { RootState } from '../redux/store';
 import { setPanel, setSelectionId } from '../redux/guiSlice';
 import ContextMenu from './ContextMenu';

@@ -1,5 +1,5 @@
 import pg from "pg";
-import config, { isVercel, VercelDbConfig, OurDbConfig } from '@ufo-monorepo-test/config/src';
+import config, { isVercel, VercelDbConfig, OurDbConfig } from '@ufo-monorepo/config/src';
 
 let poolConfig: pg.PoolConfig;
 

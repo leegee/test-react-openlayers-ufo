@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 
 export type PanelStateTypes = 'hidden' | 'narrow' | 'full';
 

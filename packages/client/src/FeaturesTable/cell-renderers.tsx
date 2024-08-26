@@ -2,7 +2,7 @@
 import React from 'react';
 import { get } from 'react-intl-universal';
 
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 
 export const highlightRenderer = ({ q, text }: { q: string, text: string }) => {
     if (!text || !q || q.trim() === '') {

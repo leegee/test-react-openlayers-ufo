@@ -10,8 +10,8 @@ import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@r
 import debounce from 'debounce';
 
 import type { MapBaseLayerKeyType } from '../components/Map';
-import config from '@ufo-monorepo-test/config';
-import { FeatureSourceAttributeType, MapDictionaryType, UfoFeatureCollectionType, SearchResposneType } from '@ufo-monorepo-test/common-types';
+import config from '@ufo-monorepo/config';
+import { FeatureSourceAttributeType, MapDictionaryType, UfoFeatureCollectionType, SearchResposneType } from '@ufo-monorepo/common-types';
 import { RootState } from './store';
 import { downloadCsvBlob } from '../lib/download-csv-blob';
 

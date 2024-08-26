@@ -1,6 +1,6 @@
 // middleware/errors.ts - Error handling middleware that does very little so far
 import Koa from 'koa';
-import { logger } from '@ufo-monorepo-test/logger';
+import { logger } from '@ufo-monorepo/logger';
 
 export class CustomError {
     action: string;

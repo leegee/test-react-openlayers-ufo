@@ -32,19 +32,19 @@
         "outDir": "./build",
         "baseUrl": "./src",
         "paths": {
-            "@ufo-monorepo-test/common-types/*": [
+            "@ufo-monorepo/common-types/*": [
                 "packages/common-types/*"
             ],
-            "@ufo-monorepo-test/config/*": [
+            "@ufo-monorepo/config/*": [
                 "packages/config/*"
             ],
-            "@ufo-monorepo-test/logger/*": [
+            "@ufo-monorepo/logger/*": [
                 "packages/logger/*"
             ],
-            "@ufo-monorepo-test/dbh/*": [
+            "@ufo-monorepo/dbh/*": [
                 "packages/dbh/*"
             ],
-            "@ufo-monorepo-test/api-functions/*": [
+            "@ufo-monorepo/api-functions/*": [
                 "packages/api-functions/*"
             ]
         }

@@ -19,8 +19,8 @@ import Koa from "koa";
 import Router from 'koa-router';
 import cors from "@koa/cors";
 
-import config from '@ufo-monorepo-test/config';
-import { logger } from '@ufo-monorepo-test/logger';
+import config from '@ufo-monorepo/config';
+import { logger } from '@ufo-monorepo/logger';
 
 import searchRoute from './routes/search';
 import detailsRoute from './routes/details';

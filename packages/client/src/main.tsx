@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 import { store } from './redux/store';
 import { setupLocale } from './components/LocaleManager';
 import App from './App';

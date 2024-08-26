@@ -1,7 +1,7 @@
 import type { Context } from 'koa';
 import type { IncomingMessage, ServerResponse } from 'http';
 
-import { detailsRoute } from '@ufo-monorepo-test/api-functions/src';
+import { detailsRoute } from '@ufo-monorepo/api-functions/src';
 
 const details = async (ctx: Context) => await detailsRoute(ctx.req as IncomingMessage, ctx.res as ServerResponse);
 
@@ -12,8 +12,8 @@ export default details;
 /*
 import { Context } from 'koa';
 
-import { FetchSightingDetailsResponseType } from '@ufo-monorepo-test/common-types';
-import config from '@ufo-monorepo-test/config';
+import { FetchSightingDetailsResponseType } from '@ufo-monorepo/common-types';
+import config from '@ufo-monorepo/config';
 import { CustomError } from '../middleware/errors';
 
 export async function details(ctx: Context) {

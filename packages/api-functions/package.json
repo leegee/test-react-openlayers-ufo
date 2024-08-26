@@ -1,5 +1,5 @@
 {
-    "name": "@ufo-monorepo-test/api-functions",
+    "name": "@ufo-monorepo/api-functions",
     "version": "1.0.0",
     "description": "Serverless API functions",
     "main": "./build/index.js",
@@ -12,10 +12,10 @@
         "test": "echo There ought to be tests"
     },
     "dependencies": {
-        "@ufo-monorepo-test/common-types": "file:../common-types",
-        "@ufo-monorepo-test/config": "file:../config",
-        "@ufo-monorepo-test/logger": "file:../logger",
-        "@ufo-monorepo-test/dbh": "file:../dbh"
+        "@ufo-monorepo/common-types": "file:../common-types",
+        "@ufo-monorepo/config": "file:../config",
+        "@ufo-monorepo/logger": "file:../logger",
+        "@ufo-monorepo/dbh": "file:../dbh"
     },
     "engines": {
         "node": "20.x"

@@ -4,7 +4,7 @@ import type { Map } from 'ol';
 import { MapBrowserEvent } from 'ol';
 import { FeatureLike } from 'ol/Feature';
 import Overlay, { Positioning } from 'ol/Overlay';
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 import { FEATURE_IS_HIGHLIGHT_PROP } from './VectorLayerHighlight';
 
 import './Tooltip.css';

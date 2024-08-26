@@ -1,5 +1,5 @@
 {
-    "name": "@ufo-monorepo-test/logger",
+    "name": "@ufo-monorepo/logger",
     "version": "1.0.0",
     "description": "Logger",
     "main": "./build/logger/index.js",

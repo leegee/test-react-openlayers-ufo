@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { MapDictionaryType } from '@ufo-monorepo-test/common-types';
+import { MapDictionaryType } from '@ufo-monorepo/common-types';
 import { fetchFeatures, setFromDate, setToDate, selectPointsCount } from '../redux/mapSlice';
 import { RootState } from '../redux/store';
 

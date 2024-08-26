@@ -1,5 +1,5 @@
 {
-    "name": "@ufo-monorepo-test/dbh",
+    "name": "@ufo-monorepo/dbh",
     "version": "1.0.0",
     "description": "Database handle pool",
     "main": "./build/index.js",
@@ -14,7 +14,7 @@
         "clean": "rm -rf build/*"
     },
     "dependencies": {
-        "@ufo-monorepo-test/config": "file:../config"
+        "@ufo-monorepo/config": "file:../config"
     },
     "engines": {
         "node": "20.x"

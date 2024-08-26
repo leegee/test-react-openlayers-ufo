@@ -6,7 +6,7 @@ import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 
 import { sightingsStyleFunction } from "./map-style";
-import type { UfoFeatureCollectionType } from '@ufo-monorepo-test/common-types';
+import type { UfoFeatureCollectionType } from '@ufo-monorepo/common-types';
 
 const CLUSTER_DISTANCE = 40;
 

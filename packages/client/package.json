@@ -1,5 +1,5 @@
 {
-  "name": "@ufo-monorepo-test/client",
+  "name": "@ufo-monorepo/client",
   "version": "0.0.0",
   "private": true,
   "main": "./build/index.js",
@@ -18,8 +18,8 @@
     "@reduxjs/toolkit": "^2.2.1",
     "@swc/cli": "^0.3.10",
     "@swc/core": "^1.4.6",
-    "@ufo-monorepo-test/common-types": "file:../common-types",
-    "@ufo-monorepo-test/config": "file:../config",
+    "@ufo-monorepo/common-types": "file:../common-types",
+    "@ufo-monorepo/config": "file:../config",
     "ol": "^9.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

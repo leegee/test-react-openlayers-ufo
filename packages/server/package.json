@@ -1,5 +1,5 @@
 {
-    "name": "@ufo-monorepo-test/server",
+    "name": "@ufo-monorepo/server",
     "version": "1.3.0",
     "description": "Tiny KOA API",
     "main": "./build/index.js",
@@ -13,10 +13,10 @@
         "start": "node ./build/index.js"
     },
     "dependencies": {
-        "@ufo-monorepo-test/common-types": "file:../common-types",
-        "@ufo-monorepo-test/logger": "file:../logger",
-        "@ufo-monorepo-test/config": "file:../config",
-        "@ufo-monorepo-test/dbh": "file:../dbh",
-        "@ufo-monorepo-test/api-functions": "file:../api-functions"
+        "@ufo-monorepo/common-types": "file:../common-types",
+        "@ufo-monorepo/logger": "file:../logger",
+        "@ufo-monorepo/config": "file:../config",
+        "@ufo-monorepo/dbh": "file:../dbh",
+        "@ufo-monorepo/api-functions": "file:../api-functions"
     }
 }

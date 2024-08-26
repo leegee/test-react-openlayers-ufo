@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { init } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
 
-import config from '@ufo-monorepo-test/config';
+import config from '@ufo-monorepo/config';
 import { RootState } from '../redux/store';
 import { setLocaleKey } from '../redux/guiSlice';
 

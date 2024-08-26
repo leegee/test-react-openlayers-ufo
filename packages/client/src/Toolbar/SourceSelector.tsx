@@ -2,8 +2,8 @@ import React, { type FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'react-intl-universal';
 
-import type { FeatureSourceAttributeType } from '@ufo-monorepo-test/common-types';
-import config from '@ufo-monorepo-test/config';
+import type { FeatureSourceAttributeType } from '@ufo-monorepo/common-types';
+import config from '@ufo-monorepo/config';
 import { RootState } from '../redux/store';
 import { fetchFeatures, setSource } from '../redux/mapSlice';
 
