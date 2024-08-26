@@ -14,11 +14,9 @@
     },
     "dependencies": {
         "@ufo-monorepo-test/common-types": "file:../common-types",
+        "@ufo-monorepo-test/logger": "file:../logger",
         "@ufo-monorepo-test/config": "file:../config",
         "@ufo-monorepo-test/dbh": "file:../dbh",
         "@ufo-monorepo-test/api-functions": "file:../api-functions"
-    },
-    "engines": {
-        "node": "20.x"
     }
 }

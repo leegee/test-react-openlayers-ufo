@@ -14,6 +14,7 @@
     "dependencies": {
         "@ufo-monorepo-test/common-types": "file:../common-types",
         "@ufo-monorepo-test/config": "file:../config",
+        "@ufo-monorepo-test/logger": "file:../logger",
         "@ufo-monorepo-test/dbh": "file:../dbh"
     },
     "engines": {

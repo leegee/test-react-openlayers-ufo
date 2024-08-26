@@ -1,5 +1,6 @@
-// middleware/errors.ts - Error handling middleware
+// middleware/errors.ts - Error handling middleware that does very little so far
 import Koa from 'koa';
+import { logger } from '@ufo-monorepo-test/logger';
 
 export class CustomError {
     action: string;
@@ -18,8 +19,12 @@ export class CustomError {
         this.action = args.action;
         this.details = args.details;
         this.status = args.status || 500;
-        if (args.msg) this.msg = args.msg;
-        if (args.error) this.error = args.error;
+        if (args.msg) {
+            this.msg = args.msg;
+        }
+        if (args.error) {
+            this.error = args.error;
+        }
     }
 }
 
@@ -32,7 +37,7 @@ export async function errorHandler(ctx: Koa.Context, next: Koa.Next) {
         }
     }
     catch (error) {
-        console.error(error);
+        logger.error(error);
         if (process.env.NODE_ENV !== 'production') {
             ctx.body = {
                 ...(error as Error),

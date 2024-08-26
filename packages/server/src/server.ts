@@ -20,12 +20,11 @@ import Router from 'koa-router';
 import cors from "@koa/cors";
 
 import config from '@ufo-monorepo-test/config';
+import { logger } from '@ufo-monorepo-test/logger';
 
 import searchRoute from './routes/search';
 import detailsRoute from './routes/details';
-
 import { errorHandler } from "./middleware/errors";
-// import { dbhMiddleware } from './middleware/dbh';
 
 const router = new Router();
 const app = new Koa();
@@ -40,7 +39,7 @@ router.get('/search', searchRoute);
 router.get('/details/:id', detailsRoute);
 
 app.listen(config.api.port, () => {
-    console.info({
+    logger.info({
         action: 'start-up',
         port: config.api.port,
         taking_to: config.db.database,

@@ -38,6 +38,9 @@
             "@ufo-monorepo-test/config/*": [
                 "packages/config/*"
             ],
+            "@ufo-monorepo-test/logger/*": [
+                "packages/logger/*"
+            ],
             "@ufo-monorepo-test/dbh/*": [
                 "packages/dbh/*"
             ],
@@ -52,6 +55,9 @@
         },
         {
             "path": "./packages/config"
+        },
+        {
+            "path": "./packages/logger"
         },
         {
             "path": "./packages/dbh"

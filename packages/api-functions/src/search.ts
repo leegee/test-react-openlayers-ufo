@@ -1,12 +1,15 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { PassThrough } from 'stream';
 import type { FeatureCollection } from 'geojson';
+import { parse } from 'url';
+
 import { FeatureSourceAttributeType, isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo-test/common-types';
 import config from '@ufo-monorepo-test/config';
+import { logger } from '@ufo-monorepo-test/logger';
 import { pool, finaliseDbh } from '@ufo-monorepo-test/dbh/src';
+
 import { listToCsvLine } from './lib/csv';
 import { CustomError } from './lib/CustomError';
-import { parse } from 'url';
 
 let DBH = pool;
 
@@ -76,7 +79,7 @@ async function searchGeoJson(_req: IncomingMessage, res: ServerResponse, userArg
 
         const { rows } = await DBH.query(sql, sqlBits.whereParams ? sqlBits.whereParams : undefined);
         if (rows[0].jsonb_build_object.features === null && config.api.debug) {
-            console.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
+            logger.warn({ action: 'query', msg: 'Found no features', sql, sqlBits });
         }
         body.results = rows[0].jsonb_build_object as FeatureCollection;
         body.dictionary = await getDictionary(body.results, sqlBits);
@@ -123,7 +126,7 @@ async function sendCsvResponse(res: ServerResponse, sql: string, sqlBits: SqlBit
         // End the response body stream
         bodyStream.end();
     } catch (error) {
-        console.error('Error handling request:', error);
+        logger.error('Error handling request:', error);
         res.statusCode = 500;
         res.end('Internal server error');
     }
@@ -220,7 +223,7 @@ async function getDictionary(featureCollection: FeatureCollection | undefined, s
     let max: Date | undefined = undefined;
 
     if (!featureCollection || !featureCollection.features) {
-        console.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
+        logger.warn({ action: 'getDictionary', warning: 'no features', featureCollection });
         return dictionary;
     }
 

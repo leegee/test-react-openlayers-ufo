@@ -1,0 +1,13 @@
+{
+    "name": "@ufo-monorepo-test/logger",
+    "version": "1.0.0",
+    "description": "Logger",
+    "main": "./build/logger/index.js",
+    "types": "./build/logger/index.d.ts",
+    "type": "module",
+    "scripts": {
+        "build": "tsc --build",
+        "prebuild": "npm run clean",
+        "clean": "rm -rf build/*"
+    }
+}
