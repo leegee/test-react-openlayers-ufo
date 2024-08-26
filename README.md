@@ -8,6 +8,7 @@
 * ag-grid
 * Jest
 * Vite 
+* `ag-grid`
 * PostGIS
 * Koa
 * Serverless functions
