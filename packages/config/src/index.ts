@@ -4,10 +4,8 @@
  * if it is 'ufo', it is the combined db included the Muffon data with the sadly truncated reports.
  */
 
-const isNode = typeof process !== 'undefined';
-const isBrowser = !isNode;
-
-const env = isBrowser ? (import.meta as any).env : process.env;
+const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
+const env = isNode ? process.env : (import.meta as any).env;
 
 export type OurDbConfig = {
   host: string;
