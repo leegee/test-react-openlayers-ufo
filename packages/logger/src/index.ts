@@ -1,5 +1,3 @@
-// import config from '@ufo-monorepo/config/src';
-
 import { createLogger, transports, format } from "winston";
 import config from '@ufo-monorepo/config';
 
