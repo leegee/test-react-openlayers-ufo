@@ -49,10 +49,16 @@ export type ConfigType = {
   zoomLevelForPoints: number;
   zoomLevelForPointDetails: number;
   minQLength: number;
+  log: {
+    level: string;
+  };
 };
 
 const config: ConfigType = {
   locale: 'no',
+  log: {
+    level: 'info',
+  },
   db: env.POSTGRES_URL
     ? {
       POSTGRES_URL: env.POSTGRES_URL,

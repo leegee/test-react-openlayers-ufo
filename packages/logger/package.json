@@ -9,5 +9,8 @@
         "build": "tsc --build",
         "prebuild": "npm run clean",
         "clean": "rm -rf build/*"
+    },
+    "dependencies": {
+        "@ufo-monorepo/config": "file:../config"
     }
 }
