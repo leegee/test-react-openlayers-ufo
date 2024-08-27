@@ -17,6 +17,6 @@
         "@ufo-monorepo/config": "file:../config"
     },
     "engines": {
-        "node": "20.x"
+        "node": "18.x"
     }
 }

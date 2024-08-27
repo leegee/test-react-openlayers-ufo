@@ -2,7 +2,7 @@
   "name": "ufo-monorepo",
   "version": "1.0.0",
   "engines": {
-    "node": "20.x"
+    "node": "18.x"
   },
   "description": "Testing MUFON/Norwegian UFO data in PostGIS and React with OpenLayers",
   "private": true,
