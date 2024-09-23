@@ -12,7 +12,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "prebuild": "npm run clean",
-    "clean": "rm -rf build/* && rm -rf dist/*"
+    "clean": "rimraf build dist"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
