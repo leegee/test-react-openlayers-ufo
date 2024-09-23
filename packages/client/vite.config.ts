@@ -19,8 +19,7 @@ export default defineConfig({
     alias: {
       '@swc/core': '@swc/core',
       '@ufo-monorepo/config': path.resolve(__dirname, '../config/src'),
-      '@ufo-monorepo/common-types': path.resolve(__dirname, '../common-types/src'),
-      '@ufo-monorepo/api-functions': path.resolve(__dirname, '../api-functions/src'),
+      '@ufo-monorepo/common-types': path.resolve(__dirname, '../common-types/src')
     },
   },
   plugins: [
