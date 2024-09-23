@@ -2,7 +2,7 @@
   "name": "@ufo-monorepo/client",
   "version": "0.0.0",
   "private": true,
-  "main": "./build/index.js",
+  "main": "./build/client/index.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "prebuild": "npm run clean",
-    "clean": "rm -rf build/*"
+    "clean": "rm -rf build/* && rm -rf dist/*"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
