@@ -1,5 +1,4 @@
-
-import details from './details';
-import search from './search';
+import details from './details.js';
+import search from './search.js';
 
 export { details as detailsRoute, search as searchRoute };

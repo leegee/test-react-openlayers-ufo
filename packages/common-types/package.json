@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "The package containing some utility functions",
   "type": "module",
-  "main": "build/common-types/index.js",
-  "types": "build/common-types/index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "files": [
     "build/common-types/"
   ],
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc --build",
-    "clean": "rm -rf build"
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
   }
 }

@@ -19,16 +19,19 @@
 
 ## Environment Variables
 
-| Name           | Default            | Description              |
-|----------------|--------------------| ------------------------ |
-|  PGHOST        | 'localhost'        | The PostGIS host machine |
-|  PGPORT        | '5432'             | The PostGIS host port    |
-|  PGUSER        | 'postgres'         | PostGIS user name        |
-|  PGPASSWORD    | 'password'         | PostGIS passphrase       |
-|  UFO_DATABASE  | 'ufo'              | Name of the database     |
-|  UFO_HTTP_HOST | 'http://localhost' | The Node.js API host     |
-|  UFO_HTTP_PORT | '8080'             | The Node.js API port     |
+| Name                 | Default            | Description              |
+|----------------------|--------------------| ------------------------ |
+| PGHOST               | `localhost`        | The PostGIS host machine |
+| PGPORT               | `5432`             | The PostGIS host port    |
+| PGUSER               | `postgres`         | PostGIS user name        |
+| PGPASSWORD           | `password`         | PostGIS passphrase       |
+| UFO_DATABASE         | `ufo`              | Name of the database     |
+| VITE_HTTP_HOST        | `http://localhost` | The Node.js API host     |
+| VITE_HTTP_PORT        | `8080`             | The Node.js API port, 3000 for Vercel local dev |
+| VITE_ENDPOINT_SEARCH  | `/search`          | Vercel SF use: 'api/search' |
+| VITE_ENDPOINT_DETAILS | `/details`         | Vercel SE use: `api/details` |
 
+Vercel-specific values are set in the `vercel.config` file.
 
 ## Synopsis
 
@@ -145,6 +148,10 @@ MUFON has much less detail, but much more data.
 ## Overview
 
 ![Flowchart](docs/images/arch-flowchart.png)
+
+## WIP
+
+Vercel
 
 ## Todo:
 

@@ -29,23 +29,11 @@
         "lib": [
             "ES2020"
         ],
-        "outDir": "./build",
-        "baseUrl": "./src",
+        "outDir": "build",
+        "baseUrl": "src",
         "paths": {
-            "@ufo-monorepo/common-types/*": [
-                "packages/common-types/*"
-            ],
-            "@ufo-monorepo/config/*": [
-                "packages/config/*"
-            ],
-            "@ufo-monorepo/logger/*": [
-                "packages/logger/*"
-            ],
-            "@ufo-monorepo/dbh/*": [
-                "packages/dbh/*"
-            ],
-            "@ufo-monorepo/api-functions/*": [
-                "packages/api-functions/*"
+            "@ufo-monorepo/*": [
+                "packages/*/build"
             ]
         }
     },

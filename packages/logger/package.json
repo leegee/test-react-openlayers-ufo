@@ -1,16 +1,16 @@
 {
-    "name": "@ufo-monorepo/logger",
-    "version": "1.0.0",
-    "description": "Logger",
-    "main": "./build/logger/index.js",
-    "types": "./build/logger/index.d.ts",
-    "type": "module",
-    "scripts": {
-        "build": "tsc --build",
-        "prebuild": "npm run clean",
-        "clean": "rm -rf build/*"
-    },
-    "dependencies": {
-        "@ufo-monorepo/config": "file:../config"
-    }
+  "name": "@ufo-monorepo/logger",
+  "version": "1.0.0",
+  "description": "Logger",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "prebuild": "npm run clean",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@ufo-monorepo/config": "file:../config"
+  }
 }

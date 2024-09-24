@@ -1,13 +1,13 @@
 {
-    "name": "@ufo-monorepo/config",
-    "version": "1.0.0",
-    "description": "Configuration read from .env, with defaults for localhost",
-    "main": "./build/config/index.js",
-    "types": "./build/config/index.d.ts",
-    "type": "module",
-    "scripts": {
-        "build": "tsc --build",
-        "prebuild": "npm run clean",
-        "clean": "rm -rf build/*"
-    }
+  "name": "@ufo-monorepo/config",
+  "version": "1.0.0",
+  "description": "Configuration read from .env, with defaults for localhost",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "prebuild": "npm run clean",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
+  }
 }

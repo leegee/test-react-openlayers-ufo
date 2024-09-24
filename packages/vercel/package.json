@@ -1,0 +1,15 @@
+{
+  "name": "vercel",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@ufo-monorepo/common-types": "file:../common-types",
+    "@ufo-monorepo/config": "file:../config",
+    "@ufo-monorepo/api-functions": "file:../api-functions"
+  }
+}

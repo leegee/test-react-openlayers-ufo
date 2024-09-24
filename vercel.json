@@ -1,0 +1,44 @@
+{
+  "version": 2,
+
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "VITE_HTTP_PORT": 3000,
+      "VITE_ENDPOINT_SEARCH": "/api/search",
+      "VITE_ENDPOINT_DETAILS": "/api/details",
+      "DATABASE_URL": "postgres://postgress:password@localhost:5432/ufo"
+    },
+    "commands": {
+      "build": "cd packages/client && npm run build"
+    }
+  },
+
+  "builds": [
+    {
+      "src": "packages/client/dist/**/*",
+      "use": "@vercel/static"
+    },
+
+    {
+      "src": "packages/vercel/build/**/*",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/search",
+      "dest": "packages/vercel/build/search.js"
+    },
+
+    {
+      "src": "/api/hello",
+      "dest": "packages/vercel/build/hello.js"
+    },
+
+    {
+      "src": "/(.*)",
+      "dest": "packages/client/dist/$1"
+    }
+  ]
+}

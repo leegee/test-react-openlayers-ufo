@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
-    "outDir": "build/client",
+    "outDir": "build",
     "rootDir": "src",
     "composite": true,
     "useDefineForClassFields": true,

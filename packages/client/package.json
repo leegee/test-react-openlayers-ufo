@@ -2,8 +2,9 @@
   "name": "@ufo-monorepo/client",
   "version": "0.0.0",
   "private": true,
-  "main": "./build/client/index.js",
   "type": "module",
+  "main": "./build/client/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

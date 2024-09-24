@@ -1,8 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { FetchSightingDetailsResponseType } from '@ufo-monorepo/common-types';
 import { isCombinedDb } from '@ufo-monorepo/config';
-import { pool, finaliseDbh } from '@ufo-monorepo/dbh/src';
-import { CustomError } from './lib/CustomError';
+import { pool, finaliseDbh } from '@ufo-monorepo/dbh';
+import { CustomError } from './lib/CustomError.js';
 
 let DBH = pool;
 

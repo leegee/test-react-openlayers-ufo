@@ -10,6 +10,6 @@
 //     database: config.db.database,
 // });
 
-import pool from "@ufo-monorepo/dbh/src";
+import pool from "@ufo-monorepo/dbh";
 export { pool };
 

@@ -1,22 +1,22 @@
 {
-    "name": "@ufo-monorepo/dbh",
-    "version": "1.0.0",
-    "description": "Database handle pool",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
-    "type": "module",
-    "files": [
-        "build/dbh"
-    ],
-    "scripts": {
-        "prebuild": "npm run clean",
-        "build": "tsc --build",
-        "clean": "rm -rf build/*"
-    },
-    "dependencies": {
-        "@ufo-monorepo/config": "file:../config"
-    },
-    "engines": {
-        "node": "18.x"
-    }
+  "name": "@ufo-monorepo/dbh",
+  "version": "1.0.0",
+  "description": "Database handle pool",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/dbh"
+  ],
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@ufo-monorepo/config": "file:../config"
+  },
+  "engines": {
+    "node": "18.x"
+  }
 }

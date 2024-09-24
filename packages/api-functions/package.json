@@ -1,23 +1,23 @@
 {
-    "name": "@ufo-monorepo/api-functions",
-    "version": "1.0.0",
-    "description": "Serverless API functions",
-    "main": "./build/index.js",
-    "types": "./build/index.d.ts",
-    "type": "module",
-    "scripts": {
-        "prebuild": "npm run clean",
-        "build": "tsc --build",
-        "clean": "rm -rf build/*",
-        "test": "echo There ought to be tests"
-    },
-    "dependencies": {
-        "@ufo-monorepo/common-types": "file:../common-types",
-        "@ufo-monorepo/config": "file:../config",
-        "@ufo-monorepo/logger": "file:../logger",
-        "@ufo-monorepo/dbh": "file:../dbh"
-    },
-    "engines": {
-        "node": "18.x"
-    }
+  "name": "@ufo-monorepo/api-functions",
+  "version": "1.0.0",
+  "description": "API functions",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
+    "test": "echo There ought to be tests"
+  },
+  "dependencies": {
+    "@ufo-monorepo/common-types": "file:../common-types",
+    "@ufo-monorepo/config": "file:../config",
+    "@ufo-monorepo/logger": "file:../logger",
+    "@ufo-monorepo/dbh": "file:../dbh"
+  },
+  "engines": {
+    "node": "18.x"
+  }
 }

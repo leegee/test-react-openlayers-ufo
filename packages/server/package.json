@@ -1,22 +1,23 @@
 {
-    "name": "@ufo-monorepo/server",
-    "version": "1.3.0",
-    "description": "Tiny KOA API",
-    "main": "./build/index.js",
-    "type": "module",
-    "scripts": {
-        "prebuild": "npm run clean",
-        "build": "tsc --build",
-        "clean": "rm -rf build/*",
-        "dev": "npx tsx src/server.ts",
-        "watch": "npx nodemon --exec tsx src/server.ts",
-        "start": "node ./build/index.js"
-    },
-    "dependencies": {
-        "@ufo-monorepo/common-types": "file:../common-types",
-        "@ufo-monorepo/logger": "file:../logger",
-        "@ufo-monorepo/config": "file:../config",
-        "@ufo-monorepo/dbh": "file:../dbh",
-        "@ufo-monorepo/api-functions": "file:../api-functions"
-    }
+  "name": "@ufo-monorepo/server",
+  "version": "1.3.0",
+  "description": "Tiny KOA API",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
+    "dev": "npx tsx src/server.ts",
+    "watch": "npx nodemon --exec tsx src/server.ts",
+    "start": "node ./build/index.js"
+  },
+  "dependencies": {
+    "@ufo-monorepo/common-types": "file:../common-types",
+    "@ufo-monorepo/logger": "file:../logger",
+    "@ufo-monorepo/config": "file:../config",
+    "@ufo-monorepo/dbh": "file:../dbh",
+    "@ufo-monorepo/api-functions": "file:../api-functions"
+  }
 }

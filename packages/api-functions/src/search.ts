@@ -6,10 +6,10 @@ import { parse } from 'url';
 import { FeatureSourceAttributeType, isFeatureSourceAttributeType, MapDictionaryType, QueryParamsType, QueryResponseType, SqlBitsType } from '@ufo-monorepo/common-types';
 import config from '@ufo-monorepo/config';
 import { logger } from '@ufo-monorepo/logger';
-import { pool, finaliseDbh } from '@ufo-monorepo/dbh/src';
+import { pool, finaliseDbh } from '@ufo-monorepo/dbh';
 
-import { listToCsvLine } from './lib/csv';
-import { CustomError } from './lib/CustomError';
+import { listToCsvLine } from './lib/csv.js';
+import { CustomError } from './lib/CustomError.js';
 
 let DBH = pool;
 
