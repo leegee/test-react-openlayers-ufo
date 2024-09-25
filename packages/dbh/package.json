@@ -15,8 +15,5 @@
   },
   "dependencies": {
     "@ufo-monorepo/config": "file:../config"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }

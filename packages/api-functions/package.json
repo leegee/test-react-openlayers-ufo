@@ -16,8 +16,5 @@
     "@ufo-monorepo/config": "file:../config",
     "@ufo-monorepo/logger": "file:../logger",
     "@ufo-monorepo/dbh": "file:../dbh"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }
