@@ -14,7 +14,8 @@
     "packages/logger",
     "packages/dbh",
     "packages/api-functions",
-    "packages/server"
+    "packages/server",
+    "packages/vercel"
   ],
   "scripts": {
     "build": "npm run build -ws",
