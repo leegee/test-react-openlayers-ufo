@@ -2,6 +2,8 @@
  * Far from ideal: 
  * if config.db ufo.database (process.env.UFO_DATABASE) is'norge', it is the UFO Norway DB,
  * if it is 'ufo', it is the combined db included the Muffon data with the sadly truncated reports.
+ * 
+ * The Vercel bits are a WIP, and much can be hard-coded.
  */
 
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
@@ -74,8 +76,8 @@ const config: ConfigType = {
     host: env.VITE_HTTP_HOST || 'http://localhost',
     endpoints: {
       // When the env var has an initial /, Vite adds the path to shell exe....
-      search: env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
-      details: env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
+      search: env.VITE_HTTP_PORT && env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
+      details: env.VITE_HTTP_PORT && env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
