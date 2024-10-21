@@ -37,7 +37,7 @@ Vercel-specific values are set in the `vercel.config` file.
 
 ```bash
   psql -c 'CREATE DATABASE ${UFO_DATABASE}'
-  psql -d ufo < data/merged/ufo-combined.sql
+  psql -d ${UFO_DATABASE} < data/merged/ufo-combined.sql
   npm install
   npm run
   npm start
@@ -61,7 +61,7 @@ Please fix anything you can or suggest a better way of doing things.
 
 ## Limitations
 
-* The Muffon database reports are truncated.
+* The Muffon database reports are truncated for legal reasons: apparently they do not wish to share full reports.
 * Much of the Norge UFO data is yet to be processed. Any advice on reading the schema much appreciated.
 * The map's minimum zoom level is set to avoid over-taxing the server and the client: hopefully will find time to produce density maps for such zoom levels.
 * The heatmap may be slow, so perhaps write a custom loader to load a CSV
