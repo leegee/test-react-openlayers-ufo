@@ -16,5 +16,8 @@
     "@ufo-monorepo/config": "file:../config",
     "@ufo-monorepo/logger": "file:../logger",
     "@ufo-monorepo/dbh": "file:../dbh"
+  }, 
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

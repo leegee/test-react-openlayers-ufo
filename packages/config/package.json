@@ -9,5 +9,8 @@
     "build": "tsc --build",
     "prebuild": "npm run clean",
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }
