@@ -55,7 +55,7 @@ const Panel: React.FC = () => {
             </section>
 
 
-            {pointsCount && <ReportToggleButton />}
+            {pointsCount > 0 && <ReportToggleButton />}
         </>
     );
 };
