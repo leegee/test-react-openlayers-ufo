@@ -62,23 +62,21 @@ const App: React.FC = () => {
   return (
     <main ref={appElementRef} className={appClasses}>
       <BrowserRouter>
-        <>
-          <Routes>
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Modal><Contact /></Modal>} />
-            <Route path="/sighting/:id" element={<SightingDetails />} />
-            <Route path="/histogram/dates" element={<Histogram />} />
-            <Route path="/report" element={<OpenReport />} />
-            <Route path="/" element={<span />} />{/* noop */}
-          </Routes>
+        <Routes>
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Modal><Contact /></Modal>} />
+          <Route path="/sighting/:id" element={<SightingDetails />} />
+          <Route path="/histogram/dates" element={<Histogram />} />
+          <Route path="/report" element={<OpenReport />} />
+          <Route path="/" element={<span />} />{/* noop */}
+        </Routes>
 
-          <Toolbar />
+        <Toolbar />
 
-          <section id='map-panel-container'>
-            <Map />
-            <ResultsPanel />
-          </section>
-        </>
+        <section id='map-panel-container'>
+          <Map />
+          <ResultsPanel />
+        </section>
       </BrowserRouter>
     </main>
   );
