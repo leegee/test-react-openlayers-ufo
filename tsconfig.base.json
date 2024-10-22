@@ -26,6 +26,8 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "useDefineForClassFields": true,
+        "declarationMap": true,  
+        "sourceMap": true,       
         "lib": [
             "ES2020"
         ],
@@ -33,7 +35,7 @@
         "baseUrl": "src",
         "paths": {
             "@ufo-monorepo/*": [
-                "packages/*/build"
+                "packages/*/src"
             ]
         }
     },
