@@ -18,7 +18,8 @@
 packages/*/build/
 packages/*/dist/
 build/*
-**/tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo
+tsconfig.node.tsbuildinfo
 /coverage
 /node_modules
 dist
@@ -32,5 +33,4 @@ yarn-debug.log*
 yarn-error.log*
 data/norge/Ufo_Norge_Hoveddatabase.mdb
 temp.sql
-.vercel
 .vercel

@@ -23,8 +23,10 @@
   },
   "include": [
     "src",
-    "src/locales/*.json",
-    "jest.config.js"
+    "src/locales/*.json", 
+    "jest.config.js",
+    "src/**/*.ts",
+    "src/lib/**/*.ts"
   ],
   "references": [
     {
