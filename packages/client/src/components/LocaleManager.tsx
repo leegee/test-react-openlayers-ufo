@@ -73,7 +73,7 @@ const LocaleManager = () => {
                     )}
                 </>
             ) : (
-                <span>Locale not available</span>
+                <span>Locale {locale} not installed.</span>
             )}
         </nav>
     );
