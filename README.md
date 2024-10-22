@@ -1,7 +1,7 @@
 # Combined Mufon/Norwegian UFO Database
 
 * UFOs
-* npm Typescript Monorepo
+* npm Typescript Monorepo (works with bun)
 * OpenLayers 9
 * React (hooks)
 * Redux Toolkit 
@@ -19,13 +19,13 @@
 
 ## Environment Variables
 
-| Name                 | Default            | Description              |
-|----------------------|--------------------| ------------------------ |
-| PGHOST               | `localhost`        | The PostGIS host machine |
-| PGPORT               | `5432`             | The PostGIS host port    |
-| PGUSER               | `postgres`         | PostGIS user name        |
-| PGPASSWORD           | `password`         | PostGIS passphrase       |
-| UFO_DATABASE         | `ufo`              | Name of the database     |
+| Name                  | Default            | Description              |
+|-----------------------|--------------------| ------------------------ |
+| PGHOST                | `localhost`        | The PostGIS host machine |
+| PGPORT                | `5432`             | The PostGIS host port    |
+| PGUSER                | `postgres`         | PostGIS user name        |
+| PGPASSWORD            | `password`         | PostGIS passphrase       |
+| UFO_DATABASE          | `ufo`              | Name of the database     |
 | VITE_HTTP_HOST        | `http://localhost` | The Node.js API host     |
 | VITE_HTTP_PORT        | `8080`             | The Node.js API port, 3000 for Vercel local dev |
 | VITE_ENDPOINT_SEARCH  | `/search`          | Vercel SF use: 'api/search' |
@@ -38,12 +38,12 @@ Vercel-specific values are set in the `vercel.config` file.
 ```bash
   psql -c 'CREATE DATABASE ${UFO_DATABASE}'
   psql -d ${UFO_DATABASE} < data/merged/ufo-combined.sql
-  npm install
-  npm run
-  npm start
+  bun install
+  bun run
+  bun start
 
   # For production
-  npm run build -ws
+  bun run build -ws
 ```
 
 After bulding you will be left with: the output of the Vite bundler to be hosted by your HTTP server; a Node server script, to host via pm2/etc; serverless functions compatible with Vercel.
