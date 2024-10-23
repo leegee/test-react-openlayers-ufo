@@ -35,8 +35,8 @@ app.use(errorHandler);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-router.get('/search', searchRoute);
-router.get('/details/:id', detailsRoute);
+router.get('/api/search', searchRoute);
+router.get('/api/details/:id', detailsRoute);
 
 app.listen(config.api.port, () => {
     logger.info({
