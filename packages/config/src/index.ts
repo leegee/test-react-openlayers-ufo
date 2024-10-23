@@ -72,7 +72,7 @@ const config: ConfigType = {
       database: env.UFO_DATABASE || 'ufo', // @see notes at the top
     },
   api: {
-    port: parseInt(env.VITE_API_PORT || '8080'),
+    port: parseInt(env.VITE_API_PORT || '3000'),
     host: env.VITE_API_HOST || 'http://localhost',
     endpoints: {
       // When the env var has an initial /, Vite adds the path to shell exe....
