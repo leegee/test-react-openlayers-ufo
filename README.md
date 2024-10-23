@@ -149,13 +149,17 @@ MUFON has much less detail, but much more data.
 
 ![Flowchart](docs/images/arch-flowchart.png)
 
-## WIP
+## Vercel Hosting
 
-Vercel
+WIP: Vercel supports Monorepos but I am having issues working out how it shares `node_modules`.
 
 ## Caveats
 
 `bun` does not support `-w` or `--workspace`, so run scripts sadly use `npm`.
+
+## Common Pitfalls
+
+Ports not updating? Re-`source` and re-`build`.
 
 ## Todo:
 
