@@ -1,7 +1,7 @@
 # Combined Mufon/Norwegian UFO Database
 
 * UFOs
-* npm Typescript Monorepo (works with bun)
+* npm Typescript Monorepo
 * OpenLayers 9
 * React (hooks)
 * Redux Toolkit 
@@ -26,8 +26,8 @@
 | PGUSER                | `postgres`         | PostGIS user name        |
 | PGPASSWORD            | `password`         | PostGIS passphrase       |
 | UFO_DATABASE          | `ufo`              | Name of the database     |
-| VITE_HTTP_HOST        | `http://localhost` | The Node.js API host     |
-| VITE_HTTP_PORT        | `8080`             | The Node.js API port, 3000 for Vercel local dev |
+| VITE_API_HOST        | `http://localhost` | The Node.js API host     |
+| VITE_API_PORT        | `8080`             | The Node.js API port, 3000 for Vercel local dev |
 | VITE_ENDPOINT_SEARCH  | `/search`          | Vercel SF use: 'api/search' |
 | VITE_ENDPOINT_DETAILS | `/details`         | Vercel SE use: `api/details` |
 
@@ -38,12 +38,12 @@ Vercel-specific values are set in the `vercel.config` file.
 ```bash
   psql -c 'CREATE DATABASE ${UFO_DATABASE}'
   psql -d ${UFO_DATABASE} < data/merged/ufo-combined.sql
-  bun install
-  bun run
-  bun start
+  npm install
+  npm run
+  npm start
 
   # For production
-  bun run build -ws
+  npm run build -ws
 ```
 
 After bulding you will be left with: the output of the Vite bundler to be hosted by your HTTP server; a Node server script, to host via pm2/etc; serverless functions compatible with Vercel.
@@ -152,6 +152,10 @@ MUFON has much less detail, but much more data.
 ## WIP
 
 Vercel
+
+## Caveats
+
+`bun` does not support `-w` or `--workspace`, so run scripts sadly use `npm`.
 
 ## Todo:
 
