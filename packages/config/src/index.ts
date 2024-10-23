@@ -72,12 +72,12 @@ const config: ConfigType = {
       database: env.UFO_DATABASE || 'ufo', // @see notes at the top
     },
   api: {
-    port: parseInt(env.VITE_HTTP_PORT || '8080'),
-    host: env.VITE_HTTP_HOST || 'http://localhost',
+    port: parseInt(env.VITE_API_PORT || '8080'),
+    host: env.VITE_API_HOST || 'http://localhost',
     endpoints: {
       // When the env var has an initial /, Vite adds the path to shell exe....
-      search: env.VITE_HTTP_PORT && env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
-      details: env.VITE_HTTP_PORT && env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
+      search: env.VITE_API_PORT && env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
+      details: env.VITE_API_PORT && env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
