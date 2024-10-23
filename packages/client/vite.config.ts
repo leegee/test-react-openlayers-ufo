@@ -44,7 +44,7 @@ export default defineConfig({
                 syntax: 'typescript',
                 tsx: true,
               },
-              target: 'es2018',
+              target: 'es2020',
             },
           });
 
