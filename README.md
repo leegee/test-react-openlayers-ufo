@@ -1,21 +1,60 @@
 # Combined Mufon/Norwegian UFO Database
 
-* UFOs
+This is a Typescript monorepo to host and expose UFO sighting data through a world map.
+
+
+* UFO from Norge UFO and MUFON
 * npm Typescript Monorepo
 * OpenLayers 9
 * React (hooks)
 * Redux Toolkit 
 * ag-grid
-* Jest
+* Jest (switching to vitest)
 * Vite 
+* PWA with local map caching
 * `ag-grid`
 * PostGIS
 * Koa
 * Serverless functions
+* Vercel serverless functions
 * Text search
 * Date-range search
 * CSV downloads
 * Optional server-side clustering
+
+## User Journey
+
+Sightings are clustered as a heatmap when zoomed out:
+
+![Initial view, theme a](./docs/images/init-1.png)
+![Initial view, theme b](./docs/images/init-2.png)
+![Initial view, theme c](./docs/images/init-3.png)
+
+When the map is zoomed in or searched, sightings are displayed on the map and in an abbreviated table:
+
+![Sightings](./docs/images/search-text.png)
+
+Selecting a point highlights it:
+
+![Highlights](./docs/images/selection.png)
+
+Clicking the arrow in the head of the abbreviated table opens the full table:
+
+![Report](./docs/images/wide-report.png)
+
+Both tables give access to the details of the full report:
+
+![Details](./docs/images/details.png)
+
+At any time, the visible sightings can be downloaded as a CSV:
+
+![Download](./docs/images/save-csv.png)
+
+![CSV](./docs/images/csv.png)
+
+When viewing points, clicking the date range calendar icon  shows a histogram of the sightings by year:
+
+![Histogram](./docs/images/histogram.png)
 
 ## Environment Variables
 
@@ -65,40 +104,6 @@ Please fix anything you can or suggest a better way of doing things.
 * Much of the Norge UFO data is yet to be processed. Any advice on reading the schema much appreciated.
 * The map's minimum zoom level is set to avoid over-taxing the server and the client: hopefully will find time to produce density maps for such zoom levels.
 * The heatmap may be slow, so perhaps write a custom loader to load a CSV
-
-## User Journey
-
-Sightings are clustered as a heatmap when zoomed out:
-
-![Initial view, theme a](./docs/images/init-1.png)
-![Initial view, theme b](./docs/images/init-2.png)
-![Initial view, theme c](./docs/images/init-3.png)
-
-When the map is zoomed in or searched, sightings are displayed on the map and in an abbreviated table:
-
-![Sightings](./docs/images/search-text.png)
-
-Selecting a point highlights it:
-
-![Highlights](./docs/images/selection.png)
-
-Clicking the arrow in the head of the abbreviated table opens the full table:
-
-![Report](./docs/images/wide-report.png)
-
-Both tables give access to the details of the full report:
-
-![Details](./docs/images/details.png)
-
-At any time, the visible sightings can be downloaded as a CSV:
-
-![Download](./docs/images/save-csv.png)
-
-![CSV](./docs/images/csv.png)
-
-When viewing points, clicking the date range calendar icon  shows a histogram of the sightings by year:
-
-![Histogram](./docs/images/histogram.png)
 
 ## Technical
 
