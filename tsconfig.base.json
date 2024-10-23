@@ -26,8 +26,9 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "useDefineForClassFields": true,
-        "declarationMap": true,  
-        "sourceMap": true,       
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,     
         "lib": [
             "ES2020"
         ],
