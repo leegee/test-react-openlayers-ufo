@@ -13,26 +13,31 @@
 
   "builds": [
     {
-      "src": "packages/client/dist/**/*",
-      "use": "@vercel/static"
+      "src": "packages/client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     },
-
     {
-      "src": "packages/vercel/build/**/*",
+      "src": "packages/vercel/package.json",
       "use": "@vercel/node"
     }
   ],
+
   "routes": [
     {
       "src": "/api/search",
       "dest": "packages/vercel/build/search.js"
     },
-
+    {
+      "src": "/api/details",
+      "dest": "packages/vercel/build/details.js"
+    },
     {
       "src": "/api/hello",
       "dest": "packages/vercel/build/hello.js"
     },
-
     {
       "src": "/(.*)",
       "dest": "packages/client/dist/$1"
