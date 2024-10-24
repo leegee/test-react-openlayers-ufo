@@ -1,6 +1,5 @@
 {
   "version": 2,
-
   "build": {
     "env": {
       "NODE_ENV": "production",
@@ -10,7 +9,6 @@
       "DATABASE_URL": "postgres://postgress:password@localhost:5432/ufo"
     }
   },
-
   "builds": [
     {
       "src": "packages/client/package.json",
@@ -24,7 +22,6 @@
       "use": "@vercel/node"
     }
   ],
-
   "routes": [
     {
       "src": "/api/search",
