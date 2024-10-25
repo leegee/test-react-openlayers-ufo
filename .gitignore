@@ -34,3 +34,4 @@ yarn-error.log*
 data/norge/Ufo_Norge_Hoveddatabase.mdb
 temp.sql
 .vercel
+.turbo/
