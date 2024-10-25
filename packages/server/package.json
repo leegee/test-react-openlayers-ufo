@@ -14,13 +14,14 @@
     "start": "node ./build/index.js"
   },
   "dependencies": {
+    "@ufo-monorepo/api-functions": "file:../api-functions",
     "@ufo-monorepo/common-types": "file:../common-types",
-    "@ufo-monorepo/logger": "file:../logger",
     "@ufo-monorepo/config": "file:../config",
     "@ufo-monorepo/dbh": "file:../dbh",
-    "@ufo-monorepo/api-functions": "file:../api-functions"
+    "@ufo-monorepo/logger": "file:../logger"
   },
   "devDependencies": {
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "turbo": "^2.2.3"
   }
 }
