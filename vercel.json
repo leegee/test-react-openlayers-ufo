@@ -10,26 +10,6 @@
       "DATABASE_URL": "postgres://postgress:password@localhost:5432/ufo"
     }
   },
-
-  "builds": [
-    {
-      "src": "packages/client/dist/**/*",
-      "use": "@vercel/static",
-      "config": {
-        "distDir": "packages/client/dist",
-        "buildCommand": "npm run build -w packages/client"
-      }
-    },
-
-    {
-      "src": "packages/vercel/build/**/*",
-      "use": "@vercel/node",
-      "config": {
-        "distDir": "packages/vercel/build",
-        "buildCommand": "npm run build  -w packages/vercel"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/api/search",
