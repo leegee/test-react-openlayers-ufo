@@ -15,13 +15,19 @@
     {
       "src": "packages/client/dist/**/*",
       "use": "@vercel/static",
-      "buildCommand": "npm run build"
+      "config": {
+        "distDir": "packages/client/dist",
+        "buildCommand": "npm run build"
+      }
     },
 
     {
       "src": "packages/vercel/build/**/*",
       "use": "@vercel/node",
-      "buildCommand": "npm run build"
+      "config": {
+        "distDir": "packages/vercel/build",
+        "buildCommand": "npm run build"
+      }
     }
   ],
   "routes": [
