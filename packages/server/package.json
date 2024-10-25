@@ -3,6 +3,7 @@
   "version": "1.3.0",
   "description": "Tiny KOA API",
   "type": "module",
+  "packageManager": "npm@10.9.0",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {

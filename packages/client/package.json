@@ -1,6 +1,7 @@
 {
   "name": "@ufo-monorepo/client",
   "version": "0.0.0",
+  "packageManager": "npm@10.9.0",
   "private": true,
   "type": "module",
   "main": "./build/client/index.js",

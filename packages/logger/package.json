@@ -1,7 +1,8 @@
 {
   "name": "@ufo-monorepo/logger",
   "version": "1.0.0",
-  "description": "Logger",
+  "description": "Simple logger",
+  "packageManager": "npm@10.9.0",
   "type": "module",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

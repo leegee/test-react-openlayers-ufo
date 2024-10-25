@@ -2,6 +2,7 @@
   "name": "vercel",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "npm@10.9.0",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc --build",

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Configuration read from .env, with defaults for localhost",
   "type": "module",
+  "packageManager": "npm@10.9.0",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
