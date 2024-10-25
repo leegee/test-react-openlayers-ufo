@@ -1,0 +1,11 @@
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["packages/client/dist/**", "packages/common-types/build/**", "packages/config/build/**"]
+    },
+    "dev": {
+      "dependsOn": ["^dev"]
+    }
+  }
+}
