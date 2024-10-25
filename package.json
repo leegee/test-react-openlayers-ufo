@@ -23,7 +23,7 @@
     "dev:preview": "npm run preview -w packages/client",
     "start": "concurrently \"npm run dev:api\" \"npm run dev:preview",
     "docs": "dot -Tpng -o docs/images/arch-flowchart.png docs/arch-flowchart.dot",
-    "vercel-build": "npm run build -w packages/vercel"
+    "vercel-build": "npm run build"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.1.0",
