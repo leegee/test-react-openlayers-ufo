@@ -18,14 +18,14 @@
   "scripts": {
     "build": "npx turbo run build",
     "build:native": "npm run build -ws",
-    "vercel-build": "npm run build",
     "dev:client": "npm run dev --w packages/client",
     "start:server": "npm run dev -w packages/server",
     "dev:server": "npm run watch -w packages/server",
     "predev:preview": "npm run build -w packages/client",
     "dev:preview": "npm run preview -w packages/client",
     "start": "concurrently \"npm run dev:api\" \"npm run dev:preview",
-    "docs": "dot -Tpng -o docs/images/arch-flowchart.png docs/arch-flowchart.dot"
+    "docs": "dot -Tpng -o docs/images/arch-flowchart.png docs/arch-flowchart.dot",
+    "vercel-build": "npm run build"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.1.0",
