@@ -13,6 +13,14 @@
 
   "buildCommand": "npx turbo run build",
 
+  "builds": [
+    {
+      "src": "packages/client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "packages/client/dist" }
+    }
+  ],
+
   "routes": [
     {
       "src": "/api/search",
