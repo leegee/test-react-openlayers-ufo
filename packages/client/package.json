@@ -15,7 +15,8 @@
     "prebuild": "npm run clean",
     "preview": "vite preview",
     "test:watch": "jest --watchAll",
-    "test": "jest"
+    "test": "jest",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
