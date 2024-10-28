@@ -11,7 +11,7 @@
     "build": "tsc --build",
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
     "test": "echo There ought to be tests",
-    "vercel-build": "npx turbo run build"
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@ufo-monorepo/common-types": "file:../common-types",
