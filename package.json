@@ -16,7 +16,7 @@
     "packages/vercel"
   ],
   "scripts": {
-    "build": "npx turbo run build",
+    "build": "npm run build -ws",
     "build:native": "npm run build -ws",
     "dev:client": "npm run dev --w packages/client",
     "start:server": "npm run dev -w packages/server",
