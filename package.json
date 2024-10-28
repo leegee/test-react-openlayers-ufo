@@ -6,14 +6,14 @@
   "type": "module",
   "packageManager": "npm@10.9.0",
   "workspaces": [
-    "packages/client",
     "packages/common-types",
     "packages/config",
     "packages/logger",
+    "packages/client",
     "packages/dbh",
     "packages/api-functions",
-    "packages/server",
-    "packages/vercel"
+    "packages/vercel",
+    "packages/server"
   ],
   "scripts": {
     "build": "npm run build -ws",
