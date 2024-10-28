@@ -23,6 +23,7 @@
     "@swc/core": "^1.4.6",
     "@ufo-monorepo/common-types": "file:../common-types",
     "@ufo-monorepo/config": "file:../config",
+    "@vercel/postgres": "^0.10.0",
     "ol": "^9.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -176,9 +176,5 @@ Ports not updating? Re-`source` and re-`build`.
 
 ## Vercel/Turbo Notes
 
-Everything builds and runs locally.
-
-Nothing builds  on Vercel.
-
-Try setting `root` to `package/x` and use `build ../..`, `install ../../` in the Vercel dashboard config.
+Set the 'root' directory to that of a package, and specify 'build' and 'install' relative to that, `../..`.
 
