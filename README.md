@@ -173,3 +173,12 @@ Ports not updating? Re-`source` and re-`build`.
 * Logger transports/etc
 * Initialise with map extent rather than center
 * Use `class-validator` when it supports a modern Node version.
+
+## Vercel/Turbo Notes
+
+Everything builds and runs locally.
+
+Nothing builds  on Vercel.
+
+Try setting `root` to `package/x` and use `build ../..`, `install ../../` in the Vercel dashboard config.
+
