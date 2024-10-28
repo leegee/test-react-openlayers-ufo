@@ -8,11 +8,6 @@
       "VITE_ENDPOINT_SEARCH": "/api/search",
       "VITE_ENDPOINT_DETAILS": "/api/details",
       "DATABASE_URL": "postgres://postgress:password@localhost:5432/ufo"
-    },
-
-    "commands": {
-      "build": "npx turbo run build",
-      "dev": "npx turbo run dev"
     }
   },
 
