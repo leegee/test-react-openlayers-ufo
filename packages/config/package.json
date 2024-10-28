@@ -13,6 +13,7 @@
     "vercel-build": "npm run build"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "rimraf": "^6.0.1",
     "turbo": "^2.2.3"
   }

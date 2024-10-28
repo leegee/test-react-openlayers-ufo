@@ -16,7 +16,7 @@
     "packages/server"
   ],
   "scripts": {
-    "build": "npm run build -ws",
+    "build": "turbo run build",
     "build:native": "npm run build -ws",
     "dev:client": "npm run dev --w packages/client",
     "start:server": "npm run dev -w packages/server",
@@ -59,7 +59,6 @@
     "nodemon": "^3.1.0",
     "prettier": "^2.8.0",
     "pwa-asset-generator": "^6.3.2",
-    "react-intl-universal": "^2.11.3",
     "redux-mock-store": "^1.5.4",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.1.2",
@@ -91,6 +90,7 @@
     "pg": "^8.11.3",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-intl-universal": "^2.11.3",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.3",
     "react": "^18.2.0",
