@@ -5,6 +5,10 @@ import macros from 'unplugin-parcel-macros';
 import { transform } from '@swc/core';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const apiUrl = process.env.VERCEL_URL ?
+  process.env.VERCEL_URL
+  : `${process.env.VITE_API_HOST ?? 'localhost'}:${process.env.VITE_API_PORT ?? '3000'}/.*`;
+
 export default defineConfig({
   base: './',
   esbuild: false,
@@ -101,7 +105,8 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
         runtimeCaching: [
           {
-            urlPattern: new RegExp(`${process.env.VITE_API_HOST}:${process.env.VITE_API_PORT}/.*`),
+            // Wish this could come from Config
+            urlPattern: new RegExp(apiUrl),
             handler: 'CacheFirst',
             options: {
               cacheName: 'openlayers-api-cache',
