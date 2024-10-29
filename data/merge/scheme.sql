@@ -1,7 +1,7 @@
 
 -- set env var INPUT_CSV to kaggle_limited.csv etc
 
-SET search_path TO public;
+-- SET search_path TO public;
 
 DROP TABLE IF EXISTS sightings;
 
@@ -39,3 +39,4 @@ CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_o
 DROP INDEX IF EXISTS idx_location_text_trgm;
 CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);
 
+COMMIT;
