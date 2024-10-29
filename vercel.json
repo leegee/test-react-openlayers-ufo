@@ -12,7 +12,7 @@
   },
 
   "installCommand": "npm install",
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "npx turbo install",
   "outputDirectory": "packages/client/build",
 
   "routes": [
@@ -28,7 +28,7 @@
 
     {
       "src": "/(.*)",
-      "dest": "packages/client/dist/$1"
+      "dest": "packages/client/build/$1"
     }
   ]
 }
