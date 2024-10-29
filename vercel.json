@@ -11,8 +11,8 @@
     }
   },
 
-  "installCommand": "npm install -legacy-peer-deps",
-  "buildCommand": "npx turbo run build --filter=@ufo-monorepo/client",
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
   "routes": [
