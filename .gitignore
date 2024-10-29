@@ -1,9 +1,7 @@
 !.vscode/extensions.json
 .DS_Store
 .env.development.local
-.env.local
-.env.production.local
-.env.test.local
+.env*
 .idea
 .pnp.js
 .turbo/
@@ -34,3 +32,4 @@ tsconfig.node.tsbuildinfo
 tsconfig.tsbuildinfo
 yarn-debug.log*
 yarn-error.log*
+
