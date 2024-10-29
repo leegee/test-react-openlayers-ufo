@@ -32,12 +32,12 @@ export interface MapState {
   source: FeatureSourceAttributeType;
 }
 
-const searchEndpoint = config.api.host + ':' + config.api.port + config.api.endpoints.search;
+const searchEndpoint = config.api.host + ':' + String(config.api.port) + config.api.endpoints.search;
 
 const initialState: MapState = {
   featureCollection: undefined,
   zoom: 5,
-  center: config.gui.map.centre as [number, number],
+  center: config.gui.map.centre,
   bounds: null,
   dictionary: undefined,
   from_date: undefined,
@@ -227,7 +227,7 @@ export const _fetchCsv: any = createAsyncThunk<any, any, { state: RootState }>(
     try {
       response = await fetch(`${searchEndpoint}?${queryString}`, requestOptions);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${String(response.status)}`);
       }
 
       // Expose the CSV
