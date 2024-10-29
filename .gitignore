@@ -32,4 +32,4 @@ tsconfig.node.tsbuildinfo
 tsconfig.tsbuildinfo
 yarn-debug.log*
 yarn-error.log*
-
+api/

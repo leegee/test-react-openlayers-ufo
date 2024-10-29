@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "tsc --build",
+    "postbuild": "node post-build.cjs",
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
     "vercel-build": "npx turbo run build"
   },
@@ -13,10 +14,5 @@
     "@ufo-monorepo/api-functions": "file:../api-functions",
     "@ufo-monorepo/common-types": "file:../common-types",
     "@ufo-monorepo/config": "file:../config"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "rimraf": "^6.0.1",
-    "turbo": "^2.2.3"
   }
 }
