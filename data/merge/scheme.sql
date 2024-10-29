@@ -1,6 +1,8 @@
 
 -- set env var INPUT_CSV to kaggle_limited.csv etc
 
+SET search_path TO public;
+
 DROP TABLE IF EXISTS sightings;
 
 CREATE TABLE sightings (

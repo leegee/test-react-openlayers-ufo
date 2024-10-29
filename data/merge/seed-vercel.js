@@ -28,6 +28,7 @@ async function seedDatabase () {
                 console.info( `Database seeded successfully with ${ filepath }` );
             } catch ( error ) {
                 console.error( `Error seeding database with ${ filepath }:`, error );
+                throw error;
             }
         }
     } catch ( error ) {
