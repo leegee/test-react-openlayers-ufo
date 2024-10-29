@@ -7,7 +7,7 @@
     "prebuild": "npm run clean",
     "build": "tsc --build",
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
-    "vercel-build": "npm run build"
+    "vercel-build": "npx turbo run build"
   },
   "dependencies": {
     "@ufo-monorepo/api-functions": "file:../api-functions",
