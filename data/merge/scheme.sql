@@ -1,7 +1,4 @@
-
--- set env var INPUT_CSV to kaggle_limited.csv etc
-
--- SET search_path TO public;
+SET search_path TO public;
 
 DROP TABLE IF EXISTS sightings;
 
@@ -26,8 +23,6 @@ CREATE TABLE sightings (
     CHECK (source IN ('norge-ufo', 'mufon-kaggle'))
 );
 
--- UPDATE sightings SET point = ST_Transform(ST_SetSRID(ST_MakePoint(longitude, latitude), 4326), 3857);
-
 DROP INDEX IF EXISTS spatial_index_point;
 CREATE INDEX spatial_index_point ON sightings USING gist (point);
 
@@ -39,4 +34,3 @@ CREATE INDEX idx_report_text_trgm ON sightings USING gin (report_text gin_trgm_o
 DROP INDEX IF EXISTS idx_location_text_trgm;
 CREATE INDEX idx_location_text_trgm ON sightings USING gin (location_text gin_trgm_ops);
 
-COMMIT;
