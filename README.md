@@ -176,6 +176,6 @@ Ports not updating? Re-`source` and re-`build`.
 
 ## Vercel/Turbo Notes
 
-Set the 'root' directory to that of a package, and specify 'build' and 'install' relative to that, `../..`.
+Vercel silently strips `devDependency` entries unless `NODE_ENV` is set to `developemnt` (or at least not set to `production`).
 
 
