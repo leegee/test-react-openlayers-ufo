@@ -14,9 +14,12 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
+  "regions": ["arn1", "lhr1", "fra1"],
+  "functionFailoverRegions": ["arn1", "lhr1", "fra1"],
+
   "functions": {
-    "packages/vercel/build/**/*.js": {
-      "memory": 3008,
+    "packages/vercel/build/api/*.js": {
+      "memory": 1024,
       "maxDuration": 10
     }
   },
