@@ -1,7 +1,7 @@
 {
   "name": "@ufo-monorepo/common-types",
   "version": "1.0.0",
-  "description": "The package containing config and config-realted utility functions",
+  "description": "The package containing shared types",
   "type": "module",
   "packageManager": "npm@10.9.0",
   "main": "build/index.js",
