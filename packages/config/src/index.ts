@@ -1,9 +1,6 @@
 /**
- * Far from ideal: 
- * if config.db ufo.database (process.env.UFO_DATABASE) is'norge', it is the UFO Norway DB,
- * if it is 'ufo', it is the combined db included the Muffon data with the sadly truncated reports.
- * 
- * The Vercel bits are a WIP, and much can be hard-coded.
+ * Configuration for database and API.
+ * Handles different environments (local vs. Vercel).
  */
 
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
@@ -54,6 +51,8 @@ export type ConfigType = {
   };
 };
 
+export const isVercel = env.VERCEL_ENV === 'production';
+
 const config: ConfigType = {
   locale: 'no',
   log: {
@@ -62,20 +61,19 @@ const config: ConfigType = {
   db: env.POSTGRES_URL
     ? {
       POSTGRES_URL: env.POSTGRES_URL,
-      database: env.UFO_DATABASE || 'ufo', // @see notes at the top
+      database: env.UFO_DATABASE || 'ufo',
     }
     : {
       host: env.PGHOST || 'localhost',
       port: parseInt(env.PGPORT || '5432'),
       user: env.PGUSER || 'postgres',
       password: env.PGPASSWORD || 'password',
-      database: env.UFO_DATABASE || 'ufo', // @see notes at the top
+      database: env.UFO_DATABASE || 'ufo',
     },
   api: {
     port: parseInt(env.VITE_API_PORT || '3000'),
-    host: env.VITE_API_HOST || 'http://localhost',
+    host: isVercel ? `https://${env.VERCEL_URL}` : (env.VITE_API_HOST || 'http://localhost'),
     endpoints: {
-      // When the env var has an initial /, Vite adds the path to shell exe....
       search: env.VITE_API_PORT && env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
       details: env.VITE_API_PORT && env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
     },
@@ -88,8 +86,8 @@ const config: ConfigType = {
       debounceMs: 1000,
     },
     map: {
-      centre: [18, 64] as [number, number], // Should use extent
-      cluster_eps_metres: 50000, // The distance between clusters
+      centre: [18, 64] as [number, number],
+      cluster_eps_metres: 50000,
     },
   },
   zoomLevelForPoints: 8,
@@ -102,11 +100,6 @@ const config: ConfigType = {
 
 export default config;
 
-export function isVercel(): boolean {
-  return (config.db as VercelDbConfig).POSTGRES_URL !== undefined;
-}
-
 export function isCombinedDb(): boolean {
   return config.db.database === 'ufo';
 }
-

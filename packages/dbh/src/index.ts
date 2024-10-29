@@ -3,7 +3,7 @@ import config, { isVercel, VercelDbConfig, OurDbConfig } from '@ufo-monorepo/con
 
 let poolConfig: pg.PoolConfig;
 
-if (isVercel()) {
+if (isVercel) {
     const dbConfig = config.db as VercelDbConfig;
     poolConfig = {
         connectionString: dbConfig.POSTGRES_URL
@@ -24,7 +24,7 @@ export const pool = new pg.Pool(poolConfig);
 export default pool;
 
 export function finaliseDbh() {
-    if (isVercel()) {
+    if (isVercel) {
         pool.end();
     }
 }
