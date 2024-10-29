@@ -13,26 +13,24 @@ const pool = new Pool( {
     },
 } );
 
+console.info( "Connected" );
+
 async function seedDatabase () {
     try {
-        // Create the PostGIS extension if it doesn't exist
+        // Create PostGIS extension if it doesn't exist
         await pool.query( 'CREATE EXTENSION IF NOT EXISTS postgis;' );
         console.info( 'PostGIS extension created.' );
 
-        // Seed the database with each SQL file
-        for ( const filepath of [ 'scheme.sql', 'ufo-combined.sql' ] ) {
-            const seedQuery = fs.readFileSync( filepath, 'utf8' );
-            try {
-                console.info( `Sending ${ filepath }` );
-                await pool.query( seedQuery );
-                console.info( `Database seeded successfully with ${ filepath }` );
-            } catch ( error ) {
-                console.error( `Error seeding database with ${ filepath }:`, error );
-                throw error;
-            }
-        }
+        // Read both SQL files and merge them into one query
+        const schemeSQL = fs.readFileSync( 'scheme.sql', 'utf8' );
+        const ufoSQL = fs.readFileSync( 'ufo-combined.sql', 'utf8' );
+        const mergedSQL = `${ schemeSQL }\n${ ufoSQL }`;
+
+        // Execute the merged SQL
+        await pool.query( mergedSQL );
+        console.info( 'Database seeded successfully with merged SQL files' );
     } catch ( error ) {
-        console.error( 'Error setting up database:', error );
+        console.error( 'Error seeding database:', error );
     } finally {
         await pool.end();
         console.info( 'Disconnected.' );
