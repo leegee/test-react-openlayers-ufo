@@ -5,9 +5,7 @@ import macros from 'unplugin-parcel-macros';
 import { transform } from '@swc/core';
 import { VitePWA } from 'vite-plugin-pwa';
 
-const apiUrl = process.env.VERCEL_URL ?
-  process.env.VERCEL_URL
-  : `${process.env.VITE_API_HOST ?? 'localhost'}:${process.env.VITE_API_PORT ?? '3000'}/.*`;
+const apiUrl = process.env.VERCEL_URL || 'localhost:3000';
 
 console.info('API URL set to', apiUrl);
 

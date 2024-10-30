@@ -24,8 +24,7 @@ export type ConfigType = {
   locale: string;
   db: VercelDbConfig | OurDbConfig;
   api: {
-    port: number;
-    host: string;
+    url: string;
     endpoints: {
       search: string;
       details: string;
@@ -75,11 +74,11 @@ const config: ConfigType = {
       database: env.UFO_DATABASE || 'ufo',
     },
   api: {
-    port: parseInt(env.VITE_API_PORT || '3000'),
-    host: isVercel ? `https://${env.VERCEL_URL}` : (env.VITE_API_HOST || 'http://localhost'),
+    url: isVercel ? `https://${env.VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),
     endpoints: {
-      search: env.VITE_API_PORT && env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
-      details: env.VITE_API_PORT && env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
+      // Vite does weird things with URLs that look like Unix absolute paths
+      search: env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
+      details: env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,

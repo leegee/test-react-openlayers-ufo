@@ -10,7 +10,7 @@ export interface SightingDetailsState {
     // Add other fields as needed
 }
 
-const detailsEndpoint = config.api.host + ':' + config.api.port + config.api.endpoints.details;
+const detailsEndpoint = config.api.url as string + config.api.endpoints.details;
 
 const initialState: SightingDetailsState = {
     id: undefined,

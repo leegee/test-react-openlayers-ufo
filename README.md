@@ -58,19 +58,20 @@ When viewing points, clicking the date range calendar icon  shows a histogram of
 
 ## Environment Variables
 
-| Name                  | Default            | Description              |
-|-----------------------|--------------------| ------------------------ |
-| PGHOST                | `localhost`        | The PostGIS host machine |
-| PGPORT                | `5432`             | The PostGIS host port    |
-| PGUSER                | `postgres`         | PostGIS user name        |
-| PGPASSWORD            | `password`         | PostGIS passphrase       |
-| UFO_DATABASE          | `ufo`              | Name of the database     |
-| VITE_API_HOST        | `http://localhost` | The Node.js API host     |
-| VITE_API_PORT        | `8080`             | The Node.js API port, 3000 for Vercel local dev |
-| VITE_ENDPOINT_SEARCH  | `/search`          | Vercel SF use: 'api/search' |
-| VITE_ENDPOINT_DETAILS | `/details`         | Vercel SE use: `api/details` |
+| Name                  | Default                 | Description                  |
+|-----------------------|-------------------------| -----------------------------|
+| UFO_DATABASE          | `ufo`                   | Name of the database         |
+| VITE_API_URL          | `http://localhost:3000` | The Node.js API host         |
+| VITE_ENDPOINT_SEARCH  | `/search`               | Vercel SF use: 'api/search'  |
+| VITE_ENDPOINT_DETAILS | `/details`              | Vercel SE use: `api/details` |
+| PGHOST                | `localhost`             | The PostGIS host machine     |
+| PGPORT                | `5432`                  | The PostGIS host port        |
+| PGUSER                | `postgres`              | PostGIS user name            |
+| PGPASSWORD            | `password`              | PostGIS passphrase           |
 
 Vercel-specific values are set in the `vercel.config` file.
+
+Vercel does not require  the `PG*` values.
 
 ## Synopsis
 
@@ -83,16 +84,18 @@ Vercel-specific values are set in the `vercel.config` file.
 
   # For production
   npm run build -ws
+  # Or
+  turbo build
 ```
-
-After bulding you will be left with: the output of the Vite bundler to be hosted by your HTTP server; a Node server script, to host via pm2/etc; serverless functions compatible with Vercel.
 
 ## Description
 
-This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of an [OpenLayers](https://openlayers.org/) map served by [PostGIS](http://postgis.net/documentation/getting_started/install_windows/) - probably [this version for 64-bit Windows](https://download.osgeo.org/postgis/windows/pg11/postgis-bundle-pg11x64-setup-3.3.3-1.exe).
+This [Vite](https://vitejs.dev/)-bundled Typescript React app uses [Redux Toolkit](https://redux-toolkit.js.org/) to drive the state-based display and search of a [PostGIS](http://postgis.net/documentation/getting_started/install_windows/) database displayed on an [OpenLayers](https://openlayers.org/) map served by Koa or Vercel
 
 Data is fectched for whatever region is visible, and filtered by search terms entered at the top of the window. 
 If zoomed out by a configurable amount, the server clusters the points that represent sightings.
+
+* [Pre-compiled PostGIS for 64-bit Windows](https://download.osgeo.org/postgis/windows/pg11/postgis-bundle-pg11x64-setup-3.3.3-1.exe).
 
 ## Feedback, pull requests
 
@@ -106,6 +109,8 @@ Please fix anything you can or suggest a better way of doing things.
 * The heatmap may be slow, so perhaps write a custom loader to load a CSV
 
 ## Technical
+
+### Client State
 
 All state is controlled by the Redux 'slices':
 
@@ -125,9 +130,9 @@ Some work has been done to port to MySQL, but the big `update.sql` has yet to be
 
 Location data is stored in EPSG:3857 for speed, with the API accepting EPSG:4326/WGS84 for legibility.
 
-## The Current State of the data
+### The Current State of the data
 
-### UFO Norge
+#### UFO Norge
 
 Locations of sightings were semi-manually geocoded from the locations given in the original MS Access database, which was converted to both Postgres and MySQL by a trial version of [Exportizer Enterprise](https://www.vlsoftware.net/exportizer/). The [data/norge/](data/norge/) directory contains those dumps, as well as scripts used to restore relations between the tables, convert the column names to English (since we hope to add Swedish and other data too), as well as cleaning dates and some other values.
 
@@ -142,7 +147,7 @@ However, there are still lots of entries such as:
 
 I've had to rename these as part of the move to MYSQL. Perhaps they relate to the `hovedtabell querybaerum` table?
 
-### MUFON
+#### MUFON
 
 Some kind soul has done most of the above for the [MUFON dataset](data\mufon\datapackage.info.json) avaiable through Kaggle. I think this is the same as [on GitHub](https://github.com/planetsig/ufo-reports): sadly the text of the report is abridged to one line.
 
@@ -156,15 +161,11 @@ MUFON has much less detail, but much more data.
 
 ## Vercel Hosting
 
-WIP: Vercel supports Monorepos but I am having issues working out how it shares `node_modules`.
+See `turbo.json` and `vercel.json`.
 
 ## Caveats
 
-`bun` does not support `-w` or `--workspace`, so run scripts sadly use `npm`.
-
-## Common Pitfalls
-
-Ports not updating? Re-`source` and re-`build`.
+`bun` does not support `-w` or `--workspace`, so run scripts sadly use `npm`/`turbo`.
 
 ## Todo:
 
@@ -176,6 +177,6 @@ Ports not updating? Re-`source` and re-`build`.
 
 ## Vercel/Turbo Notes
 
-Vercel silently strips `devDependency` entries unless `NODE_ENV` is set to `developemnt` (or at least not set to `production`).
+Vercel silently strips `devDependency` entries unless `NODE_ENV` is set to `developemnt` (or at least not set to `production`); `.npmrc` with `workspaces=true` is termianl.
 
 
