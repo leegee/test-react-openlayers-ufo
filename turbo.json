@@ -4,13 +4,16 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"],
       "outputs": ["build/**"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"]
     },
     "dev": {
       "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"],
       "cache": false,
       "persistent": true
     }

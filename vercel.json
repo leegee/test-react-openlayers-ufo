@@ -1,13 +1,11 @@
 {
   "version": 2,
 
-  "build": {
-    "env": {
-      "NODE_ENV": "developement",
-      "VITE_API_PORT": "3000",
-      "VITE_ENDPOINT_SEARCH": "/api/search",
-      "VITE_ENDPOINT_DETAILS": "/api/details"
-    }
+  "env": {
+    "NODE_ENV": "developement",
+    "VITE_API_PORT": "3000",
+    "VITE_ENDPOINT_SEARCH": "/api/search",
+    "VITE_ENDPOINT_DETAILS": "/api/details"
   },
 
   "installCommand": "npm install",
