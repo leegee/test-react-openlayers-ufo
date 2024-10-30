@@ -1,6 +1,7 @@
 !.vscode/extensions.json
 .DS_Store
 local.env
+.env.vercel
 .idea
 .pnp.js
 .turbo/
