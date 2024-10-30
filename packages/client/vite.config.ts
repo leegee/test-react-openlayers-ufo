@@ -9,6 +9,8 @@ const apiUrl = process.env.VERCEL_URL ?
   process.env.VERCEL_URL
   : `${process.env.VITE_API_HOST ?? 'localhost'}:${process.env.VITE_API_PORT ?? '3000'}/.*`;
 
+console.info('API URL set to', apiUrl);
+
 export default defineConfig({
   base: './',
   esbuild: false,
