@@ -4,16 +4,55 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"],
+      "env": [
+        "POSTGRES_URL",
+        "POSTGRES_URL_NON_POOLING POSTGRES_URL_NO_SSL",
+        "POSTGRES_PRISMA_URL",
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_HOST",
+        "POSTGRES_DATABASE",
+        "NODE_ENV",
+        "VITE_API_PORT",
+        "VITE_ENDPOINT_SEARCH",
+        "VITE_ENDPOINT_DETAILS",
+        "DATABASE_URL"
+      ],
       "outputs": ["build/**"]
     },
     "test": {
       "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"]
+      "env": [
+        "POSTGRES_URL",
+        "POSTGRES_URL_NON_POOLING POSTGRES_URL_NO_SSL",
+        "POSTGRES_PRISMA_URL",
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_HOST",
+        "POSTGRES_DATABASE",
+        "NODE_ENV",
+        "VITE_API_PORT",
+        "VITE_ENDPOINT_SEARCH",
+        "VITE_ENDPOINT_DETAILS",
+        "DATABASE_URL"
+      ]
     },
     "dev": {
       "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "VITE_API_PORT", "VITE_ENDPOINT_SEARCH", "VITE_ENDPOINT_DETAILS", "DATABASE_URL"],
+      "env": [
+        "POSTGRES_URL",
+        "POSTGRES_URL_NON_POOLING POSTGRES_URL_NO_SSL",
+        "POSTGRES_PRISMA_URL",
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_HOST",
+        "POSTGRES_DATABASE",
+        "NODE_ENV",
+        "VITE_API_PORT",
+        "VITE_ENDPOINT_SEARCH",
+        "VITE_ENDPOINT_DETAILS",
+        "DATABASE_URL"
+      ],
       "cache": false,
       "persistent": true
     }
