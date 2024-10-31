@@ -6,7 +6,7 @@
   "outputDirectory": "packages/client/build",
 
   "functions": {
-    "/packages/vercel/build/api/*.js": {
+    "packages/vercel/build/api/*.js": {
       "runtime": "nodejs20.x"
     }
   },
