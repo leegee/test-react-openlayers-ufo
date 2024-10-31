@@ -50,7 +50,7 @@ export type ConfigType = {
   };
 };
 
-export const isVercel = env.VERCEL ? true : false;
+export const isVercel = env.VERCEL_URL ? true : false;
 
 export function isCombinedDb(): boolean {
   return config.db.database === 'ufo';
@@ -74,11 +74,11 @@ const config: ConfigType = {
       database: env.UFO_DATABASE || 'ufo',
     },
   api: {
-    url: isVercel ? `https://${env.VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),
+    url: env.VITE_VERCEL_URL ? `https://${env.VITE_VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),
     endpoints: {
       // Vite does weird things with URLs that look like Unix absolute paths
-      search: env.VITE_ENDPOINT_SEARCH ? '/' + env.VITE_ENDPOINT_SEARCH : '/search',
-      details: env.VITE_ENDPOINT_DETAILS ? '/' + env.VITE_ENDPOINT_DETAILS : '/details',
+      search: env.VITE_VERCEL_URL ? `${env.VITE_VERCEL_URL}/api` + env.VITE_ENDPOINT_SEARCH : '/search',
+      details: env.VITE_VERCEL_URL ? `${env.VITE_VERCEL_URL}/api` + env.VITE_ENDPOINT_DETAILS : '/details',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,

@@ -105,7 +105,6 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB
         runtimeCaching: [
           {
-            // Wish this could come from Config
             urlPattern: new RegExp(apiUrl),
             handler: 'CacheFirst',
             options: {

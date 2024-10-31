@@ -58,16 +58,16 @@ When viewing points, clicking the date range calendar icon  shows a histogram of
 
 ## Environment Variables
 
-| Name                  | Default                 | Description                  |
-|-----------------------|-------------------------| -----------------------------|
-| UFO_DATABASE          | `ufo`                   | Name of the database         |
-| VITE_API_URL          | `http://localhost:3000` | The Node.js API host         |
-| VITE_ENDPOINT_SEARCH  | `/search`               | Vercel SF use: 'api/search'  |
-| VITE_ENDPOINT_DETAILS | `/details`              | Vercel SE use: `api/details` |
-| PGHOST                | `localhost`             | The PostGIS host machine     |
-| PGPORT                | `5432`                  | The PostGIS host port        |
-| PGUSER                | `postgres`              | PostGIS user name            |
-| PGPASSWORD            | `password`              | PostGIS passphrase           |
+| Name                  | Default                 | Vercel default | Description                  |
+|-----------------------|-------------------------| ---------------|------------------------------|
+| UFO_DATABASE          | `ufo`                   |                | Name of the database         |
+| VITE_API_URL          | `http://localhost:3000` | `VERCEL_URL`   | The Node.js API host         |
+| VITE_ENDPOINT_SEARCH  | `/search`               | `/api/search`  |                              |
+| VITE_ENDPOINT_DETAILS | `/details`              | `.api/details` |                              |
+| PGHOST                | `localhost`             |                | The PostGIS host machine     |
+| PGPORT                | `5432`                  |                | The PostGIS host port        |
+| PGUSER                | `postgres`              |                | PostGIS user name            |
+| PGPASSWORD            |                         | `POSTGRES_URL` | PostGIS URL from Verce       |
 
 Vercel-specific values are set in the `vercel.config` file.
 
