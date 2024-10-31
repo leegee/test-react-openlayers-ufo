@@ -5,6 +5,12 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
+  "functions": {
+    "/packages/vercel/build/api/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+
   "rewrites": [
     {
       "source": "/api/search",
