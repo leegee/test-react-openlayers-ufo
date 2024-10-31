@@ -11,7 +11,7 @@
       "destination": "/packages/vercel/build/api/:path*"
     },
     {
-      "src": "/(.*)",
+      "source": "/(.*)",
       "dest": "packages/client/build/$1"
     }
   ]
