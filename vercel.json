@@ -12,7 +12,7 @@
     },
     {
       "source": "/(.*)",
-      "dest": "packages/client/build/$1"
+      "destination": "packages/client/build/$1"
     }
   ]
 }
