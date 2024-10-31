@@ -5,7 +5,7 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "regions": ["arn1", "lhr1"],
+  "regions": ["arn1"],
   "functionFailoverRegions": ["fra1"],
 
   "functions": {
