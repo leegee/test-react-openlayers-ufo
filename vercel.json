@@ -7,12 +7,20 @@
 
   "rewrites": [
     {
+      "source": "/api/search",
+      "destination": "/packages/vercel/build/api/search.js"
+    },
+    {
+      "source": "/api/hello",
+      "destination": "/packages/vercel/build/api/hello.js"
+    },
+    {
       "source": "/api/:path*",
-      "destination": "packages/vercel/build/api/:path*"
+      "destination": "/packages/vercel/build/api/:path*"
     },
     {
       "source": "/(.*)",
-      "destination": "packages/client/build/$1"
+      "destination": "/packages/client/build/$1"
     }
   ]
 }
