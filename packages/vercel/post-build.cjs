@@ -13,7 +13,7 @@ if ( !process.cwd().includes( path.join( 'packages', 'vercel' ) ) ) {
 }
 
 const sourceDir = path.join( __dirname, 'build' );
-const targetDir = path.join( __dirname, '..', 'client', 'build', 'api' );
+const targetDir = path.join( __dirname, '..', '..', 'api' );
 
 if ( !fs.existsSync( targetDir ) ) {
     fs.mkdirSync( targetDir, { recursive: true } );
