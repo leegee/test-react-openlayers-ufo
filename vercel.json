@@ -15,12 +15,12 @@
   "routes": [
     {
       "src": "/api/search",
-      "dest": "api/build/search.js"
+      "dest": "api/src/search.js"
     },
 
     {
       "src": "/api/hello",
-      "dest": "api/build/hello.js"
+      "dest": "api/src/hello.js"
     },
 
     {
