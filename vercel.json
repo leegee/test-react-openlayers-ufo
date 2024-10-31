@@ -7,7 +7,7 @@
 
   "functions": {
     "packages/vercel/build/api/*.js": {
-      "runtime": "node20.x"
+      "runtime": "nodejs20.x"
     }
   },
 
