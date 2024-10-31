@@ -5,13 +5,6 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "functions": {
-    "api/src/*.ts": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-
   "routes": [
     {
       "src": "/api/search",
