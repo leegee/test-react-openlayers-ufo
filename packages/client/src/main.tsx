@@ -10,7 +10,8 @@ import App from './App';
 import './main.css';
 import './App.css';
 
-console.info(`Locle: ${config.locale}`);
+console.info(`Locale: ${config.locale}`);
+console.info(`Config: ${config}`);
 
 await setupLocale();
 
