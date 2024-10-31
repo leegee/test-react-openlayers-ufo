@@ -1,5 +1,5 @@
 {
-  "name": "vercel",
+  "name": "@ufo-monorepo/vercel",
   "version": "1.0.0",
   "type": "module",
   "packageManager": "npm@10.9.0",
