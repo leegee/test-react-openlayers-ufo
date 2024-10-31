@@ -10,8 +10,8 @@
     "vercel-build": "npx turbo run build"
   },
   "dependencies": {
-    "@ufo-monorepo/api-functions": "file:../api-functions",
-    "@ufo-monorepo/common-types": "file:../common-types",
-    "@ufo-monorepo/config": "file:../config"
+    "@ufo-monorepo/api-functions": "file:../packages/api-functions",
+    "@ufo-monorepo/common-types": "file:../packages/common-types",
+    "@ufo-monorepo/config": "file:../packages/config"
   }
 }
