@@ -11,7 +11,7 @@ import './main.css';
 import './App.css';
 
 console.info(`Locale: ${config.locale}`);
-console.info(`Config: ${config}`);
+console.info(`Config: ${JSON.stringify(config, null, 4)}`);
 
 await setupLocale();
 
