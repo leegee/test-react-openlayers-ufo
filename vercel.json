@@ -6,7 +6,7 @@
   "outputDirectory": "packages/client/build",
 
   "functions": {
-    "api/*.js": {
+    "api/src/*.ts": {
       "memory": 1024,
       "maxDuration": 10
     }
@@ -15,12 +15,12 @@
   "routes": [
     {
       "src": "/api/search",
-      "dest": "api/src/search.js"
+      "dest": "api/build/search.js"
     },
 
     {
       "src": "/api/hello",
-      "dest": "api/src/hello.js"
+      "dest": "api/build/hello.js"
     },
 
     {
