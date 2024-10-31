@@ -1,6 +1,6 @@
 {
   "name": "ufo-monorepo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Testing MUFON/Norwegian UFO data in PostGIS and React with OpenLayers",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "packages/client",
     "packages/dbh",
     "packages/api-functions",
-    "api",
+    "packages/vercel",
     "packages/server"
   ],
   "scripts": {

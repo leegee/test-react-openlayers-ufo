@@ -8,12 +8,12 @@
   "routes": [
     {
       "src": "/api/search",
-      "dest": "api/build/search.js"
+      "dest": "packages/vercel/build/search.js"
     },
 
     {
       "src": "/api/hello",
-      "dest": "api/build/hello.js"
+      "dest": "packages/vercel/build/hello.js"
     },
 
     {
