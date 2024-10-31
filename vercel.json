@@ -5,17 +5,11 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/search",
-      "dest": "packages/vercel/build/search.js"
+      "source": "/api/:path*",
+      "destination": "/packages/vercel/build/api/:path*"
     },
-
-    {
-      "src": "/api/hello",
-      "dest": "packages/vercel/build/hello.js"
-    },
-
     {
       "src": "/(.*)",
       "dest": "packages/client/build/$1"
