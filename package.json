@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "npx turbo run build",
-    "vercel-build": "echo ${VERCEL_URL} && npx turbo run build",
+    "vercel-build": "npx turbo run build",
     "build:native": "npm run build -ws",
     "dev:client": "dotenv -e .env npm run dev --w packages/client",
     "start:server": "dotenv -e .env npm run dev -w packages/server",

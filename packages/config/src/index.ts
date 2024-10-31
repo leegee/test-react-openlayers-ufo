@@ -50,7 +50,7 @@ export type ConfigType = {
   };
 };
 
-export const isVercel = env.VERCEL_ENV === 'production';
+export const isVercel = env.VERCEL ? true : false;
 
 export function isCombinedDb(): boolean {
   return config.db.database === 'ufo';
@@ -102,4 +102,3 @@ const config: ConfigType = {
 };
 
 export default config;
-
