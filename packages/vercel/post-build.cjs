@@ -1,3 +1,9 @@
+/*
+ * This post-build script will copy the output to packages/client/build, 
+ * a directory which is wiped before every client build, so build order
+ * is very important.
+ */
+
 const fs = require( 'fs' );
 const path = require( 'path' );
 
@@ -7,7 +13,7 @@ if ( !process.cwd().includes( path.join( 'packages', 'vercel' ) ) ) {
 }
 
 const sourceDir = path.join( __dirname, 'build' );
-const targetDir = path.join( __dirname, '..', '..', 'api' );
+const targetDir = path.join( __dirname, '..', 'client', 'build', 'api' );
 
 if ( !fs.existsSync( targetDir ) ) {
     fs.mkdirSync( targetDir, { recursive: true } );
