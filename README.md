@@ -62,8 +62,6 @@ When viewing points, clicking the date range calendar icon  shows a histogram of
 |-----------------------|-------------------------| ---------------|------------------------------|
 | UFO_DATABASE          | `ufo`                   |                | Name of the database         |
 | VITE_API_URL          | `http://localhost:3000` | `VERCEL_URL`   | The Node.js API host         |
-| VITE_ENDPOINT_SEARCH  | `/search`               | `/api/search`  |                              |
-| VITE_ENDPOINT_DETAILS | `/details`              | `.api/details` |                              |
 | PGHOST                | `localhost`             |                | The PostGIS host machine     |
 | PGPORT                | `5432`                  |                | The PostGIS host port        |
 | PGUSER                | `postgres`              |                | PostGIS user name            |
