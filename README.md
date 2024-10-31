@@ -58,14 +58,14 @@ When viewing points, clicking the date range calendar icon  shows a histogram of
 
 ## Environment Variables
 
-| Name                  | Default                 | Vercel default | Description                  |
-|-----------------------|-------------------------| ---------------|------------------------------|
-| UFO_DATABASE          | `ufo`                   |                | Name of the database         |
-| VITE_API_URL          | `http://localhost:3000` | `VERCEL_URL`   | The Node.js API host         |
-| PGHOST                | `localhost`             |                | The PostGIS host machine     |
-| PGPORT                | `5432`                  |                | The PostGIS host port        |
-| PGUSER                | `postgres`              |                | PostGIS user name            |
-| PGPASSWORD            |                         | `POSTGRES_URL` | PostGIS URL from Verce       |
+| Name                         | Default                 | Vercel default | Description                  |
+|------------------------------|-------------------------| ---------------|------------------------------|
+| UFO_DATABASE                 | `ufo`                   |                | Name of the database         |
+| VITE_API_URL                 | `http://localhost:3000` | `VERCEL_URL`   | The Node.js API host         |
+| PGHOST POSTGRES_HOST         | `localhost`             |                | The PostGIS host machine     |
+| PGPORT POSTGRES_PORT         | `5432`                  |                | The PostGIS host port        |
+| PGUSER POSTGRES_USER         | `postgres`              |                | PostGIS user name            |
+| PGPASSWORD POSTGRES_PASSWORD | 'password'              | `POSTGRES_URL` | PostGIS URL from Verce       |
 
 Vercel-specific values are set in the `vercel.config` file.
 

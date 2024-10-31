@@ -64,14 +64,14 @@ const config: ConfigType = {
   db: env.POSTGRES_URL
     ? {
       POSTGRES_URL: env.POSTGRES_URL,
-      database: env.UFO_DATABASE || 'ufo',
+      database: env.UFO_DATABASE || env.POSTGRES_DATABASE || 'ufo',
     }
     : {
-      host: env.PGHOST || 'localhost',
-      port: parseInt(env.PGPORT || '5432'),
-      user: env.PGUSER || 'postgres',
-      password: env.PGPASSWORD || 'password',
-      database: env.UFO_DATABASE || 'ufo',
+      host: env.PGHOST || env.POSTGRES_HOST || 'localhost',
+      port: parseInt(env.PGPORT || env.POSTGRES_PORT || '5432'),
+      user: env.PGUSER || env.POSTGRES_USER || 'postgres',
+      password: env.PGPASSWORD || env.POSTGRES_PASSWORD || 'password',
+      database: env.UFO_DATABASE || env.POSTGRES_DATABASE || 'ufo',
     },
   api: {
     url: env.VITE_VERCEL_URL ? `https://${env.VITE_VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),

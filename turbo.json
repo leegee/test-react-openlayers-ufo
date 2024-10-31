@@ -1,7 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
 
-  "globalEnv": ["POSTGRES_URL", "NODE_ENV", "VERCEL_URL"],
+  "globalEnv": [
+    "POSTGRES_URL",
+    "NODE_ENV",
+    "VERCEL_URL",
+    "POSTGRES_DATABASE",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_HOST"
+  ],
 
   "tasks": {
     "build": {
