@@ -5,12 +5,6 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "build": {
-    "env": {
-      "VITE_VERCEL_URL": "@vercel_url"
-    }
-  },
-
   "routes": [
     {
       "src": "/api/search",
