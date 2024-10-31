@@ -77,8 +77,8 @@ const config: ConfigType = {
     url: env.VITE_VERCEL_URL ? `https://${env.VITE_VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),
     endpoints: {
       // Vite does weird things with URLs that look like Unix absolute paths
-      search: env.VITE_VERCEL_URL ? `${env.VITE_VERCEL_URL}/api/search` : '/search',
-      details: env.VITE_VERCEL_URL ? `${env.VITE_VERCEL_URL}/api/details` : '/details',
+      search: env.VITE_VERCEL_URL ? `/api/search` : '/search',
+      details: env.VITE_VERCEL_URL ? `/api/details` : '/details',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
