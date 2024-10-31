@@ -5,9 +5,6 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "regions": ["arn1"],
-  "functionFailoverRegions": ["fra1"],
-
   "functions": {
     "api/*.js": {
       "memory": 1024,
