@@ -7,7 +7,7 @@
 
   "functions": {
     "packages/vercel/build/api/*.js": {
-      "runtime": "node@20.x"
+      "includeFiles": "**/*.(ts|js)"
     }
   },
 
