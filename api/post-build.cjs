@@ -7,8 +7,8 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 
-if ( !process.cwd().includes( path.join( 'packages', 'vercel' ) ) ) {
-    console.error( "This script should be run from packages/vercel. Exiting as run in", process.cwd() );
+if ( !process.cwd().endsWith( path.join( 'api' ) ) ) {
+    console.error( "This script should be run from api/. Exiting as run in", process.cwd() );
     process.exit( 1 );
 }
 

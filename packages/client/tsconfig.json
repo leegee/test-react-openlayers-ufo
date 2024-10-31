@@ -13,8 +13,8 @@
     ],
     "types": [
       "node",
-      "jest"
-      // "testing-library__jest-dom"
+      "jest",
+      "../../node_modules/@testing-library/jest-dom"
     ],
     // "allowImportingTsExtensions": true,
     // "noEmit": true,

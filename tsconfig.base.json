@@ -1,7 +1,8 @@
 {
     "include": [
         "src",
-        "node_modules/@types"
+        "node_modules/@types",
+        "api"
     ],
     "compilerOptions": {
         "typeRoots": [
@@ -9,8 +10,7 @@
             "types"
         ],
         "types": [
-            "node",
-            "jest"
+            "node"
         ],
         "target": "ES2020",
         "module": "ESNext",

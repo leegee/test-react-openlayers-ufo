@@ -15,12 +15,12 @@
   "routes": [
     {
       "src": "/api/search",
-      "dest": "packages/vercel/build/search.js"
+      "dest": "api/build/search.js"
     },
 
     {
       "src": "/api/hello",
-      "dest": "packages/vercel/build/hello.js"
+      "dest": "api/build/hello.js"
     },
 
     {
