@@ -14,13 +14,10 @@ local.env
 *.sln
 *.suo
 *.sw?
-/.pnp
 /coverage
 build/*
 data/norge/Ufo_Norge_Hoveddatabase.mdb
 dist
-dist-ssr
-lerna-debug.log*
 logs
 node_modules
 npm-debug.log*
@@ -30,5 +27,3 @@ pnpm-debug.log*
 temp.sql
 tsconfig.node.tsbuildinfo
 tsconfig.tsbuildinfo
-yarn-debug.log*
-yarn-error.log*
