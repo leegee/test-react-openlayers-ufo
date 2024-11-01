@@ -6,6 +6,8 @@
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 const env = isNode ? process.env : (import.meta as any).env;
 
+console.log('config env', env);
+
 export type OurDbConfig = {
   host: string;
   port: number;
