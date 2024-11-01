@@ -13,7 +13,8 @@
     "packages/dbh",
     "packages/api-functions",
     "packages/vercel",
-    "packages/server"
+    "packages/server",
+    "api"
   ],
   "scripts": {
     "build": "npx turbo run build",

@@ -12,7 +12,7 @@
     },
     {
       "source": "/api/hello",
-      "destination": "/api/hello.ts"
+      "destination": "/api/build/hello.js"
     },
     {
       "source": "/api/:path*",
