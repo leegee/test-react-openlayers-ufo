@@ -12,7 +12,7 @@
     },
     {
       "source": "/api/hello",
-      "destination": "/packages/vercel/build/api/hello.js"
+      "destination": "/api/hello.ts"
     },
     {
       "source": "/api/:path*",
