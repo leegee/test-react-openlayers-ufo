@@ -6,23 +6,23 @@
   "outputDirectory": "packages/client/build",
 
   "functions": {
-    "packages/vercel/src/api/*.ts": {
-      "includeFiles": "**/*.(ts|js)"
+    "api/*.ts": {
+      "includeFiles": "**/*"
     }
   },
 
   "rewrites": [
     {
       "source": "/api/search",
-      "destination": "/packages/vercel/build/api/search.js"
+      "destination": "/api/search.ts"
     },
     {
       "source": "/api/hello",
-      "destination": "/packages/vercel/build/api/hello.js"
+      "destination": "/api/hello.ts"
     },
     {
       "source": "/api/:path*",
-      "destination": "/packages/vercel/build/api/:path*"
+      "destination": "/api/:path*"
     },
     {
       "source": "/(.*)",

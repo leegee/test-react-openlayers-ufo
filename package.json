@@ -12,7 +12,7 @@
     "packages/client",
     "packages/dbh",
     "packages/api-functions",
-    "packages/vercel",
+    "api",
     "packages/server"
   ],
   "scripts": {

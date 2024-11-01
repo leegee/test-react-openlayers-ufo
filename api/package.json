@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "type": "module",
+  "packageManager": "npm@10.9.0",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "tsc --build",
+    "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
+    "vercel-build": "npx turbo run build"
+  },
+  "dependencies": {
+    "@ufo-monorepo/api-functions": "file:../packges/api-functions",
+    "@ufo-monorepo/common-types": "file:../packges/common-types",
+    "@ufo-monorepo/config": "file:../packges/config"
+  }
+}

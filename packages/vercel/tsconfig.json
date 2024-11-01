@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "build/api",
-        "rootDir": "src",
+        "rootDir": "api",
         "composite": true
     },
     "include": [
