@@ -5,24 +5,18 @@
   "buildCommand": "npx turbo run build",
   "outputDirectory": "packages/client/build",
 
-  "functions": {
-    "api/*.ts": {
-      "includeFiles": "**/*"
-    }
-  },
-
   "rewrites": [
     {
       "source": "/api/search",
-      "destination": "/api/search.ts"
+      "destination": "/packages/vercel/buildi/api/search.js"
     },
     {
       "source": "/api/hello",
-      "destination": "/api/hello.ts"
+      "destination": "/packages/vercel/build/api/hello.js"
     },
     {
       "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "destination": "/packages/vercel/build/api/:path*"
     },
     {
       "source": "/(.*)",
