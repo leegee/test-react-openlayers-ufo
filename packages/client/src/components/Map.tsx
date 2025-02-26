@@ -9,7 +9,7 @@ import { easeOut } from 'ol/easing';
 import type Layer from 'ol/layer/Layer';
 
 import config from '@ufo-monorepo/config';
-import { RootState } from '../redux/store';
+import { store, RootState } from '../redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from '../redux/mapSlice';
 import { setSelectionId } from '../redux/guiSlice';
 import { setupFeatureHighlighting } from './Map/VectorLayerHighlight';
@@ -122,7 +122,6 @@ const OpenLayersMap: React.FC = () => {
 
   // Zoom to the cluster or point on click
   function handleMapClick(e: MapBrowserEvent<any>, eventType: 'single' | 'double') {
-
     let didOneFeature = false;
     mapRef.current?.forEachFeatureAtPixel(e.pixel, function (clickedFeature: FeatureLike): void {
       if (!didOneFeature) {
@@ -148,6 +147,10 @@ const OpenLayersMap: React.FC = () => {
         didOneFeature = true;
       }
     });
+
+    if (!didOneFeature) {
+      dispatch(setSelectionId(undefined));
+    }
   }
 
   useEffect(() => {
