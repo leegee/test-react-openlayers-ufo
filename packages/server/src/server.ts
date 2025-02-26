@@ -38,11 +38,17 @@ app.use(router.allowedMethods());
 router.get('/api/search', searchRoute);
 router.get('/api/details/:id', detailsRoute);
 
-const port = config.api.url.match(/:(\d+)$/)?.[0];
+const port = config.api.url.match(/:(\d+)$/)?.[1];
+
+logger.info({
+    action: 'pre-start-up',
+    port: port,
+    taking_to: config.db.database,
+});
 
 app.listen(port, () => {
     logger.info({
-        action: 'start-up',
+        action: 'start-up-ok',
         port: port,
         taking_to: config.db.database,
     });
