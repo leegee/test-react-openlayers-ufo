@@ -6,7 +6,7 @@
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 const env = isNode ? process.env : (import.meta as any).env;
 
-console.log('config env', env);
+// console.log('config env', env);
 
 export type OurDbConfig = {
   host: string;
@@ -76,7 +76,7 @@ const config: ConfigType = {
       database: env.UFO_DATABASE || env.POSTGRES_DATABASE || 'ufo',
     },
   api: {
-    url: env.VITE_VERCEL_URL ? `https://${env.VITE_VERCEL_URL}` : (env.VITE_API_URL || 'http://localhost:3000'),
+    url: env.VITE_VERCEL_URL ? `//${env.VITE_VERCEL_URL}` : (env.VITE_API_URL || '//localhost:3000'),
     endpoints: {
       // Vite does weird things with URLs that look like Unix absolute paths
       search: env.VITE_VERCEL_URL ? `/api/search` : '/search',
@@ -102,5 +102,7 @@ const config: ConfigType = {
     USE_BOUNDS_WITHOUT_PANEL: false,
   },
 };
+
+console.log(config);
 
 export default config;
