@@ -1,4 +1,4 @@
-import details from './details.js';
-import search from './search.js';
+import detailsRoute from './details.js';
+import searchRoute from './search.js';
 
-export { details as detailsRoute, search as searchRoute };
+export { detailsRoute, searchRoute };
