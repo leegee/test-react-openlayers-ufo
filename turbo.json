@@ -1,29 +1,21 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-
-  "globalEnv": [
-    "POSTGRES_URL",
-    "NODE_ENV",
-    "VERCEL_URL",
-    "POSTGRES_DATABASE",
-    "POSTGRES_USER",
-    "POSTGRES_PASSWORD",
-    "POSTGRES_HOST"
+  "version": 2,
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo run build",
+  "outputDirectory": "packages/client/build",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
-
-  "tasks": {
-    "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env"],
-      "dependsOn": ["^build"],
-      "outputs": ["build/**", "^api/*"]
-    },
-    "test": {
-      "dependsOn": ["^build"]
-    },
-    "dev": {
-      "dependsOn": ["^build"],
-      "cache": false,
-      "persistent": true
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
     }
   }
 }
