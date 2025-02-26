@@ -8,12 +8,12 @@
   "types": "./build/index.d.ts",
   "scripts": {
     "build": "tsc && vite build",
-    "clean": "rimraf build dist",
+    "clean": "rimraf build",
     "dev": "vite",
     "icons": "pwa-asset-generator ./src/base-icon.png ./public/icons --icon-only",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prebuild": "npm run clean",
-    "preview": "vite preview",
+    "preview": "vite preview --root build",
     "test:watch": "jest --watchAll",
     "test": "jest",
     "vercel-build": "echo `pwd` && turbo run build"

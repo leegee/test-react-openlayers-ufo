@@ -1,21 +1,19 @@
 {
-  "version": 2,
-  "installCommand": "npm install",
-  "buildCommand": "npx turbo run build",
-  "outputDirectory": "packages/client/build",
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "packages/client/build/**",
+        "packages/vercel/build/api/**",
+        "packages/api-functions/build/**",
+        "packages/dbh/build/**",
+        "packages/logger/build/**",
+        "packages/server/build/**",
+        "packages/common-types/build/**",
+        "packages/config/build/**"
+      ]
     }
   }
 }
