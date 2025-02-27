@@ -30,6 +30,7 @@ export type ConfigType = {
     endpoints: {
       search: string;
       details: string;
+      tiles: string;
     };
     searchableTextColumnNames: string[];
     debug: boolean;
@@ -81,6 +82,7 @@ const config: ConfigType = {
       // Vite does weird things with URLs that look like Unix absolute paths
       search: env.VITE_VERCEL_URL ? `/api/search` : '/search',
       details: env.VITE_VERCEL_URL ? `/api/details` : '/details',
+      tiles: env.VITE_VERCEL_URL ? `/api/tiles` : '/tiles/{z}/{x}/{y}',
     },
     searchableTextColumnNames: ['location_text', 'report_text'],
     debug: true,
