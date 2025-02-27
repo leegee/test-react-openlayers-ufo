@@ -20,7 +20,9 @@ const Panel: React.FC = () => {
         <header id='status' className='component'>
             <span className='inner'>
                 {nothingToShow ? (
-                    <>{get('status.no_results')}</>
+                    <>
+                        {get('status.no_results')}
+                    </>
                 ) : showPoints ? (
                     <>
                         {get('status.points_count', { count: pointsCount })}
