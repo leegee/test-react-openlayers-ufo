@@ -9,7 +9,7 @@ import { easeOut } from 'ol/easing';
 import type Layer from 'ol/layer/Layer';
 
 import config from '@ufo-monorepo/config';
-import { store, RootState } from '../redux/store';
+import { RootState } from '../redux/store';
 import { setMapParams, fetchFeatures, selectBasemapSource, selectPointsCount, resetDates } from '../redux/mapSlice';
 import { setSelectionId } from '../redux/guiSlice';
 import { setupFeatureHighlighting } from './Map/VectorLayerHighlight';
@@ -21,6 +21,7 @@ import baseLayerGeo from '../lib/map-base-layer/layer-geo';
 // import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer } from './lib/ServerClustersOnlyLyaer';
 import { updateVectorLayer as updateClusterOnlyLayer, vectorLayer as clusterOnlyLayer, setupHeatmapListeners } from '../lib/HeatmapLayer';
 import { updateVectorLayer as updatePointsLayer, vectorLayer as pointsLayer } from '../lib/PointsVectorLayer';
+import { tilesLayer } from '../lib/TilesLayer';
 // import { /*updateVectorLayer as updateMixedSearchResultsLayer,*/ vectorLayer as mixedSearchResultsLayer } from './lib/LocalClusterVectorLayer';
 import ThemeToggleButton from './Map/ThemeToggleButton';
 import LabelToggleButton from './Map/LabelToggleButton';
@@ -31,7 +32,7 @@ import 'ol/ol.css';
 import './Map.css';
 
 export type MapBaseLayerKeyType = 'dark' | 'light' | 'geo';
-export type MapLayerKeyType = 'clusterOnly' | 'points'; // | 'mixedSearchResults'
+export type MapLayerKeyType = 'clusterOnly' | 'points' | 'tiles'; // | 'mixedSearchResults'
 export type MapBaseLayersType = {
   [key in MapBaseLayerKeyType]: Layer
 }
@@ -40,11 +41,15 @@ type MapLayersType = {
   [key in MapLayerKeyType]: Layer;
 }
 
+const TESTING_TILES = false;
+const INITIAL_LAYER_NAME = TESTING_TILES ? 'tiles' : 'clusterOnly';
+
 const mapLayers: MapLayersType = {
+  //No no:  mixedSearchResults: mixedSearchResultsLayer,
   clusterOnly: clusterOnlyLayer,
-  // mixedSearchResults: mixedSearchResultsLayer,
   points: pointsLayer,
-}
+  tiles: tilesLayer,
+};
 
 const mapBaseLayers: MapBaseLayersType = {
   dark: baseLayerDark,
@@ -61,6 +66,7 @@ function setTheme(baseLayerName: MapBaseLayerKeyType) {
 function setVisibleDataLayer(layerName: MapLayerKeyType) {
   for (const l of Object.keys(mapLayers)) {
     mapLayers[l as MapLayerKeyType].setVisible(l === layerName);
+    console.log('layer ', l, mapLayers[l as MapLayerKeyType].getVisible());
   }
 }
 
@@ -173,7 +179,7 @@ const OpenLayersMap: React.FC = () => {
 
   useEffect(() => {
     if (mapElementRef.current) {
-      setVisibleDataLayer('clusterOnly');
+      setVisibleDataLayer(INITIAL_LAYER_NAME);
 
       const map = new Map({
         target: mapElementRef.current,
@@ -204,16 +210,17 @@ const OpenLayersMap: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+  if (!TESTING_TILES) {
+    useEffect(() => {
+      const debouncedFetchFeatures = debounce(() => {
+        dispatch(fetchFeatures());
+      }, 750);
+      debouncedFetchFeatures();
+    }, [dispatch, bounds, zoom]);
+  }
+
   useEffect(() => {
-    const debouncedFetchFeatures = debounce(() => {
-      dispatch(fetchFeatures());
-    }, 750);
-
-    debouncedFetchFeatures();
-
-  }, [dispatch, bounds, zoom]);
-
-  useEffect(() => {
+    if (TESTING_TILES) return;
     if (!mapElementRef.current || !featureCollection) return;
     if (q && q.length >= config.minQLength && (!pointsCount || pointsCount < 1000)) {
       updatePointsLayer(featureCollection);
