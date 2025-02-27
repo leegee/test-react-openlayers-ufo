@@ -24,6 +24,7 @@ import { logger } from '@ufo-monorepo/logger';
 
 import searchRoute from './routes/search';
 import detailsRoute from './routes/details';
+import tilesRoute from './routes/tiles';
 import { errorHandler } from "./middleware/errors";
 
 const router = new Router();
@@ -35,8 +36,16 @@ app.use(errorHandler);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
+app.use(async (ctx, next) => {
+    if (ctx.url.endsWith('.mvt')) {
+        ctx.set('Content-Type', 'application/x-protobuf');
+    }
+    await next();
+});
+
 router.get('/api/search', searchRoute);
 router.get('/api/details/:id', detailsRoute);
+router.get('/api/tiles/:z/:x/:y', tilesRoute);
 
 const port = config.api.url.match(/:(\d+)$/)?.[1];
 
