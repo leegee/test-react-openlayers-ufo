@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { setShowLabels } from '../../redux/guiSlice';
+import { get } from 'react-intl-universal';
 
 import './LabelToggleButton.css';
 
@@ -15,7 +16,7 @@ const LabelToggleButton: React.FC = () => {
     }
 
     return (
-        <button data-active={showLabels} onClick={handleClick} id='labels-ctrl' className='map-ctrl highlightable ol-unselectable ol-control' />
+        <button title={get('map.buttons.labels')} data-active={showLabels} onClick={handleClick} id='labels-ctrl' className='map-ctrl highlightable ol-unselectable ol-control' />
     );
 };
 

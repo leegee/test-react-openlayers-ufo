@@ -8,6 +8,12 @@
     "about": {
         "title": "Om Denne Appen"
     },
+    "map": {
+        "buttons": {
+            "labels": "Kartetiketter",
+            "theme": "Fargetema"
+        }
+    },
     "panel": {
         "points_count": "{count} observasjoner",
         "cluster_count": "{count} grupper av observasjoner",

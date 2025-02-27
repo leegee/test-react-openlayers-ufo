@@ -19,7 +19,7 @@ const About: React.FC = () => {
                 Loose data with truncated report text was found in the wild, claiming to originate from MUFON.
             </p>
 
-            <h4>Map tiles</h4>
+            <h4>Background Map Tiles</h4>
             <p>
                 &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community;
             </p>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { init } from 'react-intl-universal';
 import { useDispatch, useSelector } from 'react-redux';
+import { get } from 'react-intl-universal';
 
 import config from '@ufo-monorepo/config';
 import { RootState } from '../redux/store';
@@ -67,9 +68,9 @@ const LocaleManager = () => {
             {locale ? (
                 <>
                     {locale === 'no' ? (
-                        <button disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('en')}>🇬🇧</button>
+                        <button title={get('map.buttons.labels.locale')} disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('en')}>🇬🇧</button>
                     ) : (
-                        <button disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('no')}>🇳🇴</button>
+                        <button title={get('map.buttons.labels.locale')} disabled={loading} className='map-ctrl locale-ctrl' onClick={() => handleClick('no')}>🇳🇴</button>
                     )}
                 </>
             ) : (

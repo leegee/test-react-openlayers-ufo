@@ -8,6 +8,13 @@
     "about": {
         "title": "About this app"
     },
+    "map": {
+        "buttons": {
+            "labels": "Labels",
+            "theme": "Colour theme",
+            "locale": "Locale"
+        }
+    },
     "status": {
         "points_count": "{count} sightings",
         "cluster_count": "{count} clusters of sightings",
