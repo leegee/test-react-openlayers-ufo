@@ -13,7 +13,7 @@ import ReportToggleButton from './ReportToggleButton';
 
 import './ResultsPanel.css';
 
-const Panel: React.FC = () => {
+const ResultsPanel: React.FC = () => {
     const dispatch = useDispatch();
     const { panel } = useSelector((state: RootState) => state.gui);
 
@@ -60,4 +60,4 @@ const Panel: React.FC = () => {
     );
 };
 
-export default Panel;
+export default ResultsPanel;
